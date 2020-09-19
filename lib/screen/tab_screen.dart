@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/screen/map_screen.dart';
+import 'package:location_based_social_app/screen/notification_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/profile_screen.dart';
 
@@ -22,6 +23,10 @@ class _TabScreenState extends State<TabScreen> {
       {
         'title' : 'Navigation',
         'page' : MapScreen()
+      },
+      {
+        'title': 'Notification',
+        'page': NotificationScreen()
       },
       {
         'title' : 'Profile',
@@ -59,6 +64,7 @@ class _TabScreenState extends State<TabScreen> {
         selectedItemColor: Theme.of(context).accentColor,
         backgroundColor: Theme.of(context).primaryColor,
         currentIndex: selectedPageIndex,
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -67,6 +73,10 @@ class _TabScreenState extends State<TabScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             title: Text('map')
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              title: Text('Notification')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
