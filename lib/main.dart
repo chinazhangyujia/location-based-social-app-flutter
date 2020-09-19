@@ -13,8 +13,7 @@ class MyApp extends StatelessWidget {
       title: "Lighthouse",
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        accentColor: Colors.yellowAccent,
-        canvasColor: Color.fromRGBO(255, 254, 229, 1),
+        accentColor: Colors.amber,
       ),
       home: TabScreen()
     );

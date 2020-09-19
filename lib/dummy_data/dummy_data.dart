@@ -1,3 +1,4 @@
+import 'package:location_based_social_app/model/notification.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
 
@@ -14,7 +15,22 @@ List<Post> DUMMY_POST = [
     ],
     content: 'This is my first post This is my first post This is my first post This is my first post This is my first post This is my first post  This is my first post ' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post' +
-        'This is my first post This is my first post This is my first post This is my first post This is my first post')
+        'This is my first post This is my first post This is my first post This is my first post This is my first post'
+  ),
+  Post(
+    id: '2',
+    user: DUMMY_USER[1],
+    postedTimeStamp: DateTime.now(),
+    photoUrls: [
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg/800px-Spaghetti_Bolognese_mit_Parmesan_oder_Grana_Padano.jpg',
+      'https://cdn.pixabay.com/photo/2018/07/11/21/51/toast-3532016_1280.jpg',
+      'https://cdn.pixabay.com/photo/2018/07/11/21/51/toast-3532016_1280.jpg',
+      'https://cdn.pixabay.com/photo/2018/07/11/21/51/toast-3532016_1280.jpg',
+    ],
+    content: 'This is my first post This is my first post This is my first post This is my first post This is my first post This is my first post  This is my first post ' +
+        'This is my first post This is my first post This is my first post This is my first post This is my first post' +
+        'This is my first post This is my first post This is my first post This is my first post This is my first post'
+  ),
 ];
 
 List<User> DUMMY_USER = [
@@ -25,5 +41,26 @@ List<User> DUMMY_USER = [
       birthday: DateTime(1993, 6, 23),
       gender: Gender.MALE,
       introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
+  ),
+  User(
+      id: '2',
+      name: 'Yujia123',
+      avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+      birthday: DateTime(1993, 6, 23),
+      gender: Gender.MALE,
+      introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
+  ),
+];
+
+List<UserNotification> DUMMY_NOTIFICATION = [
+  CommentNotification(
+    post: DUMMY_POST[0],
+    happenedOn: DateTime.now(),
+    replier: DUMMY_USER[0],
+  ),
+  FollowStatusNotification(
+    happenedOn: DateTime.now(),
+    follower: DUMMY_USER[1],
+    followee: DUMMY_USER[0],
   )
 ];

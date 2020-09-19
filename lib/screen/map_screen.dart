@@ -59,7 +59,13 @@ class _MapScreenState extends State<MapScreen> {
         },
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-
+        circles: {Circle(
+          circleId: CircleId('1'),
+          center: LatLng(37.333256, -122.034419),
+          radius: 200,
+          fillColor: Colors.red.withOpacity(0.3),
+          strokeWidth: 0
+        )},
       ),
     );
   }
