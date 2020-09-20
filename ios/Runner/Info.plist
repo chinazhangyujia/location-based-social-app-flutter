@@ -47,5 +47,7 @@
     <string>We need to access your location</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>We need to access your location</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need to access your photo library</string>
 </dict>
 </plist>

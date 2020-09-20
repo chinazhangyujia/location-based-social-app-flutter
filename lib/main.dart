@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/tab_screen.dart';
 
@@ -15,7 +16,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         accentColor: Colors.amber,
       ),
-      home: TabScreen()
+      home: TabScreen(),
+      routes: {
+        NewPostScreen.router: (context) => NewPostScreen()
+      },
     );
   }
 }
