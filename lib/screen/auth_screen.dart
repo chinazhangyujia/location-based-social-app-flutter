@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
+import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
 
 enum AuthMode { Signup, Login }
@@ -88,21 +89,6 @@ class _AuthCardState extends State<AuthCard> {
   };
   bool _isLoading = false;
   TextEditingController _passwordController = TextEditingController();
-  
-  void _showErrorDialog(String message) {
-    showDialog(context: context, builder: (context) => AlertDialog(
-      title: Text('An Error Occurred'),
-      content: Text(message),
-      actions: [
-        FlatButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('OK')
-        )
-      ],
-    ));
-  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
@@ -130,10 +116,10 @@ class _AuthCardState extends State<AuthCard> {
             _signUpData['birthday']);
       }
     } on HttpException catch (error) {
-      _showErrorDialog(error.toString());
+      renderErrorDialog(context, error.toString());
     }
     catch (error) {
-      _showErrorDialog('Could not authenticate you. Please try later.');
+      renderErrorDialog(context, 'Could not authenticate you. Please try later.');
     }
     setState(() {
       _isLoading = false;

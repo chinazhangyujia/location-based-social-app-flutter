@@ -8,6 +8,18 @@ class AuthProvider with ChangeNotifier {
   String _token;
   String _userId;
 
+  bool get isAuth {
+    return token != null;
+  }
+
+  String get token {
+    if (_token != null) {
+      return _token;
+    }
+
+    return null;
+  }
+
   static const Map<String, String> requestHeader = {
     'Content-type': 'application/json',
   };
@@ -24,11 +36,14 @@ class AuthProvider with ChangeNotifier {
         'birthday': birthday
       }), headers: requestHeader);
 
+      final responseData = json.decode(res.body);
       if (res.statusCode != 200) {
-        throw HttpException(json.decode(res.body)['message']);
+        throw HttpException(responseData['message']);
       }
+      _userId = responseData['user']['_id'];
+      _token = responseData['token'];
 
-      print(json.decode(res.body));
+      notifyListeners();
     } catch (error) {
       throw error;
     }
@@ -43,14 +58,24 @@ class AuthProvider with ChangeNotifier {
         'password': password,
       }), headers: requestHeader);
 
-      print(json.decode(res.body));
-
       if (res.statusCode != 200) {
         throw HttpException('Failed to login in');
       }
+
+      final responseData = json.decode(res.body);
+      _userId = responseData['user']['_id'];
+      _token = responseData['token'];
+
+      notifyListeners();
     } catch(error) {
       throw HttpException('Failed to login in');
     }
+  }
+
+  void logout() {
+    _userId = null;
+    _token = null;
+    notifyListeners();
   }
 
 }
