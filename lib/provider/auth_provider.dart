@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   String _token;
@@ -24,6 +25,38 @@ class AuthProvider with ChangeNotifier {
     'Content-type': 'application/json',
   };
 
+  Future<bool> tryAutoLogin() async {
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    if (!sharedPreferences.containsKey('auth_data')) {
+      return false;
+    }
+
+    Map<String, dynamic> authData = json.decode(sharedPreferences.getString('auth_data'));
+
+    if (authData['userId'] == null || authData['token'] == null) {
+      return false;
+    }
+
+    String url = 'http://localhost:3000/user/me';
+    try {
+      final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer ${authData['token']}'});
+      final responseData = json.decode(res.body);
+
+      if (responseData['_id'] == authData['userId']) {
+        _token = authData['token'];
+        _userId = authData['userId'];
+        notifyListeners();
+        return true;
+      }
+
+      return false;
+
+    } catch (error) {
+      return false;
+    }
+
+  }
+
   Future<void> signup(String email, String password, String name, String uniqueName, String birthday) async {
     String url = 'http://localhost:3000/user/signup';
 
@@ -44,6 +77,14 @@ class AuthProvider with ChangeNotifier {
       _token = responseData['token'];
 
       notifyListeners();
+
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      String payload = json.encode({
+        'userId': _userId,
+        'token': _token
+      });
+      sharedPreferences.setString('auth_data', payload);
+
     } catch (error) {
       throw error;
     }
@@ -67,15 +108,27 @@ class AuthProvider with ChangeNotifier {
       _token = responseData['token'];
 
       notifyListeners();
+
+      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+      String payload = json.encode({
+        'userId': _userId,
+        'token': _token
+      });
+      sharedPreferences.setString('auth_data', payload);
+
     } catch(error) {
       throw HttpException('Failed to login in');
     }
   }
 
-  void logout() {
+  Future<void> logout() async {
     _userId = null;
     _token = null;
     notifyListeners();
+
+    final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    await sharedPreferences.remove('auth_data');
   }
 
 }

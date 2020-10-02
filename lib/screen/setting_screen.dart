@@ -63,6 +63,7 @@ class SettingScreen extends StatelessWidget {
               ),
               onTap: () {
                 authProvider.logout();
+                Navigator.of(context).pop();
               },
             ),
           )

@@ -90,6 +90,12 @@ class _AuthCardState extends State<AuthCard> {
   bool _isLoading = false;
   TextEditingController _passwordController = TextEditingController();
 
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!

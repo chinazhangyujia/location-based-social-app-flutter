@@ -4,6 +4,7 @@ import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
+import 'package:location_based_social_app/screen/splash_screen.dart';
 import 'package:location_based_social_app/screen/tab_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,12 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           accentColor: Colors.amber,
         ),
-        home: auth.isAuth ? TabScreen() : AuthScreen(),
+        home: auth.isAuth ? 
+          TabScreen() : 
+          FutureBuilder(
+            future: auth.tryAutoLogin(),
+            builder: (context, authResSnapshot)
+              => authResSnapshot.connectionState == ConnectionState.waiting ? SplashScreen() : AuthScreen()),
         routes: {
           NewPostScreen.router: (context) => NewPostScreen(),
           SettingScreen.router: (context) => SettingScreen()
