@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
+import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/util/image_upload_util.dart';
 import 'package:location_based_social_app/widget/gallery_image_picker.dart';
@@ -28,18 +29,41 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
+  String _validatePost()
+  {
+    if (pickedImages.isEmpty && (controller.text == null || controller.text.trim().isEmpty)) {
+      return 'Please write something';
+    }
+    return null;
+  }
+
   void sendPost(BuildContext context, String authToken) async {
+    String errorMessage = _validatePost();
+    if (errorMessage != null) {
+      renderErrorDialog(context, errorMessage);
+      return;
+    }
+
     try {
+      List<String> downloadUrls = [];
+
       if (pickedImages.isNotEmpty) {
         setState(() {
           _isLoading = true;
         });
 
-        String uploadUrl = await ImageUploadUtil.getS3UploadUrl(authToken);
-
-        await ImageUploadUtil.uploadToS3(uploadUrl, pickedImages[0]);
-        Navigator.of(context).pop();
+        for (File file in pickedImages) {
+          S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken);
+          await ImageUploadUtil.uploadToS3(s3url.uploadUrl, file);
+          downloadUrls.add(s3url.downloadUrl);
+        }
       }
+
+      String postContent = (controller.text == null || controller.text.trim().isEmpty) ? null : controller.text.trim();
+      await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(postContent, downloadUrls);
+
+      Navigator.of(context).pop();
+
     } on HttpException catch (error) {
       renderErrorDialog(context, error.message);
     } catch (error) {

@@ -12,27 +12,30 @@ class PostText extends StatelessWidget {
     bool shouldCollapse = postText.length > 200;
     
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.only(top: 10, bottom: 5),
       child: ExpandableNotifier(
         child: Expandable(
-          collapsed: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                postText, softWrap: true,
-                maxLines: shouldCollapse ? 5 : null,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 17
+          collapsed: Container(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  postText, softWrap: true,
+                  maxLines: shouldCollapse ? 5 : null,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 17
+                  ),
                 ),
-              ),
-              if (shouldCollapse) ExpandableButton(
-                child: Text(
-                  'Show More',
-                  style: TextStyle(color: Colors.grey, fontSize: 17),
-                ),
-              )
-            ],
+                if (shouldCollapse) ExpandableButton(
+                  child: Text(
+                    'Show More',
+                    style: TextStyle(color: Colors.grey, fontSize: 17),
+                  ),
+                )
+              ],
+            ),
           ),
           expanded: Text(
             postText,

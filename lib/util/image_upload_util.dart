@@ -5,13 +5,28 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
 
+class S3Url {
+  final String _uploadUrl;
+  final String _downloadUrl;
+
+  S3Url(this._uploadUrl, this._downloadUrl);
+
+  String get uploadUrl {
+    return _uploadUrl;
+  }
+
+  String get downloadUrl {
+    return _downloadUrl;
+  }
+}
+
 class ImageUploadUtil {
 
   static const Map<String, String> requestHeader = {
     'Content-type': 'application/json',
   };
 
-  static Future<String> getS3UploadUrl(String token) async {
+  static Future<S3Url> getS3Urls(String token) async {
     String url = 'http://localhost:3000/generatePresignedUrl';
 
     try {
@@ -29,7 +44,7 @@ class ImageUploadUtil {
         throw HttpException(responseData['message']);
       }
 
-      return responseData['uploadUrl'];
+      return S3Url(responseData['uploadUrl'], responseData['downloadUrl']);
 
     } catch (error) {
       throw error;

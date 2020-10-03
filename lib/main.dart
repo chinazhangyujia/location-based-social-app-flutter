@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
+import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
@@ -21,6 +22,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, UserProvider>(
           create: (_) => UserProvider(),
           update: (_, auth, userProvider) => userProvider..update(auth.token)
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, PostsProvider>(
+            create: (_) => PostsProvider(),
+            update: (_, auth, postsProvider) => postsProvider..update(auth.token)
         )
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
