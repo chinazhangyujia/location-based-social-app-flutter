@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/model/user.dart';
 
 class UserProvider with ChangeNotifier {
+  String _id;
   String _nickname;
   String _uniqueName;
   DateTime _birthday;
@@ -24,6 +26,14 @@ class UserProvider with ChangeNotifier {
     return _email;
   }
 
+  User get userInfo {
+    return User(id: _id,
+        name: _nickname,
+        avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+        birthday: _birthday,
+        gender: Gender.MALE);
+  }
+
   static const Map<String, String> requestHeader = {
     'Content-type': 'application/json',
   };
@@ -33,8 +43,9 @@ class UserProvider with ChangeNotifier {
 
     try {
       final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
-      final responseData = json.decode(res.body);
+      final responseData = json.decode(res.body) as Map<String, dynamic>;
 
+      _id = responseData['_id'];
       _uniqueName = responseData['uniqueName'];
       _nickname = responseData['name'];
       _email = responseData['email'];
