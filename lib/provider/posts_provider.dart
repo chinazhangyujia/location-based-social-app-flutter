@@ -11,15 +11,13 @@ class PostsProvider with ChangeNotifier
   List<Post> _posts = [];
 
   String _token;
-  User _loginUser;
 
   static const Map<String, String> requestHeader = {
     'Content-type': 'application/json',
   };
 
-  void update(String token, User loginUser) {
+  void update(String token) {
     _token = token;
-    _loginUser = loginUser;
   }
 
   List<Post> get posts {
@@ -44,7 +42,7 @@ class PostsProvider with ChangeNotifier
         Map<String, dynamic> userData = e['owner'];
 
         return Post(
-            id: e['Id'],
+            id: e['_id'],
             user: User(
                 id: userData['_id'],
                 name: userData['name'],
@@ -66,7 +64,7 @@ class PostsProvider with ChangeNotifier
     }
   }
 
-  Future<void> uploadNewPost(String content, List<String> photoUrls) async {
+  Future<void> uploadNewPost(String content, List<String> photoUrls, User loginUser) async {
 
     try {
       String url = 'http://localhost:3000/post';
@@ -88,7 +86,7 @@ class PostsProvider with ChangeNotifier
 
       Post createdPost = Post(
           id: responseData['_id'],
-          user: _loginUser,
+          user: loginUser,
           postedTimeStamp: DateTime.parse(responseData['createdAt']),
           photoUrls: responseData['imageUrls'].cast<String>(),
           content: responseData['content']);
@@ -98,10 +96,7 @@ class PostsProvider with ChangeNotifier
     }
     catch (error)
     {
-      print(error);
       throw error;
     }
   }
-
-
 }

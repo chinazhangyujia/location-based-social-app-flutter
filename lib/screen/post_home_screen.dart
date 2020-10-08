@@ -33,7 +33,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
           itemCount: posts.length,
           itemBuilder: (context, index) => Column(
             children: [
-              PostItem(posts[index]),
+              PostItem(post: posts[index]),
               Divider()
             ],
           )

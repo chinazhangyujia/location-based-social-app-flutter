@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
+import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/util/image_upload_util.dart';
 import 'package:location_based_social_app/widget/gallery_image_picker.dart';
@@ -18,7 +20,7 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
 
-  TextEditingController controller = TextEditingController();
+  TextEditingController textController = TextEditingController();
   List<File> pickedImages = [];
 
   bool _isLoading = false;
@@ -31,7 +33,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   String _validatePost()
   {
-    if (pickedImages.isEmpty && (controller.text == null || controller.text.trim().isEmpty)) {
+    if (pickedImages.isEmpty && (textController.text == null || textController.text.trim().isEmpty)) {
       return 'Please write something';
     }
     return null;
@@ -59,8 +61,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
         }
       }
 
-      String postContent = (controller.text == null || controller.text.trim().isEmpty) ? null : controller.text.trim();
-      await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(postContent, downloadUrls);
+      String postContent = (textController.text == null || textController.text.trim().isEmpty) ? null : textController.text.trim();
+      User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
+
+      await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(postContent, downloadUrls, loginUser);
 
       Navigator.of(context).pop();
 
@@ -77,7 +81,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   void dispose() {
-    controller.dispose();
+    textController.dispose();
     super.dispose();
   }
 
@@ -108,7 +112,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              MultilineTextField(controller),
+              MultilineTextField(textController),
               GalleryImagePicker(pickedImages, onAddImage)
             ],
           ),

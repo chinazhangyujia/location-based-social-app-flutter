@@ -38,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             Divider(),
             PostItem(
-              DUMMY_POST[0]
+              post: DUMMY_POST[0]
             )
           ],
         ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
+import 'package:location_based_social_app/provider/comments_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
+import 'package:location_based_social_app/screen/post_detail_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
 import 'package:location_based_social_app/screen/splash_screen.dart';
 import 'package:location_based_social_app/screen/tab_screen.dart';
@@ -23,10 +25,14 @@ class MyApp extends StatelessWidget {
           create: (_) => UserProvider(),
           update: (_, auth, userProvider) => userProvider..update(auth.token)
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, UserProvider, PostsProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, PostsProvider>(
             create: (_) => PostsProvider(),
-            update: (_, auth, user, postsProvider) => postsProvider..update(auth.token, user.userInfo)
-        )
+            update: (_, auth, postsProvider) => postsProvider..update(auth.token)
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, CommentsProvider>(
+            create: (_) => CommentsProvider(),
+            update: (_, auth, commentsProvider) => commentsProvider..update(auth.token)
+        ),
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
         title: "Lighthouse",
@@ -42,7 +48,8 @@ class MyApp extends StatelessWidget {
               => authResSnapshot.connectionState == ConnectionState.waiting ? SplashScreen() : AuthScreen()),
         routes: {
           NewPostScreen.router: (context) => NewPostScreen(),
-          SettingScreen.router: (context) => SettingScreen()
+          SettingScreen.router: (context) => SettingScreen(),
+          PostDetailScreen.router: (context) => PostDetailScreen()
         },
       ),)
     );

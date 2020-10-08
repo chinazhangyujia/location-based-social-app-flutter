@@ -1,3 +1,4 @@
+import 'package:location_based_social_app/model/comment.dart';
 import 'package:location_based_social_app/model/notification.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
@@ -63,4 +64,12 @@ List<UserNotification> DUMMY_NOTIFICATION = [
     follower: DUMMY_USER[1],
     followee: DUMMY_USER[0],
   )
+];
+
+List<Comment> DUMMY_COMMENT = [
+  Comment(id: '1', sendFrom: DUMMY_USER[0], content: 'I like your post. I like your post I like your '
+      'post I like your post I like your post I like your post', postTime: DateTime.now()),
+  Comment(id: '2', sendFrom: DUMMY_USER[1], content: 'I like your post too', postTime: DateTime.now()),
+  Comment(id: '3', sendFrom: DUMMY_USER[1], content: 'I like your post too', postTime: DateTime.now()),
+  Comment(id: '4', sendFrom: DUMMY_USER[1], content: 'I like your post too', postTime: DateTime.now()),
 ];
