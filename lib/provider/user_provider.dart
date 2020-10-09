@@ -26,6 +26,19 @@ class UserProvider with ChangeNotifier {
     return _email;
   }
 
+  User get loginUser {
+    if (_id == null) {
+      return null;
+    }
+
+    return User(
+        id: _id,
+        name: _nickname,
+        avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+        birthday: _birthday,
+        gender: Gender.MALE);
+  }
+
   static const Map<String, String> requestHeader = {
     'Content-type': 'application/json',
   };
