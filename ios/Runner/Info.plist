@@ -49,5 +49,9 @@
     <string>We need to access your location</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>We need to access your photo library</string>
+    <key>NSCameraUsageDescription</key>
+    <string>We need to use your camera</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need to use your microphone</string>
 </dict>
 </plist>

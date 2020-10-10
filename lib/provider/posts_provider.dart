@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:location/location.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
@@ -26,7 +28,11 @@ class PostsProvider with ChangeNotifier
 
   Future<void> fetchPosts() async {
     try {
-      String url = 'http://localhost:3000/allPosts';
+      Location locationTracker = Location();
+      LocationData currentLocation = await locationTracker.getLocation();
+
+      String url = 'http://localhost:3000/allPosts?long=${currentLocation.longitude}&lat=${currentLocation.latitude}';
+
       final res = await http.get(
           url,
           headers: {...requestHeader}
@@ -40,18 +46,21 @@ class PostsProvider with ChangeNotifier
       final List<Post> fetchedPosts = responseData.map((e) {
 
         Map<String, dynamic> userData = e['owner'];
+        Map<String, dynamic> postLocation = e['location'];
 
         return Post(
-            id: e['_id'],
-            user: User(
-                id: userData['_id'],
-                name: userData['name'],
-                avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
-                birthday: DateTime.parse(userData['birthday']),
-                gender: Gender.MALE),
-            postedTimeStamp: DateTime.parse(e['createdAt']),
-            photoUrls: e['imageUrls'].cast<String>(),
-            content: e['content']);
+          id: e['_id'],
+          user: User(
+              id: userData['_id'],
+              name: userData['name'],
+              avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+              birthday: DateTime.parse(userData['birthday']),
+              gender: Gender.MALE),
+          postedTimeStamp: DateTime.parse(e['createdAt']),
+          photoUrls: e['imageUrls'].cast<String>(),
+          content: e['content'],
+          postLocation: LocationPoint(postLocation['coordinates'][0], postLocation['coordinates'][1])
+        );
       }).toList();
 
       _posts = fetchedPosts;
@@ -67,6 +76,9 @@ class PostsProvider with ChangeNotifier
   Future<void> uploadNewPost(String content, List<String> photoUrls, User loginUser) async {
 
     try {
+      Location locationTracker = Location();
+      LocationData currentLocation = await locationTracker.getLocation();
+
       String url = 'http://localhost:3000/post';
 
       final res = await http.post(
@@ -74,7 +86,8 @@ class PostsProvider with ChangeNotifier
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
-            'imageUrls': photoUrls
+            'imageUrls': photoUrls,
+            'location': {'type': 'Point', 'coordinates': [currentLocation.longitude, currentLocation.latitude]}
           })
       );
 
@@ -85,11 +98,13 @@ class PostsProvider with ChangeNotifier
       final responseData = json.decode(res.body);
 
       Post createdPost = Post(
-          id: responseData['_id'],
-          user: loginUser,
-          postedTimeStamp: DateTime.parse(responseData['createdAt']),
-          photoUrls: responseData['imageUrls'].cast<String>(),
-          content: responseData['content']);
+        id: responseData['_id'],
+        user: loginUser,
+        postedTimeStamp: DateTime.parse(responseData['createdAt']),
+        photoUrls: responseData['imageUrls'].cast<String>(),
+        content: responseData['content'],
+        postLocation: LocationPoint(currentLocation.longitude, currentLocation.latitude)
+      );
 
       _posts.insert(0, createdPost);
       notifyListeners();

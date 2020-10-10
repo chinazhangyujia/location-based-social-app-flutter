@@ -1,6 +1,6 @@
 class LocationPoint {
-  final double latitude;
   final double longitude;
+  final double latitude;
 
-  const LocationPoint(this.latitude, this.longitude);
+  const LocationPoint(this.longitude, this.latitude);
 }

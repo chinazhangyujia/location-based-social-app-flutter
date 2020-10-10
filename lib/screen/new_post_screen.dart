@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
+import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
@@ -20,7 +22,7 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
 
-  TextEditingController textController = TextEditingController();
+  String text = '';
   List<File> pickedImages = [];
 
   bool _isLoading = false;
@@ -31,9 +33,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
+  void onChangeText(String value) {
+    setState(() {
+      text = value;
+    });
+  }
+
   String _validatePost()
   {
-    if (pickedImages.isEmpty && (textController.text == null || textController.text.trim().isEmpty)) {
+    if (pickedImages.isEmpty && (text == null || text.trim().isEmpty)) {
       return 'Please write something';
     }
     return null;
@@ -61,7 +69,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         }
       }
 
-      String postContent = (textController.text == null || textController.text.trim().isEmpty) ? null : textController.text.trim();
+      String postContent = (text == null || text.trim().isEmpty) ? null : text.trim();
       User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
 
       await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(postContent, downloadUrls, loginUser);
@@ -77,12 +85,6 @@ class _NewPostScreenState extends State<NewPostScreen> {
     setState(() {
       _isLoading = false;
     });
-  }
-
-  @override
-  void dispose() {
-    textController.dispose();
-    super.dispose();
   }
 
   @override
@@ -112,7 +114,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              MultilineTextField(textController),
+              MultilineTextField(onChangeText),
               GalleryImagePicker(pickedImages, onAddImage)
             ],
           ),

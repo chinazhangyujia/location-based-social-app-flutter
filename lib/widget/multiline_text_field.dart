@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MultilineTextField extends StatelessWidget {
-  TextEditingController controller = TextEditingController();
+  final Function onEdit;
 
-  MultilineTextField(this.controller);
+  MultilineTextField(this.onEdit);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      onChanged: onEdit,
       maxLines: null,
-      controller: controller,
       decoration: InputDecoration(
         border: InputBorder.none,
         hintText: 'Post something about what you see...',

@@ -7,14 +7,17 @@ class GalleryImagePicker extends StatelessWidget {
   final List<File> pickedImages;
   final Function onAddImage;
 
+  final ImagePicker imagePicker = ImagePicker();
+
   GalleryImagePicker(this.pickedImages, this.onAddImage);
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(BuildContext context) async {
+    FocusScope.of(context).requestFocus(new FocusNode());
+
     if (pickedImages.length >= 6) {
       return;
     }
 
-    final ImagePicker imagePicker = ImagePicker();
     PickedFile pickedImage = await imagePicker.getImage(
       source: ImageSource.gallery,
       imageQuality: 50,
@@ -51,7 +54,7 @@ class GalleryImagePicker extends StatelessWidget {
           ),
         )).toList(),
         if (pickedImages.length < 6) GestureDetector(
-          onTap: pickImage,
+          onTap: () {pickImage(context);},
           child: Container(
             decoration: BoxDecoration(
                 border: Border.all(width: 1, color: Colors.grey),

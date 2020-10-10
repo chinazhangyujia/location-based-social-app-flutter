@@ -27,7 +27,7 @@ dependencies:
   expandable: ^4.1.4
   google_maps_flutter: ^0.5.32
   location: ^3.0.2
-  image_picker: ^0.6.7+9
+  image_picker: ^0.6.7+11
   datetime_picker_formfield: ^1.0.0
   http: ^0.12.2
   provider: ^4.3.2+2

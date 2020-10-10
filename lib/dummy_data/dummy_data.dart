@@ -1,4 +1,5 @@
 import 'package:location_based_social_app/model/comment.dart';
+import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/notification.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
@@ -16,7 +17,8 @@ List<Post> DUMMY_POST = [
     ],
     content: 'This is my first post This is my first post This is my first post This is my first post This is my first post This is my first post  This is my first post ' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post' +
-        'This is my first post This is my first post This is my first post This is my first post This is my first post'
+        'This is my first post This is my first post This is my first post This is my first post This is my first post',
+    postLocation: LocationPoint(-122.048, 37.442)
   ),
   Post(
     id: '2',
@@ -30,7 +32,8 @@ List<Post> DUMMY_POST = [
     ],
     content: 'This is my first post This is my first post This is my first post This is my first post This is my first post This is my first post  This is my first post ' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post' +
-        'This is my first post This is my first post This is my first post This is my first post This is my first post'
+        'This is my first post This is my first post This is my first post This is my first post This is my first post',
+    postLocation: LocationPoint(-122.048, 37.442)
   ),
 ];
 

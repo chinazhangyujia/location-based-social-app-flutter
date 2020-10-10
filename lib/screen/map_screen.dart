@@ -10,7 +10,7 @@ class MapScreen extends StatefulWidget {
   final double _zoom = 15;
   final LocationPoint initialLocation;
 
-  MapScreen({this.initialLocation = const LocationPoint(37.442, -122.048)});
+  MapScreen({this.initialLocation = const LocationPoint(-122.048, 37.442)});
 
   @override
   _MapScreenState createState() => _MapScreenState();
