@@ -11,6 +11,7 @@ class UserProvider with ChangeNotifier {
   String _uniqueName;
   DateTime _birthday;
   String _email;
+  String _introduction;
 
   String _token;
 
@@ -26,17 +27,23 @@ class UserProvider with ChangeNotifier {
     return _email;
   }
 
+  String get introduction {
+    return _introduction;
+  }
+
   User get loginUser {
     if (_id == null) {
       return null;
     }
 
     return User(
-        id: _id,
-        name: _nickname,
-        avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
-        birthday: _birthday,
-        gender: Gender.MALE);
+      id: _id,
+      name: _nickname,
+      avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+      birthday: _birthday,
+      gender: Gender.MALE,
+      introduction: _introduction,
+    );
   }
 
   static const Map<String, String> requestHeader = {
@@ -55,6 +62,7 @@ class UserProvider with ChangeNotifier {
       _nickname = responseData['name'];
       _email = responseData['email'];
       _birthday = DateTime.parse(responseData['birthday']);
+      _introduction = responseData['introduction'];
 
       if (_uniqueName == null || _nickname == null || _email == null || _birthday == null) {
         throw HttpException('Failed to get user info');
@@ -63,13 +71,43 @@ class UserProvider with ChangeNotifier {
       notifyListeners();
 
       return User(id: _id,
-          name: _nickname,
-          avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
-          birthday: _birthday,
-          gender: Gender.MALE);
+        name: _nickname,
+        avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+        birthday: _birthday,
+        gender: Gender.MALE,
+        introduction: _introduction
+      );
 
     } catch (error) {
       throw error;
     }
+  }
+
+  Future<void> updateSelfIntroduction(String selfIntroduction) async {
+    String url = 'http://localhost:3000/user/intro';
+
+    if (selfIntroduction == null || selfIntroduction.trim().isEmpty) {
+      selfIntroduction = null;
+    }
+
+    final res = await http.post(
+        url,
+        headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+        body: json.encode({
+          'intro': selfIntroduction
+        })
+    );
+
+    if (res.statusCode != 200) {
+      throw HttpException('Failed to update self introduction. Please try again later');
+    }
+
+    final responseData = json.decode(res.body);
+    if (responseData['nModified'] != 1 || responseData['ok'] != 1) {
+      throw HttpException('Failed to update self introduction. Please try again later');
+    }
+
+    _introduction = selfIntroduction;
+    notifyListeners();
   }
 }

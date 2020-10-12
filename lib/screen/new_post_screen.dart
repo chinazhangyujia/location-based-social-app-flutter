@@ -93,6 +93,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.5,
         leading: IconButton(
           icon: Icon(Icons.clear),
           onPressed: () {
@@ -102,7 +103,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         title: Text('New Post'),
         actions: [
           FlatButton(
-            child: Text('Send', style: TextStyle(color: Colors.white, fontSize: 17),),
+            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
             onPressed: () {
               sendPost(context, authProvider.token);
             },
@@ -114,7 +115,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             children: [
-              MultilineTextField(onChangeText),
+              MultilineTextField(onEdit: onChangeText, hint: 'Post something about what you see...',),
               GalleryImagePicker(pickedImages, onAddImage)
             ],
           ),

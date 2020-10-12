@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:location_based_social_app/dummy_data/dummy_data.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
-import 'package:location_based_social_app/util/dialog_util.dart';
-import 'package:location_based_social_app/widget/follow_status_card.dart';
-import 'package:location_based_social_app/widget/post_item.dart';
 import 'package:location_based_social_app/widget/single_option_page_opener.dart';
 import 'package:location_based_social_app/widget/user_info_card.dart';
 import 'package:provider/provider.dart';

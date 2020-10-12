@@ -4,6 +4,7 @@ import 'package:location_based_social_app/provider/comments_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
+import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
@@ -37,8 +38,20 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
         title: "Lighthouse",
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          accentColor: Colors.amber,
+          primarySwatch: const MaterialColor(0xFFFFFFFF,
+            const <int, Color>{
+              50: const Color(0xFFFFFFFF),
+              100: const Color(0xFFFFFFFF),
+              200: const Color(0xFFFFFFFF),
+              300: const Color(0xFFFFFFFF),
+              400: const Color(0xFFFFFFFF),
+              500: const Color(0xFFFFFFFF),
+              600: const Color(0xFFFFFFFF),
+              700: const Color(0xFFFFFFFF),
+              800: const Color(0xFFFFFFFF),
+              900: const Color(0xFFFFFFFF),
+            },),
+          accentColor: Colors.blueAccent,
         ),
         home: auth.isAuth ? 
           TabScreen() : 
@@ -49,7 +62,8 @@ class MyApp extends StatelessWidget {
         routes: {
           NewPostScreen.router: (context) => NewPostScreen(),
           SettingScreen.router: (context) => SettingScreen(),
-          PostDetailScreen.router: (context) => PostDetailScreen()
+          PostDetailScreen.router: (context) => PostDetailScreen(),
+          EditSelfIntroductionScreen.router: (context) => EditSelfIntroductionScreen()
         },
       ),)
     );

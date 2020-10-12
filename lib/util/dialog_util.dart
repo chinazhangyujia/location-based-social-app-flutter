@@ -6,6 +6,23 @@ Function renderErrorDialog = (BuildContext context, String message) {
     content: Text(message),
     actions: [
       FlatButton(
+        textColor: Theme.of(context).accentColor,
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor,),)
+      )
+    ],
+  ));
+};
+
+Function renderInfoDialog = (BuildContext context, String title, String message) {
+  showDialog(context: context, builder: (context) => AlertDialog(
+    title: Text(title),
+    content: Text(message),
+    actions: [
+      FlatButton(
+          textColor: Theme.of(context).accentColor,
           onPressed: () {
             Navigator.of(context).pop();
           },

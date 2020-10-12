@@ -26,7 +26,7 @@ class PostsProvider with ChangeNotifier
     return _posts;
   }
 
-  Future<void> fetchPosts() async {
+  Future<List<Post>> fetchPosts() async {
     try {
       Location locationTracker = Location();
       LocationData currentLocation = await locationTracker.getLocation();
@@ -66,6 +66,8 @@ class PostsProvider with ChangeNotifier
       _posts = fetchedPosts;
 
       notifyListeners();
+
+      return fetchedPosts;
     }
     catch (error)
     {

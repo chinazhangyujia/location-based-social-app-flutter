@@ -49,6 +49,7 @@ class _TabScreenState extends State<TabScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.5,
         title: Text(pages[selectedPageIndex]['title']),
         actions: pages[selectedPageIndex]['title'] == 'Profile' ? [
           IconButton(
@@ -60,7 +61,7 @@ class _TabScreenState extends State<TabScreen> {
       body: pages[selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
         onTap: selectPage,
-        unselectedItemColor: Colors.white,
+        unselectedItemColor: Colors.black,
         selectedItemColor: Theme.of(context).accentColor,
         backgroundColor: Theme.of(context).primaryColor,
         currentIndex: selectedPageIndex,

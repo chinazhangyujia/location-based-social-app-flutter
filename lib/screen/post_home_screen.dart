@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
+import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/post_item.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,13 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
 
   @override
   void initState() {
-    Provider.of<PostsProvider>(context, listen: false).fetchPosts();
+    Provider.of<PostsProvider>(context, listen: false)
+      .fetchPosts()
+      .then((value) {
+        if (value.isEmpty) {
+          renderInfoDialog(context, 'No post around here', 'Write the first post?');
+        }
+      });
 
     super.initState();
   }
