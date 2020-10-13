@@ -4,8 +4,9 @@ import 'package:location_based_social_app/model/comment.dart';
 
 class CommentItem extends StatelessWidget {
   final Comment comment;
+  final Function onClickComment;
 
-  CommentItem(this.comment);
+  CommentItem({@required this.comment, @required this.onClickComment});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +25,13 @@ class CommentItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(comment.sendFrom.name,
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    GestureDetector(
+                      child: Text(comment.sendFrom.name,
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                      onTap: () {
+
+                      },
                     ),
                     Spacer(),
                     Text(DateFormat("MMM dd, yyyy hh:mm").format(comment.postTime),
@@ -34,9 +40,25 @@ class CommentItem extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 5,),
-                Text(comment.content,
-                  maxLines: null,
-                  style: TextStyle(fontSize: 16,),
+                GestureDetector(
+                  child: RichText(
+                    maxLines: null,
+                    text: TextSpan(
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      children: [
+                        if (comment.sendTo != null) TextSpan(
+                          text: '@${comment.sendTo.name} ',
+                          style: TextStyle(color: Theme.of(context).accentColor)
+                        ),
+                        TextSpan(
+                          text: comment.content
+                        )
+                      ]
+                    ),
+                  ),
+                  onTap: () {
+                    onClickComment(comment.sendFrom);
+                  },
                 )
               ],
             ),

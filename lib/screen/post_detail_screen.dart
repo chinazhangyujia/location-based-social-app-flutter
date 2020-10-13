@@ -23,9 +23,17 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   TextEditingController textController = TextEditingController();
+  FocusNode textFieldFocusNode;
 
+  User _atUser;
   Post post;
   bool _isInit = true;
+
+  @override
+  void initState() {
+    textFieldFocusNode = FocusNode();
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -40,6 +48,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   void dispose() {
     textController.dispose();
+    textFieldFocusNode.dispose();
     super.dispose();
   }
 
@@ -53,14 +62,58 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     try {
       User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
 
-      await Provider.of<CommentsProvider>(context, listen: false).postComment(
-          content: commentContent, postId: postId, loginUser: loginUser);
+      if (_atUser != null) {
+        await Provider.of<CommentsProvider>(context, listen: false).postComment(
+            content: commentContent, postId: postId, loginUser: loginUser, sendTo: _atUser);
+      }
+      else {
+        await Provider.of<CommentsProvider>(context, listen: false).postComment(
+            content: commentContent, postId: postId, loginUser: loginUser);
+      }
+
       textController.clear();
+      setState(() {
+        _atUser = null;
+      });
     } on HttpException catch(error) {
       renderErrorDialog(context, error.message);
     } catch (error) {
       renderErrorDialog(context, 'Failed to comment. Please try later');
     }
+  }
+
+  void onClickComment(User atUser) async {
+    if (atUser == null) {
+      return; // shouldn't happen
+    }
+
+    User loginUser = Provider.of<UserProvider>(context, listen: false).loginUser;
+    if (loginUser == null) {
+      try {
+        loginUser = await Provider.of<UserProvider>(context, listen: false)
+            .getCurrentUser();
+      } on HttpException catch(error) {
+        renderErrorDialog(context, error.message);
+      } catch (error) {
+        renderErrorDialog(context, 'Something wrong happened. Please try later');
+      }
+    }
+
+    if (loginUser == null || atUser.id == loginUser.id) {
+      return;
+    }
+
+    setState(() {
+      _atUser = atUser;
+    });
+    textFieldFocusNode.requestFocus();
+  }
+
+  void onUnfocusTextField(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _atUser = null;
+    });
   }
 
   @override
@@ -70,6 +123,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0.5,
         title: Text('detail'),
       ),
       body: Container(
@@ -78,7 +132,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                FocusScope.of(context).requestFocus(new FocusNode());
+                onUnfocusTextField(context);
               },
               child: SingleChildScrollView(
                 child: Container(
@@ -100,7 +154,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ...comments.map((e) => Column(
                               children: [
                                 CommentItem(
-                                  e
+                                  comment: e,
+                                  onClickComment: onClickComment,
                                 ),
                                 Divider()
                               ],
@@ -139,6 +194,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     maxHeight: 100
                   ),
                   child: TextField(
+                    focusNode: textFieldFocusNode,
+                    cursorColor: Theme.of(context).accentColor,
                     onSubmitted: (_) {
                       onSendComment(context, post.id);
                     },
@@ -151,8 +208,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     maxLines: null,
                     textInputAction: TextInputAction.send,
                     decoration: new InputDecoration(
+                      prefix: _atUser != null ? Text('@${_atUser.name} ', style: TextStyle(color: Theme.of(context).accentColor),) : null,
                       filled: true,
-                      hintText: "... Add comment",
+                      hintText: _atUser != null ? null : "... Add comment",
                       hintStyle: TextStyle(
                         fontSize: 17
                       ),

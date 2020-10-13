@@ -49,9 +49,21 @@ class CommentsProvider with ChangeNotifier {
             birthday: DateTime.parse(sendFromData['birthday']),
             gender: Gender.MALE);
 
+        User sendTo = null;
+        Map<String, dynamic> sendToData = e['sendTo'];
+        if (sendToData != null) {
+          sendTo = User(
+              id: sendToData['_id'],
+              name: sendToData['name'],
+              avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+              birthday: DateTime.parse(sendToData['birthday']),
+              gender: Gender.MALE);
+        }
+
         return Comment(
             id: e['_id'],
             sendFrom: sendFrom,
+            sendTo: sendTo,
             content: e['content'],
             postTime: DateTime.parse(e['createdAt'])
         );
@@ -67,7 +79,7 @@ class CommentsProvider with ChangeNotifier {
   }
 
   Future<void> postComment({
-    String sendTo,
+    User sendTo,
     @required String content,
     @required String postId,
     @required User loginUser
@@ -80,7 +92,7 @@ class CommentsProvider with ChangeNotifier {
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
-            'sendTo': sendTo,
+            'sendTo': sendTo.id,
             'postId': postId
           })
       );
@@ -94,6 +106,7 @@ class CommentsProvider with ChangeNotifier {
       Comment createdComment = Comment(
           id: responseData['_id'],
           sendFrom: loginUser,
+          sendTo: sendTo,
           content: responseData['content'],
           postTime: DateTime.parse(responseData['createdAt'])
       );
