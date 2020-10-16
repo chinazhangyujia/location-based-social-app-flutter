@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/screen/friend_screen.dart';
 import 'package:location_based_social_app/screen/map_screen.dart';
 import 'package:location_based_social_app/screen/notification_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/profile_screen.dart';
+import 'package:location_based_social_app/screen/search_friend_screen.dart';
 
 class TabScreen extends StatefulWidget {
   @override
@@ -19,6 +21,10 @@ class _TabScreenState extends State<TabScreen> {
       {
         'title' : 'Lighthouse',
         'page' : PostHomeScreen()
+      },
+      {
+        'title': 'Friends',
+        'page': FriendScreen()
       },
       {
         'title' : 'Navigation',
@@ -51,10 +57,12 @@ class _TabScreenState extends State<TabScreen> {
       appBar: AppBar(
         elevation: 0.5,
         title: Text(pages[selectedPageIndex]['title']),
-        actions: pages[selectedPageIndex]['title'] == 'Profile' ? [
+        actions: pages[selectedPageIndex]['title'] == 'Friends' ? [
           IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () { },
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.of(context).pushNamed(SearchFriendScreen.router);
+            },
           )
         ] : null,
       ),
@@ -70,6 +78,10 @@ class _TabScreenState extends State<TabScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             title: Text('home')
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.people),
+              title: Text('friends')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map),

@@ -7,6 +7,7 @@ import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
+import 'package:location_based_social_app/screen/search_friend_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
 import 'package:location_based_social_app/screen/splash_screen.dart';
 import 'package:location_based_social_app/screen/tab_screen.dart';
@@ -63,7 +64,8 @@ class MyApp extends StatelessWidget {
           NewPostScreen.router: (context) => NewPostScreen(),
           SettingScreen.router: (context) => SettingScreen(),
           PostDetailScreen.router: (context) => PostDetailScreen(),
-          EditSelfIntroductionScreen.router: (context) => EditSelfIntroductionScreen()
+          EditSelfIntroductionScreen.router: (context) => EditSelfIntroductionScreen(),
+          SearchFriendScreen.router: (context) => SearchFriendScreen()
         },
       ),)
     );

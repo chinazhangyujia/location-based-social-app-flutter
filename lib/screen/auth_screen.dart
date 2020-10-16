@@ -5,6 +5,7 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
+import 'package:validators/validators.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -14,51 +15,56 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-                  Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0, 1],
+    return Theme(
+      data: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      child: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
+                    Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [0, 1],
+                ),
               ),
             ),
-          ),
-          SingleChildScrollView(
-            child: Container(
-              height: deviceSize.height,
-              width: deviceSize.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'MyApp',
-                        style: TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.normal,
+            SingleChildScrollView(
+              child: Container(
+                height: deviceSize.height,
+                width: deviceSize.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'MyApp',
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Flexible(
-                    flex: deviceSize.width > 600 ? 2 : 1,
-                    child: AuthCard(),
-                  ),
-                ],
+                    Flexible(
+                      flex: deviceSize.width > 600 ? 2 : 1,
+                      child: AuthCard(),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -234,6 +240,10 @@ class _AuthCardState extends State<AuthCard> {
                         ? (value) {
                       if (value.length < 3) {
                         return 'Unique name is too short';
+                      }
+
+                      if (!isLowercase(value)) {
+                        return 'Unique name must be lowercase';
                       }
                     } : null,
                     onSaved: (value) {

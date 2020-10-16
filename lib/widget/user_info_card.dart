@@ -49,7 +49,7 @@ class UserInfoCard extends StatelessWidget {
             Navigator.of(context).pushNamed(EditSelfIntroductionScreen.router);
           },
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 10, top: 10, left: 14),
+            padding: const EdgeInsets.only(bottom: 20, top: 10, left: 14),
             child: user.introduction != null && user.introduction.trim().isNotEmpty ? Text(
               user.introduction,
               maxLines: null,

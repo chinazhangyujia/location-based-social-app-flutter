@@ -76,3 +76,22 @@ List<Comment> DUMMY_COMMENT = [
   Comment(id: '3', sendFrom: DUMMY_USER[1], content: 'I like your post too', postTime: DateTime.now()),
   Comment(id: '4', sendFrom: DUMMY_USER[1], content: 'I like your post too', postTime: DateTime.now()),
 ];
+
+List<User> DUMMY_FRIENDS = [
+  User(
+      id: '1',
+      name: 'Yujia',
+      avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+      birthday: DateTime(1993, 6, 23),
+      gender: Gender.MALE,
+      introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
+  ),
+  User(
+      id: '2',
+      name: 'Yujia123',
+      avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+      birthday: DateTime(1993, 6, 23),
+      gender: Gender.MALE,
+      introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
+  ),
+];

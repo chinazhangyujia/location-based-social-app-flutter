@@ -181,7 +181,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
+                      spreadRadius: 1,
                       blurRadius: 7,
                       offset: Offset(0, 3), // changes position of shadow
                     ),
@@ -190,35 +190,41 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 padding: EdgeInsets.only(bottom: 15, top: 13, left: 10, right: 10),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minHeight: 50,
+                    minHeight: 40,
                     maxHeight: 100
                   ),
-                  child: TextField(
-                    focusNode: textFieldFocusNode,
-                    cursorColor: Theme.of(context).accentColor,
-                    onSubmitted: (_) {
-                      onSendComment(context, post.id);
-                    },
-                    controller: textController,
-                    style: TextStyle(
-                      fontSize: 19
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Color.fromRGBO(244, 244, 244, 1)
                     ),
-                    textAlignVertical: TextAlignVertical.center,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: null,
-                    textInputAction: TextInputAction.send,
-                    decoration: new InputDecoration(
-                      prefix: _atUser != null ? Text('@${_atUser.name} ', style: TextStyle(color: Theme.of(context).accentColor),) : null,
-                      filled: true,
-                      hintText: _atUser != null ? null : "... Add comment",
-                      hintStyle: TextStyle(
-                        fontSize: 17
+                    child: TextField(
+                      focusNode: textFieldFocusNode,
+                      cursorColor: Theme.of(context).accentColor,
+                      onSubmitted: (_) {
+                        onSendComment(context, post.id);
+                      },
+                      controller: textController,
+                      style: TextStyle(
+                        fontSize: 16
                       ),
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                      textAlignVertical: TextAlignVertical.center,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      textInputAction: TextInputAction.send,
+                      decoration: new InputDecoration(
+                        prefix: _atUser != null ? Text('@${_atUser.name} ', style: TextStyle(color: Theme.of(context).accentColor),) : null,
+                        // filled: true,
+                        hintText: _atUser != null ? null : "... Add comment",
+                        hintStyle: TextStyle(
+                          fontSize: 16
+                        ),
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                      ),
                     ),
                   ),
                 )
