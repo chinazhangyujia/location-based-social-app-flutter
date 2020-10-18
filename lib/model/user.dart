@@ -12,6 +12,7 @@ class User {
   final DateTime birthday;
   final Gender gender;
   final String introduction;
+  final Map<String, dynamic> metaData;
 
   const User({
     @required this.id,
@@ -19,6 +20,7 @@ class User {
     @required this.avatarUrl,
     @required this.birthday,
     @required this.gender,
-    this.introduction
+    this.introduction,
+    this.metaData = const {}
   });
 }

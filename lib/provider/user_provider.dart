@@ -142,18 +142,22 @@ class UserProvider with ChangeNotifier {
       String email = responseData['email'];
       DateTime birthday = DateTime.parse(responseData['birthday']);
       String introduction = responseData['introduction'];
+      String friendStatus = responseData['friendStatus'];
 
-      if (uniqueName == null || nickname == null || email == null || birthday == null) {
+      if (uniqueName == null || nickname == null || email == null || birthday == null || friendStatus == null) {
         throw HttpException('Failed to find user. Please try later');
       }
 
-      return User(id: id,
+      User fetchedUser = User(id: id,
           name: nickname,
           avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
           birthday: birthday,
           gender: Gender.MALE,
-          introduction: introduction
+          introduction: introduction,
+          metaData: {'friendStatus': friendStatus }
       );
+
+      return fetchedUser;
 
     } catch (error) {
       throw error;

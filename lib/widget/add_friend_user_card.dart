@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/util/dialog_util.dart';
+import 'package:provider/provider.dart';
 
 class AddFriendUserCard extends StatelessWidget {
 
   final User user;
 
   AddFriendUserCard(this.user);
+
+  Future<void> onAddClick(BuildContext context, String targetUserId) async {
+    try {
+      await Provider.of<FriendsProvider>(context, listen: false)
+          .sendFriendRequest(targetUserId);
+    }
+    on HttpException catch (error) {
+      renderErrorDialog(context, error.message);
+    }
+    catch (error) {
+      renderErrorDialog(context, 'Failed to send friend request. Please try later');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +76,10 @@ class AddFriendUserCard extends StatelessWidget {
           ),
         ),
         SizedBox(height: 10,),
-        Card(
+        if (user.metaData.containsKey('friendStatus') && user.metaData['friendStatus'] == 'NOT_FRIEND') Card(
           child: InkWell(
             onTap: () {
-
+              onAddClick(context, user.id);
             },
             child: Container(
               alignment: Alignment.center,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
+import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
@@ -28,13 +29,17 @@ class MyApp extends StatelessWidget {
           update: (_, auth, userProvider) => userProvider..update(auth.token)
         ),
         ChangeNotifierProxyProvider<AuthProvider, PostsProvider>(
-            create: (_) => PostsProvider(),
-            update: (_, auth, postsProvider) => postsProvider..update(auth.token)
+          create: (_) => PostsProvider(),
+          update: (_, auth, postsProvider) => postsProvider..update(auth.token)
         ),
         ChangeNotifierProxyProvider<AuthProvider, CommentsProvider>(
-            create: (_) => CommentsProvider(),
-            update: (_, auth, commentsProvider) => commentsProvider..update(auth.token)
+          create: (_) => CommentsProvider(),
+          update: (_, auth, commentsProvider) => commentsProvider..update(auth.token)
         ),
+        ChangeNotifierProxyProvider<AuthProvider, FriendsProvider>(
+          create: (_) => FriendsProvider(),
+          update: (_, auth, friendsProvider) => friendsProvider..update(auth.token)
+        )
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
         title: "Lighthouse",
