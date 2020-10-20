@@ -22,26 +22,6 @@ class FriendsProvider with ChangeNotifier {
     'Content-type': 'application/json',
   };
 
-  Future<void> sendFriendRequest(String targetUserId) async {
-    String url = 'http://localhost:3000/addFriendRequest';
 
-    try {
-      final res = await http.post(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
-          body: json.encode({
-            'toUser': targetUserId
-          })
-      );
-
-      if (res.statusCode != 200) {
-        throw HttpException('Failed to send friend request. Please try later');
-      }
-    }
-    catch (error) {
-      print(error);
-      throw error;
-    }
-  }
 
 }

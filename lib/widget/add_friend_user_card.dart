@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
-import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,7 @@ class AddFriendUserCard extends StatelessWidget {
 
   Future<void> onAddClick(BuildContext context, String targetUserId) async {
     try {
-      await Provider.of<FriendsProvider>(context, listen: false)
+      await Provider.of<FriendRequestProvider>(context, listen: false)
           .sendFriendRequest(targetUserId);
     }
     on HttpException catch (error) {

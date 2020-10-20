@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/model/friend_request.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
+import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
@@ -39,6 +41,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, FriendsProvider>(
           create: (_) => FriendsProvider(),
           update: (_, auth, friendsProvider) => friendsProvider..update(auth.token)
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, FriendRequestProvider>(
+            create: (_) => FriendRequestProvider(),
+            update: (_, auth, friendRequestProvider) => friendRequestProvider..update(auth.token)
         )
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
