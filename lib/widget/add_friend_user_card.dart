@@ -6,16 +6,27 @@ import 'package:location_based_social_app/provider/friend_request_provider.dart'
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
 
-class AddFriendUserCard extends StatelessWidget {
+class AddFriendUserCard extends StatefulWidget {
 
   final User user;
 
   AddFriendUserCard(this.user);
 
+  @override
+  _AddFriendUserCardState createState() => _AddFriendUserCardState();
+}
+
+class _AddFriendUserCardState extends State<AddFriendUserCard> {
+
+  bool requestSent = false;
+
   Future<void> onAddClick(BuildContext context, String targetUserId) async {
     try {
       await Provider.of<FriendRequestProvider>(context, listen: false)
           .sendFriendRequest(targetUserId);
+      setState(() {
+        requestSent = true;
+      });
     }
     on HttpException catch (error) {
       renderErrorDialog(context, error.message);
@@ -41,18 +52,18 @@ class AddFriendUserCard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundImage: NetworkImage(user.avatarUrl),
+                      backgroundImage: NetworkImage(widget.user.avatarUrl),
                     ),
                     SizedBox(width: 15,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user.name,
+                          widget.user.name,
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 7,),
-                        Text(DateFormat("MMM dd, yyyy").format(user.birthday))
+                        Text(DateFormat("MMM dd, yyyy").format(widget.user.birthday))
                       ],
                     ),
                   ],
@@ -65,21 +76,21 @@ class AddFriendUserCard extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20, top: 10, left: 14),
-                child: user.introduction != null && user.introduction.trim().isNotEmpty ? Text(
-                  user.introduction,
+                child: widget.user.introduction != null && widget.user.introduction.trim().isNotEmpty ? Text(
+                  widget.user.introduction,
                   maxLines: null,
                   style: TextStyle(fontSize: 17),
                 ) :
-                Text("${user.name} hasn't write self introduction yet", style: TextStyle(color: Colors.grey, fontSize: 16),),
+                Text("${widget.user.name} hasn't write self introduction yet", style: TextStyle(color: Colors.grey, fontSize: 16),),
               )
             ],
           ),
         ),
         SizedBox(height: 10,),
-        if (user.metaData.containsKey('friendStatus') && user.metaData['friendStatus'] == 'NOT_FRIEND') Card(
+        if (widget.user.metaData.containsKey('friendStatus') && widget.user.metaData['friendStatus'] == 'NOT_FRIEND' && !requestSent) Card(
           child: InkWell(
             onTap: () {
-              onAddClick(context, user.id);
+              onAddClick(context, widget.user.id);
             },
             child: Container(
               alignment: Alignment.center,

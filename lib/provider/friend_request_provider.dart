@@ -4,9 +4,12 @@ import 'dart:convert';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/screen/post_detail_screen.dart';
 
 class FriendRequestProvider with ChangeNotifier {
-  List<FriendRequest> _unnotifiedFriendRequests = [];
+  List<FriendRequest> _pendingRequests = [];
+
+  List<FriendRequest> _unnotifiedRequests = [];
 
   String _token;
 
@@ -14,8 +17,12 @@ class FriendRequestProvider with ChangeNotifier {
     _token = token;
   }
 
-  List<FriendRequest> get unnotifiedFriendRequests {
-    return [..._unnotifiedFriendRequests];
+  List<FriendRequest> get pendingRequests {
+    return [..._pendingRequests];
+  }
+
+  List<FriendRequest> get unnotifiedRequests {
+    return [..._unnotifiedRequests];
   }
 
   static const Map<String, String> requestHeader = {
@@ -43,8 +50,8 @@ class FriendRequestProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchUnnotifiedRequest() async {
-    String url = 'http://localhost:3000/unnotifiedRequests';
+  Future<void> fetchPendingRequests() async {
+    String url = 'http://localhost:3000/pendingRequests';
 
     try {
       final res = await http.get(
@@ -53,12 +60,12 @@ class FriendRequestProvider with ChangeNotifier {
       );
 
       if (res.statusCode != 200) {
-        throw HttpException('Failed to send friend request. Please try later');
+        throw HttpException('Failed to get friend request. Please try later');
       }
 
       final responseData = json.decode(res.body) as List<dynamic>;
 
-      List<FriendRequest> friendRequests = responseData.map((e) {
+      List<FriendRequest> pendingFriendRequests = responseData.map((e) {
         Map<String, dynamic> sendFrom = e['fromUser'];
 
         return FriendRequest(
@@ -74,7 +81,8 @@ class FriendRequestProvider with ChangeNotifier {
         );
       }).toList();
 
-      this._unnotifiedFriendRequests = friendRequests;
+      this._pendingRequests = pendingFriendRequests;
+      this._unnotifiedRequests = pendingFriendRequests.where((req) => !req.notified).toList();
 
       notifyListeners();
     }
@@ -95,13 +103,66 @@ class FriendRequestProvider with ChangeNotifier {
           })
       );
 
-      _unnotifiedFriendRequests = [];
+      List<FriendRequest> afterNotified = [];
+      _pendingRequests.forEach((element) {
+        if (element.notified || !requestIds.contains(element.id)) {
+          afterNotified.add(element);
+        }
+        else {
+          afterNotified.add(
+            FriendRequest(
+              id: element.id,
+              sendFrom: element.sendFrom,
+              status: element.status,
+              notified: true
+            )
+          );
+        }
+      });
+
+      _pendingRequests = afterNotified;
+
+      _unnotifiedRequests = [];
 
       notifyListeners();
 
     }
     catch (error) {
       // don't do anything
+    }
+  }
+
+  /**
+   * Accept or deny request
+   */
+  Future<void> handleRequest(String status, String requestId) async {
+    if (status != 'accepted' && status != 'denied') {
+      return;
+    }
+
+    String url = 'http://localhost:3000/handleFriendRequest';
+
+    try {
+      final res = await http.post(
+        url,
+        headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+        body: json.encode({
+          'requestId': requestId,
+          'status': status
+        })
+      );
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed to handle friend request. Please try later');
+      }
+
+      // todo refresh friends list.
+      _pendingRequests.removeWhere((r) => r.id == requestId);
+
+      notifyListeners();
+    }
+    catch (error) {
+      throw error;
     }
   }
 

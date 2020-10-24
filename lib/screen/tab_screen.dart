@@ -1,6 +1,9 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
+import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend_screen.dart';
 import 'package:location_based_social_app/screen/map_screen.dart';
 import 'package:location_based_social_app/screen/notification_screen.dart';
@@ -47,19 +50,16 @@ class _TabScreenState extends State<TabScreen> {
     super.initState();
   }
 
-  void onClickFriendNotification(List<String> unnotifiedRequestIds) {
-    Provider.of<FriendRequestProvider>(context, listen: false).markRequestsAsNotified(unnotifiedRequestIds);
+  void onClickFriendNotification(BuildContext context, List<String> unnotifiedRequestIds) {
+    if (unnotifiedRequestIds.isNotEmpty) {
+      Provider.of<FriendRequestProvider>(context, listen: false)
+          .markRequestsAsNotified(unnotifiedRequestIds);
+    }
+    Navigator.of(context).pushNamed(FriendRequestScreen.router);
   }
 
   void selectPage(int index)
   {
-    if (index == 1) {
-      try {
-        Provider.of<FriendRequestProvider>(context, listen: false).fetchUnnotifiedRequest();
-      } catch (error) {
-      }
-    }
-
     setState(() {
       selectedPageIndex = index;
     });
@@ -67,7 +67,7 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> unnotifiedRequestIds = Provider.of<FriendRequestProvider>(context).unnotifiedFriendRequests.map((e) => e.id).toList();
+    List<String> unnotifiedRequestIds = Provider.of<FriendRequestProvider>(context).unnotifiedRequests.map((e) => e.id).toList();
     int unnotifiedRequestsCount = unnotifiedRequestIds.length;
 
     return Scaffold(
@@ -85,9 +85,7 @@ class _TabScreenState extends State<TabScreen> {
               child: Icon(Icons.notifications),
             ) : Icon(Icons.notifications),
             onPressed: () {
-              if (unnotifiedRequestsCount > 0) {
-                onClickFriendNotification(unnotifiedRequestIds);
-              }
+              onClickFriendNotification(context, unnotifiedRequestIds);
             },
           ),
           IconButton(
