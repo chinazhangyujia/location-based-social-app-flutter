@@ -57,4 +57,31 @@ class FriendsProvider with ChangeNotifier {
     }
   }
 
+  Future<void> cancelFriendship(String friendUserId) async {
+    String url = 'http://localhost:3000/cancelFriendship';
+
+    try {
+      final res = await http.post(
+          url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+          body: json.encode({
+            'friendUser': friendUserId
+          })
+      );
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed to send friend request. Please try later');
+      }
+
+      final responseData = json.decode(res.body) as Map<String, dynamic>;
+      String updatedFriendUserId = responseData['friendUser'];
+
+      _friends.removeWhere((element) => element.id == updatedFriendUserId);
+      notifyListeners();
+    }
+    catch (error) {
+      throw error;
+    }
+  }
+
 }

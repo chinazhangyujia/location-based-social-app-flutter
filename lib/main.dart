@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
-        title: "Lighthouse",
+        title: "PlotOfBeach",
         theme: ThemeData(
           primarySwatch: const MaterialColor(0xFFFFFFFF,
             const <int, Color>{

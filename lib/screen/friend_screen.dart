@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
 
 class FriendScreen extends StatefulWidget {
@@ -27,6 +29,14 @@ class _FriendScreenState extends State<FriendScreen> {
     }
   }
 
+  Future<void> cancelFriendship(BuildContext context, String friendUserId) async {
+    try {
+      await Provider.of<FriendsProvider>(context, listen: false).cancelFriendship(friendUserId);
+    } catch(error) {
+      renderErrorDialog(context, 'Failed to delete friend. Please try later');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -41,14 +51,29 @@ class _FriendScreenState extends State<FriendScreen> {
             itemCount: friends.length,
             itemBuilder: (context, index) => Column(
               children: [
-                ListTile(
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                  leading: CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(friends[index].avatarUrl),
+                Slidable(
+                  key: ValueKey(friends[index].id),
+                  actionPane: SlidableDrawerActionPane(),
+                  actionExtentRatio: 0.25,
+                  secondaryActions: <Widget>[
+                    IconSlideAction(
+                      caption: 'Delete',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: () {
+                        cancelFriendship(context, friends[index].id);
+                      },
+                    ),
+                  ],
+                  child: ListTile(
+                    contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                    leading: CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(friends[index].avatarUrl),
+                    ),
+                    title: Text(friends[index].name, style: TextStyle(fontSize: 18,),),
+                    subtitle: Text(''),
                   ),
-                  title: Text(friends[index].name, style: TextStyle(fontSize: 18,),),
-                  subtitle: Text(''),
                 ),
                 Divider(indent: 50,)
               ],

@@ -25,7 +25,7 @@ class _TabScreenState extends State<TabScreen> {
   void initState() {
     pages = [
       {
-        'title' : 'Lighthouse',
+        'title' : 'Plot of Beach',
         'page' : PostHomeScreen()
       },
       {
