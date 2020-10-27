@@ -42,6 +42,7 @@ class _MapScreenState extends State<MapScreen> {
     if (locationSubscription != null) {
       locationSubscription.cancel();
     }
+    mapController.dispose();
     super.dispose();
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend_screen.dart';
 import 'package:location_based_social_app/screen/map_screen.dart';
@@ -33,12 +34,8 @@ class _TabScreenState extends State<TabScreen> {
         'page': FriendScreen()
       },
       {
-        'title' : 'Navigation',
-        'page' : MapScreen()
-      },
-      {
-        'title': 'Notification',
-        'page': NotificationScreen()
+        'title' : 'Moments',
+        'page' : FriendPostsScreen()
       },
       {
         'title' : 'Profile',
@@ -114,12 +111,8 @@ class _TabScreenState extends State<TabScreen> {
               title: Text('friends')
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            title: Text('map')
-          ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications),
-              title: Text('Notification')
+            icon: Icon(Icons.photo),
+            title: Text('moments')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

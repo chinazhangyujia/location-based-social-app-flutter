@@ -8,9 +8,11 @@ import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
+import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
+import 'package:location_based_social_app/screen/post_location_map_view_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
 import 'package:location_based_social_app/screen/splash_screen.dart';
@@ -78,7 +80,8 @@ class MyApp extends StatelessWidget {
           PostDetailScreen.router: (context) => PostDetailScreen(),
           EditSelfIntroductionScreen.router: (context) => EditSelfIntroductionScreen(),
           SearchFriendScreen.router: (context) => SearchFriendScreen(),
-          FriendRequestScreen.router: (context) => FriendRequestScreen()
+          FriendRequestScreen.router: (context) => FriendRequestScreen(),
+          PostLocationMapViewScreen.router: (context) => PostLocationMapViewScreen()
         },
       ),)
     );

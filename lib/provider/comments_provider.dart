@@ -92,7 +92,7 @@ class CommentsProvider with ChangeNotifier {
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
-            'sendTo': sendTo.id,
+            'sendTo': sendTo == null ? null : sendTo.id,
             'postId': postId
           })
       );
