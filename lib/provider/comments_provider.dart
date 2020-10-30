@@ -93,7 +93,7 @@ class CommentsProvider with ChangeNotifier {
           body: json.encode({
             'content': content,
             'sendTo': sendTo == null ? null : sendTo.id,
-            'postId': postId
+            'post': postId
           })
       );
 

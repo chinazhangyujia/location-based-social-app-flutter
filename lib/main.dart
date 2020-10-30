@@ -17,6 +17,7 @@ import 'package:location_based_social_app/screen/search_friend_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
 import 'package:location_based_social_app/screen/splash_screen.dart';
 import 'package:location_based_social_app/screen/tab_screen.dart';
+import 'package:location_based_social_app/screen/unnotified_comments_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -81,7 +82,8 @@ class MyApp extends StatelessWidget {
           EditSelfIntroductionScreen.router: (context) => EditSelfIntroductionScreen(),
           SearchFriendScreen.router: (context) => SearchFriendScreen(),
           FriendRequestScreen.router: (context) => FriendRequestScreen(),
-          PostLocationMapViewScreen.router: (context) => PostLocationMapViewScreen()
+          PostLocationMapViewScreen.router: (context) => PostLocationMapViewScreen(),
+          UnnotifiedCommentsScreen.router: (context) => UnnotifiedCommentsScreen(),
         },
       ),)
     );

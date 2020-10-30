@@ -14,13 +14,18 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
 
   @override
   void initState() {
+    fetchPosts();
+
+    super.initState();
+  }
+
+  Future<void> fetchPosts() async {
     try {
       Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts();
+      Provider.of<PostsProvider>(context, listen: false).fetchPostsWithUnnotifiedComment();
     } catch (error) {
 
     }
-
-    super.initState();
   }
 
   @override
@@ -30,7 +35,7 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: postsProvider.fetchFriendPosts,
+        onRefresh: fetchPosts,
         child: ListView.builder(
             itemCount: posts.length,
             itemBuilder: (context, index) => Column(

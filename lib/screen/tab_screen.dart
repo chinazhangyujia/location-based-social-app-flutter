@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend_screen.dart';
@@ -11,6 +12,7 @@ import 'package:location_based_social_app/screen/notification_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/profile_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
+import 'package:location_based_social_app/screen/unnotified_comments_screen.dart';
 import 'package:provider/provider.dart';
 
 class TabScreen extends StatefulWidget {
@@ -47,14 +49,6 @@ class _TabScreenState extends State<TabScreen> {
     super.initState();
   }
 
-  void onClickFriendNotification(BuildContext context, List<String> unnotifiedRequestIds) {
-    if (unnotifiedRequestIds.isNotEmpty) {
-      Provider.of<FriendRequestProvider>(context, listen: false)
-          .markRequestsAsNotified(unnotifiedRequestIds);
-    }
-    Navigator.of(context).pushNamed(FriendRequestScreen.router);
-  }
-
   void selectPage(int index)
   {
     setState(() {
@@ -64,34 +58,55 @@ class _TabScreenState extends State<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> unnotifiedRequestIds = Provider.of<FriendRequestProvider>(context).unnotifiedRequests.map((e) => e.id).toList();
-    int unnotifiedRequestsCount = unnotifiedRequestIds.length;
+    int unnotifiedFriendRequestCount = Provider.of<FriendRequestProvider>(context).unnotifiedRequests.length;
+    int unnotifiedCommentsCount = Provider.of<PostsProvider>(context).postsWithUnnotifiedComment.length;
+
+    List<Widget> appBarActions = null;
+    if (pages[selectedPageIndex]['title'] == 'Friends') {
+      appBarActions = [
+        IconButton(
+          icon: unnotifiedFriendRequestCount > 0 ? Badge(
+            position: BadgePosition.topEnd(top: -10, end: -10),
+            badgeContent: Text(
+              unnotifiedFriendRequestCount.toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            child: Icon(Icons.notifications),
+          ) : Icon(Icons.notifications),
+          onPressed: () {
+            Navigator.of(context).pushNamed(FriendRequestScreen.router);
+          },
+        ),
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            Navigator.of(context).pushNamed(SearchFriendScreen.router);
+          },
+        )
+      ];
+    } else if (pages[selectedPageIndex]['title'] == 'Moments') {
+      appBarActions = [
+        IconButton(
+          icon: unnotifiedCommentsCount > 0 ? Badge(
+            position: BadgePosition.topEnd(top: -10, end: -10),
+            badgeContent: Text(
+              unnotifiedCommentsCount.toString(),
+              style: TextStyle(color: Colors.white),
+            ),
+            child: Icon(Icons.notifications),
+          ) : Icon(Icons.notifications),
+          onPressed: () {
+            Navigator.of(context).pushNamed(UnnotifiedCommentsScreen.router);
+          },
+        ),
+      ];
+    }
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
         title: Text(pages[selectedPageIndex]['title']),
-        actions: pages[selectedPageIndex]['title'] == 'Friends' ? [
-          IconButton(
-            icon: unnotifiedRequestsCount > 0 ? Badge(
-              position: BadgePosition.topEnd(top: -10, end: -10),
-              badgeContent: Text(
-                unnotifiedRequestsCount.toString(),
-                style: TextStyle(color: Colors.white),
-              ),
-              child: Icon(Icons.notifications),
-            ) : Icon(Icons.notifications),
-            onPressed: () {
-              onClickFriendNotification(context, unnotifiedRequestIds);
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Navigator.of(context).pushNamed(SearchFriendScreen.router);
-            },
-          )
-        ] : null,
+        actions: appBarActions,
       ),
       body: pages[selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(

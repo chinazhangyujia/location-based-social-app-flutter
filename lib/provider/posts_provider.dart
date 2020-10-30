@@ -12,6 +12,7 @@ class PostsProvider with ChangeNotifier
 {
   List<Post> _posts = [];
   List<Post> _friendPosts = [];
+  List<Post> _postsWithUnnotifiedComment = [];
 
   String _token;
 
@@ -29,6 +30,10 @@ class PostsProvider with ChangeNotifier
 
   List<Post> get friendPosts {
     return _friendPosts;
+  }
+
+  List<Post> get postsWithUnnotifiedComment {
+    return _postsWithUnnotifiedComment;
   }
 
   Future<List<Post>> fetchPosts() async {
@@ -126,6 +131,79 @@ class PostsProvider with ChangeNotifier
     {
       throw error;
     }
+  }
+
+  Future<void> fetchPostsWithUnnotifiedComment() async {
+    try {
+
+      String url = 'http://localhost:3000/postWithUnnotifiedComment';
+
+      final res = await http.get(
+          url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
+      );
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed to fetch posts');
+      }
+
+      final responseData = json.decode(res.body) as List<dynamic>;
+
+      final List<Post> fetchedPosts = responseData.map((e) {
+
+        Map<String, dynamic> userData = e['owner'];
+        List<dynamic> postLocation = e['location']['coordinates'];
+        double longitude = postLocation[0] is int ? postLocation[0].toDouble() : postLocation[0];
+        double latitude = postLocation[1] is int ? postLocation[1].toDouble() : postLocation[1];
+
+        return Post(
+            id: e['_id'],
+            user: User(
+                id: userData['_id'],
+                name: userData['name'],
+                avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+                birthday: DateTime.parse(userData['birthday']),
+                gender: Gender.MALE),
+            postedTimeStamp: DateTime.parse(e['createdAt']),
+            photoUrls: e['imageUrls'].cast<String>(),
+            content: e['content'],
+            postLocation: LocationPoint(longitude, latitude)
+        );
+      }).toList();
+
+      _postsWithUnnotifiedComment = fetchedPosts;
+
+      notifyListeners();
+    }
+    catch (error)
+    {
+      throw error;
+    }
+  }
+
+  Future<void> markPostsAsNotified(List<String> postIds) async {
+
+    try {
+      String url = 'http://localhost:3000/markNotificationNotified';
+      final res = await http.post(
+          url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+          body: json.encode({
+            'postIds': postIds,
+          })
+      );
+
+      if (res.statusCode != 200) {
+        return;
+      }
+
+      _postsWithUnnotifiedComment = [];
+      notifyListeners();
+
+    } catch (error) {
+
+    }
+
   }
 
   Future<void> uploadNewPost(String content, List<String> photoUrls, User loginUser) async {

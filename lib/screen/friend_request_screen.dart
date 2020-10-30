@@ -13,6 +13,12 @@ class FriendRequestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<FriendRequest> requests = Provider.of<FriendRequestProvider>(context).pendingRequests;
 
+    final FriendRequestProvider friendRequestProvider = Provider.of<FriendRequestProvider>(context, listen: false);
+    List<String> unnotifiedFriendRequestIds = friendRequestProvider.unnotifiedRequests.map((e) => e.id).toList();
+    if (unnotifiedFriendRequestIds.isNotEmpty) {
+      friendRequestProvider.markRequestsAsNotified(unnotifiedFriendRequestIds);
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
