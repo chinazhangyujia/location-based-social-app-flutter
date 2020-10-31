@@ -9,13 +9,17 @@ class Post {
   final List<String> photoUrls;
   final String content;
   final LocationPoint postLocation;
+  int likesCount;
+  bool userLiked;
 
-  const Post({
+  Post({
     @required this.id,
     @required this.user,
     @required this.postedTimeStamp,
     @required this.photoUrls,
     @required this.content,
-    @required this.postLocation
+    @required this.postLocation,
+    @required this.likesCount,
+    @required this.userLiked
   });
 }

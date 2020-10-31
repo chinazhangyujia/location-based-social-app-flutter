@@ -18,7 +18,9 @@ List<Post> DUMMY_POST = [
     content: 'This is my first post This is my first post This is my first post This is my first post This is my first post This is my first post  This is my first post ' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post',
-    postLocation: LocationPoint(-122.048, 37.442)
+    postLocation: LocationPoint(-122.048, 37.442),
+    likesCount: 0,
+    userLiked: false,
   ),
   Post(
     id: '2',
@@ -33,7 +35,9 @@ List<Post> DUMMY_POST = [
     content: 'This is my first post This is my first post This is my first post This is my first post This is my first post This is my first post  This is my first post ' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post' +
         'This is my first post This is my first post This is my first post This is my first post This is my first post',
-    postLocation: LocationPoint(-122.048, 37.442)
+    postLocation: LocationPoint(-122.048, 37.442),
+    likesCount: 0,
+    userLiked: false,
   ),
 ];
 

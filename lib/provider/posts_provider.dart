@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/location_point.dart';
@@ -45,7 +46,7 @@ class PostsProvider with ChangeNotifier
 
       final res = await http.get(
           url,
-          headers: {...requestHeader}
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
       );
 
       if (res.statusCode != 200) {
@@ -69,7 +70,9 @@ class PostsProvider with ChangeNotifier
           postedTimeStamp: DateTime.parse(e['createdAt']),
           photoUrls: e['imageUrls'].cast<String>(),
           content: e['content'],
-          postLocation: LocationPoint(postLocation['coordinates'][0], postLocation['coordinates'][1])
+          postLocation: LocationPoint(postLocation['coordinates'][0], postLocation['coordinates'][1]),
+          likesCount: e['likesCount'],
+          userLiked: e['userLiked']
         );
       }).toList();
 
@@ -118,7 +121,9 @@ class PostsProvider with ChangeNotifier
             postedTimeStamp: DateTime.parse(e['createdAt']),
             photoUrls: e['imageUrls'].cast<String>(),
             content: e['content'],
-            postLocation: LocationPoint(longitude, latitude)
+            postLocation: LocationPoint(longitude, latitude),
+            likesCount: e['likesCount'],
+            userLiked: e['userLiked']
         );
       }).toList();
 
@@ -167,7 +172,9 @@ class PostsProvider with ChangeNotifier
             postedTimeStamp: DateTime.parse(e['createdAt']),
             photoUrls: e['imageUrls'].cast<String>(),
             content: e['content'],
-            postLocation: LocationPoint(longitude, latitude)
+            postLocation: LocationPoint(longitude, latitude),
+            likesCount: e['likesCount'],
+            userLiked: e['userLiked']
         );
       }).toList();
 
@@ -236,7 +243,9 @@ class PostsProvider with ChangeNotifier
         postedTimeStamp: DateTime.parse(responseData['createdAt']),
         photoUrls: responseData['imageUrls'].cast<String>(),
         content: responseData['content'],
-        postLocation: LocationPoint(currentLocation.longitude, currentLocation.latitude)
+        postLocation: LocationPoint(currentLocation.longitude, currentLocation.latitude),
+        likesCount: 0,
+        userLiked: false
       );
 
       _posts.insert(0, createdPost);
@@ -246,5 +255,51 @@ class PostsProvider with ChangeNotifier
     {
       throw error;
     }
+  }
+
+  /**
+   * Like or dislike post
+   */
+  Future<void> likePost(String postId, bool like) async {
+    String url = 'http://localhost:3000/likePost';
+
+    try {
+      final res = await http.post(
+          url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+          body: json.encode({
+            'postId': postId,
+            'like': like,
+          })
+      );
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed like the post. Please try again later');
+      }
+
+      _changeLikeInPosts(_posts, postId, like);
+      _changeLikeInPosts(_friendPosts, postId, like);
+      _changeLikeInPosts(_postsWithUnnotifiedComment, postId, like);
+
+      notifyListeners();
+
+    } catch (error) {
+
+    }
+
+  }
+
+  void _changeLikeInPosts(List<Post> posts, String postId, bool like) {
+    posts.forEach((element) {
+      if (element.id == postId) {
+        if (like && !element.userLiked) {
+          element.userLiked = like;
+          element.likesCount++;
+        } else if (!like && element.userLiked) {
+          element.userLiked = like;
+          element.likesCount--;
+        }
+      }
+    });
   }
 }

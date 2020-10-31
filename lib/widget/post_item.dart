@@ -45,7 +45,7 @@ class PostItem extends StatelessWidget {
               ],
             ),
           ),
-          PostMetaDataBar(),
+          PostMetaDataBar(likesCount: post.likesCount, userLiked: post.userLiked, postId: post.id,),
           FlatButton(
             padding: EdgeInsets.all(0),
             onPressed: () {
