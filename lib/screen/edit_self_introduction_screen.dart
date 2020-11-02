@@ -24,8 +24,7 @@ class _EditSelfIntroductionScreenState extends State<EditSelfIntroductionScreen>
 
   void onClickOk(BuildContext context) async {
     try {
-      await Provider.of<UserProvider>(context, listen: false).updateSelfIntroduction(
-          introduction);
+      await Provider.of<UserProvider>(context, listen: false).updateUserInfo(selfIntroduction: introduction);
       Navigator.of(context).pop();
     } on HttpException catch (error) {
       renderErrorDialog(context, error.message);

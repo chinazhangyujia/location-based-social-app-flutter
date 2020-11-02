@@ -64,7 +64,7 @@ class PostsProvider with ChangeNotifier
           user: User(
               id: userData['_id'],
               name: userData['name'],
-              avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+              avatarUrl: userData['avatarUrl'],
               birthday: DateTime.parse(userData['birthday']),
               gender: Gender.MALE),
           postedTimeStamp: DateTime.parse(e['createdAt']),
@@ -115,7 +115,7 @@ class PostsProvider with ChangeNotifier
             user: User(
                 id: userData['_id'],
                 name: userData['name'],
-                avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+                avatarUrl: userData['avatarUrl'],
                 birthday: DateTime.parse(userData['birthday']),
                 gender: Gender.MALE),
             postedTimeStamp: DateTime.parse(e['createdAt']),
@@ -166,7 +166,7 @@ class PostsProvider with ChangeNotifier
             user: User(
                 id: userData['_id'],
                 name: userData['name'],
-                avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+                avatarUrl: userData['avatarUrl'],
                 birthday: DateTime.parse(userData['birthday']),
                 gender: Gender.MALE),
             postedTimeStamp: DateTime.parse(e['createdAt']),

@@ -12,6 +12,7 @@ class UserProvider with ChangeNotifier {
   DateTime _birthday;
   String _email;
   String _introduction;
+  String _avatarUrl;
 
   String _token;
 
@@ -39,7 +40,7 @@ class UserProvider with ChangeNotifier {
     return User(
       id: _id,
       name: _nickname,
-      avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+      avatarUrl: _avatarUrl,
       birthday: _birthday,
       gender: Gender.MALE,
       introduction: _introduction,
@@ -67,6 +68,7 @@ class UserProvider with ChangeNotifier {
       _email = responseData['email'];
       _birthday = DateTime.parse(responseData['birthday']);
       _introduction = responseData['introduction'];
+      _avatarUrl = responseData['avatarUrl'];
 
       if (_uniqueName == null || _nickname == null || _email == null || _birthday == null) {
         throw HttpException('Failed to get user info. Please try later');
@@ -76,7 +78,7 @@ class UserProvider with ChangeNotifier {
 
       return User(id: _id,
         name: _nickname,
-        avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+        avatarUrl: _avatarUrl,
         birthday: _birthday,
         gender: Gender.MALE,
         introduction: _introduction
@@ -87,8 +89,8 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateSelfIntroduction(String selfIntroduction) async {
-    String url = 'http://localhost:3000/user/intro';
+  Future<void> updateUserInfo({String selfIntroduction, String avatarUrl}) async {
+    String url = 'http://localhost:3000/user/updateUserInfo';
 
     if (selfIntroduction == null || selfIntroduction.trim().isEmpty) {
       selfIntroduction = null;
@@ -98,20 +100,22 @@ class UserProvider with ChangeNotifier {
         url,
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
         body: json.encode({
-          'intro': selfIntroduction
+          'intro': selfIntroduction,
+          'avatarUrl': avatarUrl
         })
     );
 
     if (res.statusCode != 200) {
-      throw HttpException('Failed to update self introduction. Please try again later');
+      throw HttpException('Failed to update user info. Please try again later');
     }
 
     final responseData = json.decode(res.body);
     if (responseData['nModified'] != 1 || responseData['ok'] != 1) {
-      throw HttpException('Failed to update self introduction. Please try again later');
+      throw HttpException('Failed to update user info. Please try again later');
     }
 
     _introduction = selfIntroduction;
+    _avatarUrl = avatarUrl;
     notifyListeners();
   }
 
@@ -143,6 +147,7 @@ class UserProvider with ChangeNotifier {
       DateTime birthday = DateTime.parse(responseData['birthday']);
       String introduction = responseData['introduction'];
       String friendStatus = responseData['friendStatus'];
+      String avatarUrl = responseData['avatarUrl'];
 
       if (uniqueName == null || nickname == null || email == null || birthday == null || friendStatus == null) {
         throw HttpException('Failed to find user. Please try later');
@@ -150,7 +155,7 @@ class UserProvider with ChangeNotifier {
 
       User fetchedUser = User(id: id,
           name: nickname,
-          avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+          avatarUrl: avatarUrl,
           birthday: birthday,
           gender: Gender.MALE,
           introduction: introduction,

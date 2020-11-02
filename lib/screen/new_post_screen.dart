@@ -63,7 +63,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         });
 
         for (File file in pickedImages) {
-          S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken);
+          S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken, S3Folder.POST_IMAGE);
           await ImageUploadUtil.uploadToS3(s3url.uploadUrl, file);
           downloadUrls.add(s3url.downloadUrl);
         }

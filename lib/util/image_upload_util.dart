@@ -5,6 +5,13 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
 
+enum S3Folder {
+  POST_IMAGE,
+  USER_AVATAR
+}
+
+const FOLDER_MAP = {S3Folder.POST_IMAGE: 'post_image', S3Folder.USER_AVATAR: 'user_avatar'};
+
 class S3Url {
   final String _uploadUrl;
   final String _downloadUrl;
@@ -26,7 +33,7 @@ class ImageUploadUtil {
     'Content-type': 'application/json',
   };
 
-  static Future<S3Url> getS3Urls(String token) async {
+  static Future<S3Url> getS3Urls(String token, S3Folder s3folder) async {
     String url = 'http://localhost:3000/generatePresignedUrl';
 
     try {
@@ -34,7 +41,8 @@ class ImageUploadUtil {
         url,
         headers: {...requestHeader, 'Authorization': 'Bearer $token'},
         body: json.encode({
-          'fileType': '.jpg'
+          'fileType': '.jpg',
+          'folder': FOLDER_MAP[s3folder]
         })
       );
 
