@@ -37,12 +37,18 @@ class PostsProvider with ChangeNotifier
     return _postsWithUnnotifiedComment;
   }
 
-  Future<List<Post>> fetchPosts() async {
+  Future<List<Post>> fetchPosts({int fetchSize, bool refresh = false}) async {
     try {
       Location locationTracker = Location();
       LocationData currentLocation = await locationTracker.getLocation();
 
       String url = 'http://localhost:3000/allPosts?long=${currentLocation.longitude}&lat=${currentLocation.latitude}';
+      if (fetchSize != null) {
+        url += '&fetchSize=${fetchSize}';
+        if (_posts.isNotEmpty && !refresh) {
+          url += '&fromId=${_posts.last.id}'; // todo verify if Id could contains special characters
+        }
+      }
 
       final res = await http.get(
           url,
@@ -76,7 +82,12 @@ class PostsProvider with ChangeNotifier
         );
       }).toList();
 
-      _posts = fetchedPosts;
+      if (!refresh) {
+        _posts.addAll(fetchedPosts);
+      }
+      else {
+        _posts = fetchedPosts;
+      }
 
       notifyListeners();
 

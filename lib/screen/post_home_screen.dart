@@ -14,36 +14,85 @@ class PostHomeScreen extends StatefulWidget {
 
 class _PostHomeScreenState extends State<PostHomeScreen> {
 
+  ScrollController _scrollController = ScrollController();
+
+  bool _loading = false;
+
   @override
   void initState() {
-    Provider.of<PostsProvider>(context, listen: false)
-      .fetchPosts()
-      .then((value) {
+    final postsProvider = Provider.of<PostsProvider>(context, listen: false);
+
+    _scrollController.addListener(() {
+      if (!_loading && _scrollController.position.maxScrollExtent ==
+          _scrollController.position.pixels) {
+        setState(() {
+          _loading = true;
+        });
+
+        postsProvider.fetchPosts(fetchSize: 2, refresh: false)
+          .then((_) {
+            setState(() {
+              _loading = false;
+            });
+          });
+      }
+    });
+
+    try {
+      postsProvider
+          .fetchPosts(fetchSize: 2, refresh: true)
+          .then((value) {
         if (value.isEmpty) {
-          renderInfoDialog(context, 'No post around here', 'Write the first post?');
+          renderInfoDialog(
+              context, 'No post around here', 'Write the first post?');
         }
       });
+    } catch (error) {
+
+    }
 
     super.initState();
+  }
+
+  Future<void> onRefresh() async {
+    try {
+      Provider.of<PostsProvider>(context, listen: false).fetchPosts(fetchSize: 2, refresh: true);
+    } catch (error) {
+
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    PostsProvider postsProvider = Provider.of<PostsProvider>(context);
-    List<Post> posts = postsProvider.posts;
+    List<Post> posts = Provider.of<PostsProvider>(context).posts;
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: postsProvider.fetchPosts,
+        onRefresh: onRefresh,
         child: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              PostItem(post: posts[index]),
-              Divider()
-            ],
-          )
+          controller: _scrollController,
+          itemCount: posts.length + 1,
+          itemBuilder: (context, index) {
+            if (index == posts.length && _loading) {
+              return Center(child: CircularProgressIndicator(),);
+            }
+            else if (index < posts.length) {
+              return Column(
+                children: [
+                  PostItem(post: posts[index]),
+                  Divider()
+                ],
+              );
+            }
+            return null;
+          }
         ),
       ),
       floatingActionButton: FloatingActionButton(
