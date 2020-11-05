@@ -37,7 +37,7 @@ class PostsProvider with ChangeNotifier
     return _postsWithUnnotifiedComment;
   }
 
-  Future<List<Post>> fetchPosts({int fetchSize, bool refresh = false}) async {
+  Future<List<Post>> fetchPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
       Location locationTracker = Location();
       LocationData currentLocation = await locationTracker.getLocation();
@@ -99,10 +99,17 @@ class PostsProvider with ChangeNotifier
     }
   }
 
-  Future<void> fetchFriendPosts() async {
+  Future<void> fetchFriendPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
 
       String url = 'http://localhost:3000/friendPosts';
+
+      if (fetchSize != null) {
+        url += '?fetchSize=${fetchSize}';
+        if (_friendPosts.isNotEmpty && !refresh) {
+          url += '&fromId=${_friendPosts.last.id}'; // todo verify if Id could contains special characters
+        }
+      }
 
       final res = await http.get(
           url,
@@ -138,10 +145,13 @@ class PostsProvider with ChangeNotifier
         );
       }).toList();
 
-      _friendPosts = fetchedPosts;
+      if (!refresh) {
+        _friendPosts.addAll(fetchedPosts);
+      } else {
+        _friendPosts = fetchedPosts;
+      }
 
       notifyListeners();
-
     }
     catch (error)
     {
