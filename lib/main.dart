@@ -4,6 +4,7 @@ import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
@@ -49,7 +50,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProxyProvider<AuthProvider, FriendRequestProvider>(
             create: (_) => FriendRequestProvider(),
             update: (_, auth, friendRequestProvider) => friendRequestProvider..update(auth.token)
-        )
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, NotificationsProvider>(
+            create: (_) => NotificationsProvider(),
+            update: (_, auth, notificationsProvider) => notificationsProvider..update(auth.token)
+        ),
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
         title: "PlotOfBeach",

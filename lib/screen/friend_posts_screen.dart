@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/post.dart';
+import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/widget/post_item.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +50,7 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
   Future<void> fetchPosts() async {
     try {
       Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(fetchSize: 2, refresh: true);
-      Provider.of<PostsProvider>(context, listen: false).fetchPostsWithUnnotifiedComment();
+      Provider.of<NotificationsProvider>(context, listen: false).getUnnotifiedCommentNotifications();
     } catch (error) {
 
     }

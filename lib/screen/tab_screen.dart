@@ -1,14 +1,10 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
-import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
-import 'package:location_based_social_app/provider/friends_provider.dart';
-import 'package:location_based_social_app/provider/posts_provider.dart';
+import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend_screen.dart';
-import 'package:location_based_social_app/screen/map_screen.dart';
-import 'package:location_based_social_app/screen/notification_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/profile_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
@@ -59,7 +55,7 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     int unnotifiedFriendRequestCount = Provider.of<FriendRequestProvider>(context).unnotifiedRequests.length;
-    int unnotifiedCommentsCount = Provider.of<PostsProvider>(context).postsWithUnnotifiedComment.length;
+    int unnotifiedCommentsCount = Provider.of<NotificationsProvider>(context).commentNotifications.length;
 
     List<Widget> appBarActions = null;
     if (pages[selectedPageIndex]['title'] == 'Friends') {

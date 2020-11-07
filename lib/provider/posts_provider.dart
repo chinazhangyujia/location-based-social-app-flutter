@@ -13,7 +13,6 @@ class PostsProvider with ChangeNotifier
 {
   List<Post> _posts = [];
   List<Post> _friendPosts = [];
-  List<Post> _postsWithUnnotifiedComment = [];
 
   String _token;
 
@@ -31,10 +30,6 @@ class PostsProvider with ChangeNotifier
 
   List<Post> get friendPosts {
     return _friendPosts;
-  }
-
-  List<Post> get postsWithUnnotifiedComment {
-    return _postsWithUnnotifiedComment;
   }
 
   Future<List<Post>> fetchPosts({int fetchSize = 5, bool refresh = false}) async {
@@ -159,6 +154,7 @@ class PostsProvider with ChangeNotifier
     }
   }
 
+  // deprecated
   Future<void> fetchPostsWithUnnotifiedComment() async {
     try {
 
@@ -199,7 +195,7 @@ class PostsProvider with ChangeNotifier
         );
       }).toList();
 
-      _postsWithUnnotifiedComment = fetchedPosts;
+      // _postsWithUnnotifiedComment = fetchedPosts;
 
       notifyListeners();
     }
@@ -207,31 +203,6 @@ class PostsProvider with ChangeNotifier
     {
       throw error;
     }
-  }
-
-  Future<void> markPostsAsNotified(List<String> postIds) async {
-
-    try {
-      String url = 'http://localhost:3000/markNotificationNotified';
-      final res = await http.post(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
-          body: json.encode({
-            'postIds': postIds,
-          })
-      );
-
-      if (res.statusCode != 200) {
-        return;
-      }
-
-      _postsWithUnnotifiedComment = [];
-      notifyListeners();
-
-    } catch (error) {
-
-    }
-
   }
 
   Future<void> uploadNewPost(String content, List<String> photoUrls, User loginUser) async {
@@ -300,7 +271,6 @@ class PostsProvider with ChangeNotifier
 
       _changeLikeInPosts(_posts, postId, like);
       _changeLikeInPosts(_friendPosts, postId, like);
-      _changeLikeInPosts(_postsWithUnnotifiedComment, postId, like);
 
       notifyListeners();
 

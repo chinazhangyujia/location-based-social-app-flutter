@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:location_based_social_app/model/post.dart';
-import 'package:location_based_social_app/provider/posts_provider.dart';
-import 'package:location_based_social_app/widget/post_item.dart';
+import 'package:intl/intl.dart';
+import 'package:location_based_social_app/model/CommentNotification.dart';
+import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:provider/provider.dart';
 
 class UnnotifiedCommentsScreen extends StatelessWidget {
@@ -10,11 +10,11 @@ class UnnotifiedCommentsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    PostsProvider postsProvider = Provider.of<PostsProvider>(context, listen: false);
-    List<Post> posts = postsProvider.postsWithUnnotifiedComment;
+    NotificationsProvider notificationsProvider = Provider.of<NotificationsProvider>(context, listen: false);
+    List<CommentNotification> commentNotifications = notificationsProvider.commentNotifications;
 
-    if (posts.isNotEmpty) {
-      postsProvider.markPostsAsNotified(posts.map((e) => e.id).toList());
+    if (commentNotifications.isNotEmpty) {
+      notificationsProvider.markCommentNotificationsAsNotified(commentNotifications.map((e) => e.id).toList());
     }
 
     return Scaffold(
@@ -23,12 +23,45 @@ class UnnotifiedCommentsScreen extends StatelessWidget {
         elevation: 0.5,
       ),
       body: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              PostItem(post: posts[index], linkToMap: true,),
-              Divider()
-            ],
+          itemCount: commentNotifications.length,
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.only(top: 8, bottom: 15, left: 8, right: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(DateFormat("MMM dd, yyyy hh:mm").format(commentNotifications[index].time)),
+                      SizedBox(height: 3,),
+                      RichText(
+                        maxLines: null,
+                        text: TextSpan(
+                            style: TextStyle(height: 1.3, fontSize: 17, color: Colors.black),
+                            children: [
+                              TextSpan(
+                                text: '${commentNotifications[index].sendFrom.name} ',
+                                style: TextStyle(fontWeight: FontWeight.w500)
+                              ),
+                              TextSpan(
+                                text: commentNotifications[index].type == CommentType.COMMENT ? 'commented: ' : 'replied: ',
+                                style: TextStyle(color: Theme.of(context).accentColor, fontWeight: FontWeight.w500)
+                              ),
+                              TextSpan(
+                                text: commentNotifications[index].content
+                              )
+                            ]
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(indent: 10, height: 0,)
+              ],
+            ),
           )
       )
     );

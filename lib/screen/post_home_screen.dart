@@ -76,23 +76,26 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: onRefresh,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: posts.length + 1,
-          itemBuilder: (context, index) {
-            if (index == posts.length && _loading) {
-              return Center(child: CircularProgressIndicator(),);
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: posts.length + 1,
+            itemBuilder: (context, index) {
+              if (index == posts.length && _loading) {
+                return Center(child: CircularProgressIndicator(),);
+              }
+              else if (index < posts.length) {
+                return Column(
+                  children: [
+                    PostItem(post: posts[index]),
+                    Divider()
+                  ],
+                );
+              }
+              return null;
             }
-            else if (index < posts.length) {
-              return Column(
-                children: [
-                  PostItem(post: posts[index]),
-                  Divider()
-                ],
-              );
-            }
-            return null;
-          }
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
