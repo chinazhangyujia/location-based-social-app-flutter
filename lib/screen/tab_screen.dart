@@ -32,7 +32,7 @@ class _TabScreenState extends State<TabScreen> {
         'page': FriendScreen()
       },
       {
-        'title' : 'Moments',
+        'title' : 'Activity',
         'page' : FriendPostsScreen()
       },
       {
@@ -80,7 +80,7 @@ class _TabScreenState extends State<TabScreen> {
           },
         )
       ];
-    } else if (pages[selectedPageIndex]['title'] == 'Moments') {
+    } else if (pages[selectedPageIndex]['title'] == 'Activity') {
       appBarActions = [
         IconButton(
           icon: unnotifiedCommentsCount > 0 ? Badge(
@@ -123,7 +123,7 @@ class _TabScreenState extends State<TabScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.photo),
-            title: Text('moments')
+            title: Text('activity')
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

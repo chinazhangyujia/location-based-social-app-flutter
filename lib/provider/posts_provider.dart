@@ -13,6 +13,8 @@ class PostsProvider with ChangeNotifier
 {
   List<Post> _posts = [];
   List<Post> _friendPosts = [];
+  List<Post> _myPosts = [];
+  List<Post> _likedPosts = [];
 
   String _token;
 
@@ -30,6 +32,14 @@ class PostsProvider with ChangeNotifier
 
   List<Post> get friendPosts {
     return _friendPosts;
+  }
+
+  List<Post> get myPosts {
+    return _myPosts;
+  }
+
+  List<Post> get likedPosts {
+    return _likedPosts;
   }
 
   Future<List<Post>> fetchPosts({int fetchSize = 5, bool refresh = false}) async {
@@ -55,27 +65,7 @@ class PostsProvider with ChangeNotifier
       }
 
       final responseData = json.decode(res.body) as List<dynamic>;
-      final List<Post> fetchedPosts = responseData.map((e) {
-
-        Map<String, dynamic> userData = e['owner'];
-        Map<String, dynamic> postLocation = e['location'];
-
-        return Post(
-          id: e['_id'],
-          user: User(
-              id: userData['_id'],
-              name: userData['name'],
-              avatarUrl: userData['avatarUrl'],
-              birthday: DateTime.parse(userData['birthday']),
-              gender: Gender.MALE),
-          postedTimeStamp: DateTime.parse(e['createdAt']),
-          photoUrls: e['imageUrls'].cast<String>(),
-          content: e['content'],
-          postLocation: LocationPoint(postLocation['coordinates'][0], postLocation['coordinates'][1]),
-          likesCount: e['likesCount'],
-          userLiked: e['userLiked']
-        );
-      }).toList();
+      final List<Post> fetchedPosts = _responseDataToPosts(responseData);
 
       if (!refresh) {
         _posts.addAll(fetchedPosts);
@@ -116,34 +106,88 @@ class PostsProvider with ChangeNotifier
       }
 
       final responseData = json.decode(res.body) as List<dynamic>;
-      final List<Post> fetchedPosts = responseData.map((e) {
-
-        Map<String, dynamic> userData = e['owner'];
-        List<dynamic> postLocation = e['location']['coordinates'];
-        double longitude = postLocation[0] is int ? postLocation[0].toDouble() : postLocation[0];
-        double latitude = postLocation[1] is int ? postLocation[1].toDouble() : postLocation[1];
-
-        return Post(
-            id: e['_id'],
-            user: User(
-                id: userData['_id'],
-                name: userData['name'],
-                avatarUrl: userData['avatarUrl'],
-                birthday: DateTime.parse(userData['birthday']),
-                gender: Gender.MALE),
-            postedTimeStamp: DateTime.parse(e['createdAt']),
-            photoUrls: e['imageUrls'].cast<String>(),
-            content: e['content'],
-            postLocation: LocationPoint(longitude, latitude),
-            likesCount: e['likesCount'],
-            userLiked: e['userLiked']
-        );
-      }).toList();
+      final List<Post> fetchedPosts = _responseDataToPosts(responseData);
 
       if (!refresh) {
         _friendPosts.addAll(fetchedPosts);
       } else {
         _friendPosts = fetchedPosts;
+      }
+
+      notifyListeners();
+    }
+    catch (error)
+    {
+      throw error;
+    }
+  }
+
+  Future<void> fetchMyPosts({int fetchSize = 5, bool refresh = false}) async {
+    try {
+
+      String url = 'http://localhost:3000/myPosts';
+
+      if (fetchSize != null) {
+        url += '?fetchSize=${fetchSize}';
+        if (_myPosts.isNotEmpty && !refresh) {
+          url += '&fromId=${_myPosts.last.id}';
+        }
+      }
+
+      final res = await http.get(
+          url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
+      );
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed to fetch posts');
+      }
+
+      final responseData = json.decode(res.body) as List<dynamic>;
+
+      final List<Post> fetchedPosts = _responseDataToPosts(responseData);
+      if (!refresh) {
+        _myPosts.addAll(fetchedPosts);
+      } else {
+        _myPosts = fetchedPosts;
+      }
+
+      notifyListeners();
+    }
+    catch (error)
+    {
+      throw error;
+    }
+  }
+
+  Future<void> fetchLikedPosts({int fetchSize = 5, bool refresh = false}) async {
+    try {
+
+      String url = 'http://localhost:3000/likedPosts';
+
+      if (fetchSize != null) {
+        url += '?fetchSize=${fetchSize}';
+        if (_likedPosts.isNotEmpty && !refresh) {
+          url += '&fromId=${_likedPosts.last.id}';
+        }
+      }
+
+      final res = await http.get(
+          url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
+      );
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed to fetch posts');
+      }
+
+      final responseData = json.decode(res.body) as List<dynamic>;
+
+      List<Post> fetchedPosts = _responseDataToPosts(responseData);
+      if (!refresh) {
+        _likedPosts.addAll(fetchedPosts);
+      } else {
+        _likedPosts = fetchedPosts;
       }
 
       notifyListeners();
@@ -271,6 +315,8 @@ class PostsProvider with ChangeNotifier
 
       _changeLikeInPosts(_posts, postId, like);
       _changeLikeInPosts(_friendPosts, postId, like);
+      _changeLikeInPosts(_myPosts, postId, like);
+      _changeLikeInPosts(_likedPosts, postId, like);
 
       notifyListeners();
 
@@ -292,5 +338,33 @@ class PostsProvider with ChangeNotifier
         }
       }
     });
+  }
+
+  List<Post> _responseDataToPosts(List<dynamic> responseData) {
+    final List<Post> fetchedPosts = responseData.map((e) {
+
+      Map<String, dynamic> userData = e['owner'];
+      List<dynamic> postLocation = e['location']['coordinates'];
+      double longitude = postLocation[0] is int ? postLocation[0].toDouble() : postLocation[0];
+      double latitude = postLocation[1] is int ? postLocation[1].toDouble() : postLocation[1];
+
+      return Post(
+          id: e['_id'],
+          user: User(
+              id: userData['_id'],
+              name: userData['name'],
+              avatarUrl: userData['avatarUrl'],
+              birthday: DateTime.parse(userData['birthday']),
+              gender: Gender.MALE),
+          postedTimeStamp: DateTime.parse(e['createdAt']),
+          photoUrls: e['imageUrls'].cast<String>(),
+          content: e['content'],
+          postLocation: LocationPoint(longitude, latitude),
+          likesCount: e['likesCount'],
+          userLiked: e['userLiked']
+      );
+    }).toList();
+
+    return fetchedPosts;
   }
 }

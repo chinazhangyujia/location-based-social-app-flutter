@@ -11,6 +11,8 @@ import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
 import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
+import 'package:location_based_social_app/screen/liked_posts_screen.dart';
+import 'package:location_based_social_app/screen/my_posts_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
 import 'package:location_based_social_app/screen/post_location_map_view_screen.dart';
@@ -89,6 +91,8 @@ class MyApp extends StatelessWidget {
           FriendRequestScreen.router: (context) => FriendRequestScreen(),
           PostLocationMapViewScreen.router: (context) => PostLocationMapViewScreen(),
           UnnotifiedCommentsScreen.router: (context) => UnnotifiedCommentsScreen(),
+          MyPostsScreen.router: (context) => MyPostsScreen(),
+          LikedPostsScreen.router: (context) => LikedPostsScreen(),
         },
       ),)
     );

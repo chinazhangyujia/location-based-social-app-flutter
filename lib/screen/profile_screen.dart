@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/screen/liked_posts_screen.dart';
+import 'package:location_based_social_app/screen/my_posts_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
 import 'package:location_based_social_app/widget/single_option_page_opener.dart';
 import 'package:location_based_social_app/widget/user_info_card.dart';
@@ -38,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icon(Icons.favorite),
                       title: 'Favorite',
                       onTap: () {
-
+                        Navigator.of(context).pushNamed(LikedPostsScreen.router);
                       }
                   ),
                   Divider(indent: 30, height: 10,),
@@ -46,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: Icon(Icons.photo),
                       title: 'My Post',
                       onTap: () {
-
+                        Navigator.of(context).pushNamed(MyPostsScreen.router);
                       }
                   )
                 ],

@@ -68,14 +68,14 @@ class _FriendScreenState extends State<FriendScreen> {
                   child: ListTile(
                     contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
                     leading: CircleAvatar(
-                      radius: 30,
+                      radius: 25,
                       backgroundImage: NetworkImage(friends[index].avatarUrl),
                     ),
                     title: Text(friends[index].name, style: TextStyle(fontSize: 18,),),
                     subtitle: Text(''),
                   ),
                 ),
-                Divider(indent: 50,)
+                Divider(indent: 20, height: 0,)
               ],
             )
           ),

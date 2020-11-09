@@ -19,6 +19,7 @@ class SettingScreen extends StatelessWidget {
       body: Column(
         children: [
           Card(
+            elevation: 0.5,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -28,9 +29,9 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        Text('Unique Name', style: TextStyle(fontSize: 15,),),
+                        Text('Unique Name', style: TextStyle(fontSize: 16,),),
                         Spacer(),
-                        Text(userProvider.uniqueName, style: TextStyle(fontSize: 15, color: Colors.black38))
+                        Text(userProvider.uniqueName, style: TextStyle(fontSize: 16, color: Colors.black38))
                       ],
                     )
                   ),
@@ -40,9 +41,9 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        Text('Email', style: TextStyle(fontSize: 15,)),
+                        Text('Email', style: TextStyle(fontSize: 16,)),
                         Spacer(),
-                        Text(userProvider.email, style: TextStyle(fontSize: 15, color: Colors.black38))
+                        Text(userProvider.email, style: TextStyle(fontSize: 16, color: Colors.black38))
                       ],
                     )
                   ),
@@ -52,13 +53,14 @@ class SettingScreen extends StatelessWidget {
           ),
           SizedBox(height: 10,),
           Card(
+            elevation: 0.5,
             child: InkWell(
               child: Container(
                 width: double.infinity,
                 height: 50,
                 child: Center(
-                  child: Text('Log out',
-                    style: TextStyle(fontSize: 16),
+                  child: Text('Log Out',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
