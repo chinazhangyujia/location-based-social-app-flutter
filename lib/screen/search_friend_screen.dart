@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,7 +20,16 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
 
   TextEditingController textController = TextEditingController();
   User foundUser;
+  bool _isInit = true;
 
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      foundUser = ModalRoute.of(context).settings.arguments as User;
+      _isInit = false;
+    }
+    super.didChangeDependencies();
+  }
 
   Future<void> onSendUniqueName(BuildContext context) async {
     try {

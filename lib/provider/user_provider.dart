@@ -42,7 +42,6 @@ class UserProvider with ChangeNotifier {
       name: _nickname,
       avatarUrl: _avatarUrl,
       birthday: _birthday,
-      gender: Gender.MALE,
       introduction: _introduction,
     );
   }
@@ -80,7 +79,6 @@ class UserProvider with ChangeNotifier {
         name: _nickname,
         avatarUrl: _avatarUrl,
         birthday: _birthday,
-        gender: Gender.MALE,
         introduction: _introduction
       );
 
@@ -157,7 +155,6 @@ class UserProvider with ChangeNotifier {
           name: nickname,
           avatarUrl: avatarUrl,
           birthday: birthday,
-          gender: Gender.MALE,
           introduction: introduction,
           metaData: {'friendStatus': friendStatus }
       );

@@ -29,7 +29,7 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        Text('Unique Name', style: TextStyle(fontSize: 16,),),
+                        Text('Unique Name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                         Spacer(),
                         Text(userProvider.uniqueName, style: TextStyle(fontSize: 16, color: Colors.black38))
                       ],
@@ -41,7 +41,7 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        Text('Email', style: TextStyle(fontSize: 16,)),
+                        Text('Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         Spacer(),
                         Text(userProvider.email, style: TextStyle(fontSize: 16, color: Colors.black38))
                       ],

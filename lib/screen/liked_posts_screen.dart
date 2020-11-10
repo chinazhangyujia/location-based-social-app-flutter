@@ -68,22 +68,25 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
         ),
         body: RefreshIndicator(
           onRefresh: fetchPosts,
-          child: ListView.builder(
-              controller: _scrollController,
-              itemCount: posts.length + 1,
-              itemBuilder: (context, index) {
-                if (index == posts.length && _loading) {
-                  return Center(child: CircularProgressIndicator(),);
-                } else if (index < posts.length) {
-                  return Column(
-                    children: [
-                      PostItem(post: posts[index], linkToMap: true,),
-                      Divider()
-                    ],
-                  );
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: ListView.builder(
+                controller: _scrollController,
+                itemCount: posts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == posts.length && _loading) {
+                    return Center(child: CircularProgressIndicator(),);
+                  } else if (index < posts.length) {
+                    return Column(
+                      children: [
+                        PostItem(post: posts[index], linkToMap: true,),
+                        Divider()
+                      ],
+                    );
+                  }
+                  return null;
                 }
-                return null;
-              }
+            ),
           ),
         )
     );

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:location_based_social_app/model/CommentNotification.dart';
+import 'package:location_based_social_app/model/comment_notification.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 
@@ -46,7 +46,7 @@ class NotificationsProvider with ChangeNotifier {
             name: sendFromUserData['name'],
             avatarUrl: sendFromUserData['avatarUrl'],
             birthday: DateTime.parse(sendFromUserData['birthday']),
-            gender: Gender.MALE);
+        );
 
         CommentType commentType = commentData['sendTo'] == null ? CommentType.COMMENT : CommentType.REPLY;
         return CommentNotification(

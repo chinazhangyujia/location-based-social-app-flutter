@@ -45,9 +45,9 @@ class CommentsProvider with ChangeNotifier {
         User sendFrom = User(
             id: sendFromData['_id'],
             name: sendFromData['name'],
-            avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+            avatarUrl: sendFromData['avatarUrl'],
             birthday: DateTime.parse(sendFromData['birthday']),
-            gender: Gender.MALE);
+            introduction: sendFromData['introduction']);
 
         User sendTo = null;
         Map<String, dynamic> sendToData = e['sendTo'];
@@ -55,9 +55,9 @@ class CommentsProvider with ChangeNotifier {
           sendTo = User(
               id: sendToData['_id'],
               name: sendToData['name'],
-              avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+              avatarUrl: sendToData['avatarUrl'],
               birthday: DateTime.parse(sendToData['birthday']),
-              gender: Gender.MALE);
+              introduction: sendToData['introduction']);
         }
 
         return Comment(

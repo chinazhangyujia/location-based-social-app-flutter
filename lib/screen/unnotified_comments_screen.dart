@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:location_based_social_app/model/CommentNotification.dart';
+import 'package:location_based_social_app/model/comment_notification.dart';
 import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:provider/provider.dart';
 

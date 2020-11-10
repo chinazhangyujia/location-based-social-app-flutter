@@ -71,11 +71,11 @@ class FriendRequestProvider with ChangeNotifier {
         return FriendRequest(
           id: e['_id'],
           sendFrom: User(
-              id: sendFrom ['_id'],
-              name: sendFrom ['name'],
-              avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
+              id: sendFrom['_id'],
+              name: sendFrom['name'],
+              avatarUrl: sendFrom['avatarUrl'],
               birthday: DateTime.parse(sendFrom['birthday']),
-              gender: Gender.MALE),
+          ),
           status: e['status'],
           notified: e['notified']
         );

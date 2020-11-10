@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:location_based_social_app/model/comment.dart';
+import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/screen/search_friend_screen.dart';
+import 'package:provider/provider.dart';
 
 class CommentItem extends StatelessWidget {
   final Comment comment;
   final Function onClickComment;
 
   CommentItem({@required this.comment, @required this.onClickComment});
+
+  Future<void> tapUserName(BuildContext context, User tappedUser) async {
+    String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
+
+    User userWithMetaData = User(id: tappedUser.id,
+        name: tappedUser.name,
+        avatarUrl: tappedUser.avatarUrl,
+        birthday: tappedUser.birthday,
+        introduction: tappedUser.introduction,
+        metaData: {'friendStatus': friendStatus }
+    );
+
+    Navigator.of(context).pushNamed(SearchFriendScreen.router, arguments: userWithMetaData);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +48,7 @@ class CommentItem extends StatelessWidget {
                         style: TextStyle(fontSize: 16, color: Colors.black54),
                       ),
                       onTap: () {
-
+                        tapUserName(context, comment.sendFrom);
                       },
                     ),
                     Spacer(),

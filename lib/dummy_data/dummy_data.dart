@@ -47,7 +47,6 @@ List<User> DUMMY_USER = [
       name: 'Yujia',
       avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
       birthday: DateTime(1993, 6, 23),
-      gender: Gender.MALE,
       introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
   ),
   User(
@@ -55,7 +54,6 @@ List<User> DUMMY_USER = [
       name: 'Yujia123',
       avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
       birthday: DateTime(1993, 6, 23),
-      gender: Gender.MALE,
       introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
   ),
 ];
@@ -87,7 +85,6 @@ List<User> DUMMY_FRIENDS = [
       name: 'Yujia',
       avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
       birthday: DateTime(1993, 6, 23),
-      gender: Gender.MALE,
       introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
   ),
   User(
@@ -95,7 +92,6 @@ List<User> DUMMY_FRIENDS = [
       name: 'Yujia123',
       avatarUrl: 'https://cdn.pixabay.com/photo/2014/10/23/18/05/burger-500054_1280.jpg',
       birthday: DateTime(1993, 6, 23),
-      gender: Gender.MALE,
       introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
   ),
 ];
