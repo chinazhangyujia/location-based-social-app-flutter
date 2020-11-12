@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 enum S3Folder {
   POST_IMAGE,
@@ -34,7 +35,7 @@ class ImageUploadUtil {
   };
 
   static Future<S3Url> getS3Urls(String token, S3Folder s3folder) async {
-    String url = 'http://localhost:3000/generatePresignedUrl';
+    String url = '${SERVICE_DOMAIN}/generatePresignedUrl';
 
     try {
       final res = await http.post(

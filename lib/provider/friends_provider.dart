@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_based_social_app/util/config.dart';
 
 class FriendsProvider with ChangeNotifier {
   List<User> _friends = [];
@@ -23,7 +24,7 @@ class FriendsProvider with ChangeNotifier {
   };
 
   Future<void> getAllFriends() async {
-    String url = 'http://localhost:3000/friends';
+    String url = '${SERVICE_DOMAIN}/friends';
 
     try {
       final res = await http.get(
@@ -58,7 +59,7 @@ class FriendsProvider with ChangeNotifier {
   }
 
   Future<String> getFriendStatus(String targetUserId) async {
-    String url = 'http://localhost:3000/friendStatus?user=${targetUserId}';
+    String url = '${SERVICE_DOMAIN}/friendStatus?user=${targetUserId}';
 
     try {
       final res = await http.get(
@@ -78,7 +79,7 @@ class FriendsProvider with ChangeNotifier {
   }
 
   Future<void> cancelFriendship(String friendUserId) async {
-    String url = 'http://localhost:3000/cancelFriendship';
+    String url = '${SERVICE_DOMAIN}/cancelFriendship';
 
     try {
       final res = await http.post(

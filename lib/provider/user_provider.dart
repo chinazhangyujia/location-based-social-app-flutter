@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 class UserProvider with ChangeNotifier {
   String _id;
@@ -51,7 +52,7 @@ class UserProvider with ChangeNotifier {
   };
 
   Future<User> getCurrentUser() async {
-    String url = 'http://localhost:3000/user/me';
+    String url = '${SERVICE_DOMAIN}/user/me';
 
     try {
       final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
@@ -88,7 +89,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<void> updateUserInfo({String selfIntroduction, String avatarUrl}) async {
-    String url = 'http://localhost:3000/user/updateUserInfo';
+    String url = '${SERVICE_DOMAIN}/user/updateUserInfo';
 
     if (selfIntroduction == null || selfIntroduction.trim().isEmpty) {
       selfIntroduction = null;
@@ -118,7 +119,7 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<User> getUserByUniqueName(String uniqueName) async {
-    String url = 'http://localhost:3000/userByUniqueName/$uniqueName';
+    String url = '${SERVICE_DOMAIN}/userByUniqueName/$uniqueName';
 
     try {
       final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer $_token'});

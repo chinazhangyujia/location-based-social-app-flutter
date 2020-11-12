@@ -5,6 +5,7 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/comment.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 class CommentsProvider with ChangeNotifier {
   Map<String, List<Comment>> _commentsForPost = Map();
@@ -24,7 +25,7 @@ class CommentsProvider with ChangeNotifier {
   };
 
   Future<void> getComments(String postId) async {
-    String url = 'http://localhost:3000/comment/$postId';
+    String url = '${SERVICE_DOMAIN}/comment/$postId';
 
     try {
       final res = await http.get(
@@ -85,7 +86,7 @@ class CommentsProvider with ChangeNotifier {
     @required User loginUser
   }) async {
     try {
-      String url = 'http://localhost:3000/comment';
+      String url = '${SERVICE_DOMAIN}/comment';
 
       final res = await http.post(
           url,

@@ -5,6 +5,7 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 class FriendRequestProvider with ChangeNotifier {
   List<FriendRequest> _pendingRequests = [];
@@ -30,7 +31,7 @@ class FriendRequestProvider with ChangeNotifier {
   };
 
   Future<void> sendFriendRequest(String targetUserId) async {
-    String url = 'http://localhost:3000/addFriendRequest';
+    String url = '${SERVICE_DOMAIN}/addFriendRequest';
 
     try {
       final res = await http.post(
@@ -51,7 +52,7 @@ class FriendRequestProvider with ChangeNotifier {
   }
 
   Future<void> fetchPendingRequests() async {
-    String url = 'http://localhost:3000/pendingRequests';
+    String url = '${SERVICE_DOMAIN}/pendingRequests';
 
     try {
       final res = await http.get(
@@ -92,7 +93,7 @@ class FriendRequestProvider with ChangeNotifier {
   }
 
   Future<void> markRequestsAsNotified(List<String> requestIds) async {
-    String url = 'http://localhost:3000/markRequestAsNotified';
+    String url = '${SERVICE_DOMAIN}/markRequestAsNotified';
 
     try {
       await http.post(
@@ -140,7 +141,7 @@ class FriendRequestProvider with ChangeNotifier {
       return;
     }
 
-    String url = 'http://localhost:3000/handleFriendRequest';
+    String url = '${SERVICE_DOMAIN}/handleFriendRequest';
 
     try {
       final res = await http.post(

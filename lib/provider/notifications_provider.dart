@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/model/comment_notification.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 class NotificationsProvider with ChangeNotifier {
   List<CommentNotification> _commentNotifications = [];
@@ -23,7 +24,7 @@ class NotificationsProvider with ChangeNotifier {
   };
 
   Future<void> getUnnotifiedCommentNotifications() async {
-    String url = 'http://localhost:3000/unnotifiedComments';
+    String url = '${SERVICE_DOMAIN}/unnotifiedComments';
 
     try {
       final res = await http.get(
@@ -68,7 +69,7 @@ class NotificationsProvider with ChangeNotifier {
   Future<void> markCommentNotificationsAsNotified(List<String> notificationIds) async {
 
     try {
-      String url = 'http://localhost:3000/markNotificationNotified';
+      String url = '${SERVICE_DOMAIN}/markNotificationNotified';
       final res = await http.post(
           url,
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},

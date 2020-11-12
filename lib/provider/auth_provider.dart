@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/util/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -37,7 +38,7 @@ class AuthProvider with ChangeNotifier {
       return false;
     }
 
-    String url = 'http://localhost:3000/user/me';
+    String url = '${SERVICE_DOMAIN}/user/me';
     try {
       final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer ${authData['token']}'});
       final responseData = json.decode(res.body);
@@ -58,7 +59,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signup(String email, String password, String name, String uniqueName, String birthday) async {
-    String url = 'http://localhost:3000/user/signup';
+    String url = '${SERVICE_DOMAIN}/user/signup';
 
     try {
       final res = await http.post(url, body: json.encode({
@@ -91,7 +92,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    String url = 'http://localhost:3000/user/login';
+    String url = '${SERVICE_DOMAIN}/user/login';
 
     try {
       final res = await http.post(url, body: json.encode({

@@ -8,6 +8,7 @@ import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 class PostsProvider with ChangeNotifier
 {
@@ -47,7 +48,7 @@ class PostsProvider with ChangeNotifier
       Location locationTracker = Location();
       LocationData currentLocation = await locationTracker.getLocation();
 
-      String url = 'http://localhost:3000/allPosts?long=${currentLocation.longitude}&lat=${currentLocation.latitude}';
+      String url = '${SERVICE_DOMAIN}/allPosts?long=${currentLocation.longitude}&lat=${currentLocation.latitude}';
       if (fetchSize != null) {
         url += '&fetchSize=${fetchSize}';
         if (_posts.isNotEmpty && !refresh) {
@@ -87,7 +88,7 @@ class PostsProvider with ChangeNotifier
   Future<void> fetchFriendPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
 
-      String url = 'http://localhost:3000/friendPosts';
+      String url = '${SERVICE_DOMAIN}/friendPosts';
 
       if (fetchSize != null) {
         url += '?fetchSize=${fetchSize}';
@@ -125,7 +126,7 @@ class PostsProvider with ChangeNotifier
   Future<void> fetchMyPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
 
-      String url = 'http://localhost:3000/myPosts';
+      String url = '${SERVICE_DOMAIN}/myPosts';
 
       if (fetchSize != null) {
         url += '?fetchSize=${fetchSize}';
@@ -163,7 +164,7 @@ class PostsProvider with ChangeNotifier
   Future<void> fetchLikedPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
 
-      String url = 'http://localhost:3000/likedPosts';
+      String url = '${SERVICE_DOMAIN}/likedPosts';
 
       if (fetchSize != null) {
         url += '?fetchSize=${fetchSize}';
@@ -202,7 +203,7 @@ class PostsProvider with ChangeNotifier
   Future<void> fetchPostsWithUnnotifiedComment() async {
     try {
 
-      String url = 'http://localhost:3000/postWithUnnotifiedComment';
+      String url = '${SERVICE_DOMAIN}/postWithUnnotifiedComment';
 
       final res = await http.get(
           url,
@@ -255,7 +256,7 @@ class PostsProvider with ChangeNotifier
       Location locationTracker = Location();
       LocationData currentLocation = await locationTracker.getLocation();
 
-      String url = 'http://localhost:3000/post';
+      String url = '${SERVICE_DOMAIN}/post';
 
       final res = await http.post(
           url,
@@ -297,7 +298,7 @@ class PostsProvider with ChangeNotifier
    * Like or dislike post
    */
   Future<void> likePost(String postId, bool like) async {
-    String url = 'http://localhost:3000/likePost';
+    String url = '${SERVICE_DOMAIN}/likePost';
 
     try {
       final res = await http.post(
