@@ -40,7 +40,7 @@ class PostItem extends StatelessWidget {
             },
             child: Column(
               children: [
-                SixPhotosGrid(post.photoUrls),
+                if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls),
                 PostText(post.content),
               ],
             ),

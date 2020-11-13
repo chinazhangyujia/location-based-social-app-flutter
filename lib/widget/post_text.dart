@@ -9,7 +9,7 @@ class PostText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool shouldCollapse = postText.length > 200;
+    bool shouldCollapse = postText.length > 300;
     
     return Padding(
       padding: const EdgeInsets.only(top: 10, bottom: 5),
@@ -23,7 +23,6 @@ class PostText extends StatelessWidget {
                 Text(
                   postText, softWrap: true,
                   maxLines: shouldCollapse ? 5 : null,
-                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 17
                   ),

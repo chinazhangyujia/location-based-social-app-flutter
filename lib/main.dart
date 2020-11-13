@@ -75,6 +75,10 @@ class MyApp extends StatelessWidget {
               900: const Color(0xFFFFFFFF),
             },),
           accentColor: Colors.blueAccent,
+          fontFamily: 'OpenSans',
+          textTheme: TextTheme(
+            headline6: TextStyle(fontFamily: 'Montserrat')
+          )
         ),
         home: auth.isAuth ? 
           TabScreen() : 
