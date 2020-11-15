@@ -28,7 +28,7 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
           _loading = true;
         });
 
-        Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(fetchSize: 2, refresh: false)
+        Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(refresh: false)
             .then((_) {
           setState(() {
             _loading = false;
@@ -50,7 +50,7 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
 
   Future<void> fetchPosts() async {
     try {
-      Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(fetchSize: 2, refresh: true);
+      Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(refresh: true);
     } catch (error) {
 
     }

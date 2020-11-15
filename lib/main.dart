@@ -76,8 +76,8 @@ class MyApp extends StatelessWidget {
             },),
           accentColor: Colors.blueAccent,
           fontFamily: 'OpenSans',
-          textTheme: TextTheme(
-            headline6: TextStyle(fontFamily: 'Montserrat')
+          primaryTextTheme: TextTheme(
+            headline6: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500)
           )
         ),
         home: auth.isAuth ? 

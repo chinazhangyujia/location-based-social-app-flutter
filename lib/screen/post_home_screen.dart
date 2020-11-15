@@ -29,7 +29,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
           _loading = true;
         });
 
-        postsProvider.fetchPosts(fetchSize: 2, refresh: false)
+        postsProvider.fetchPosts(refresh: false)
           .then((_) {
             setState(() {
               _loading = false;
@@ -40,7 +40,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
 
     try {
       postsProvider
-          .fetchPosts(fetchSize: 2, refresh: true)
+          .fetchPosts(refresh: true)
           .then((value) {
         if (value.isEmpty) {
           renderInfoDialog(
@@ -56,7 +56,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
 
   Future<void> onRefresh() async {
     try {
-      Provider.of<PostsProvider>(context, listen: false).fetchPosts(fetchSize: 2, refresh: true);
+      Provider.of<PostsProvider>(context, listen: false).fetchPosts(refresh: true);
     } catch (error) {
 
     }

@@ -17,7 +17,21 @@ class SixPhotosGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
+    return photoUrls.length == 1 ? Container(
+      width: MediaQuery.of(context).size.width * 0.7,
+      child: AspectRatio(
+        aspectRatio: 3 / 2,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(3),
+          child: Image.network(
+            photoUrls[0],
+            fit: BoxFit.cover,
+            width: double.infinity,
+          ),
+        ),
+      ),
+    ) :
+    GridView.count(
       padding: const EdgeInsets.only(bottom: 0),
       primary: false,
       shrinkWrap: true,
@@ -27,10 +41,13 @@ class SixPhotosGrid extends StatelessWidget {
       mainAxisSpacing: 5,
       children: [
         ...photoUrls.map((url) => Container(
-          child: Image.network(
-            url,
-            fit: BoxFit.cover,
-            width: double.infinity,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(3),
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              width: double.infinity,
+            ),
           ),
         )).toList()
       ],

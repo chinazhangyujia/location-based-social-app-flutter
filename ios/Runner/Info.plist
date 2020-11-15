@@ -44,14 +44,14 @@
 	<key>io.flutter.embedded_views_preview</key>
     <true/>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>We need to access your location</string>
+    <string>Please let us access your location</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>We need to access your location</string>
+    <string>Please let us access your location</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>We need to access your photo library</string>
+    <string>Please let us access your photo library</string>
     <key>NSCameraUsageDescription</key>
-    <string>We need to use your camera</string>
+    <string>Please let us use your camera</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>We need to use your microphone</string>
+    <string>Please let us use your microphone</string>
 </dict>
 </plist>

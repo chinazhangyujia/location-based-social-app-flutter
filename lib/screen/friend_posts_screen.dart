@@ -27,7 +27,7 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
           _loading = true;
         });
 
-        Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(fetchSize: 2, refresh: false)
+        Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(refresh: false)
             .then((_) {
           setState(() {
             _loading = false;
@@ -49,7 +49,7 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
 
   Future<void> fetchPosts() async {
     try {
-      Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(fetchSize: 2, refresh: true);
+      Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(refresh: true);
       Provider.of<NotificationsProvider>(context, listen: false).getUnnotifiedCommentNotifications();
     } catch (error) {
 

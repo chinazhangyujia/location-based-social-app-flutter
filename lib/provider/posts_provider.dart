@@ -163,7 +163,6 @@ class PostsProvider with ChangeNotifier
 
   Future<void> fetchLikedPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
-
       String url = '${SERVICE_DOMAIN}/likedPosts';
 
       if (fetchSize != null) {

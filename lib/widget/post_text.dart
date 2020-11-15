@@ -12,7 +12,7 @@ class PostText extends StatelessWidget {
     bool shouldCollapse = postText.length > 300;
     
     return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 5),
+      padding: const EdgeInsets.only(top: 10),
       child: ExpandableNotifier(
         child: Expandable(
           collapsed: Container(

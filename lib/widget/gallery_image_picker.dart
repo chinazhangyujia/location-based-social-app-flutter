@@ -20,7 +20,6 @@ class GalleryImagePicker extends StatelessWidget {
 
     PickedFile pickedImage = await imagePicker.getImage(
       source: ImageSource.gallery,
-      imageQuality: 50,
       maxWidth: 500
     );
 
