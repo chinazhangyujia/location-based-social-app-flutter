@@ -20,8 +20,10 @@ class PostHeader extends StatelessWidget {
       leading: CircleAvatar(
         backgroundImage: NetworkImage(userAvatarUrl),
       ),
-      title: Text(userName),
-      subtitle: Text(DateFormat("MMM dd, yyyy hh:mm").format(postTimeStamp)),
+      title: Text(userName, style: TextStyle(fontSize: 18,)),
+      subtitle: Text(DateFormat("MMM dd, yyyy hh:mm").format(postTimeStamp),
+        style: TextStyle(fontSize: 17,),
+      ),
     );
   }
 }

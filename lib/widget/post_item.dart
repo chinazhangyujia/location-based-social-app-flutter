@@ -42,7 +42,7 @@ class PostItem extends StatelessWidget {
     User user = post.user;
 
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -61,6 +61,7 @@ class PostItem extends StatelessWidget {
               onTapPost(context);
             },
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls),
                 if (post.content != null) PostText(post.content),

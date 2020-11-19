@@ -1,9 +1,10 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/provider/friend_request_provider.dart';
+import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/add_friend_user_card.dart';
@@ -21,6 +22,8 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
   TextEditingController textController = TextEditingController();
   User foundUser;
   bool _isInit = true;
+  bool addRequestSent = false;
+  bool deleteRequestSent = false;
 
   @override
   void didChangeDependencies() {
@@ -47,6 +50,120 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     }
 
     textController.clear();
+  }
+
+  Future<void> onAddClick(BuildContext context, String targetUserId) async {
+    try {
+      await Provider.of<FriendRequestProvider>(context, listen: false)
+          .sendFriendRequest(targetUserId);
+      setState(() {
+        addRequestSent = true;
+      });
+    }
+    on HttpException catch (error) {
+      renderErrorDialog(context, error.message);
+    }
+    catch (error) {
+      renderErrorDialog(context, 'Failed to send friend request. Please try later');
+    }
+  }
+
+  Future<void> onDeleteClick(BuildContext context, String friendUserId) async {
+    try {
+      await Provider.of<FriendsProvider>(context, listen: false).cancelFriendship(friendUserId);
+      setState(() {
+        deleteRequestSent = true;
+      });
+    } catch(error) {
+      renderErrorDialog(context, 'Failed to delete friend. Please try later');
+    }
+  }
+
+  Widget _getBottomSheet(BuildContext context, User targetUser) {
+    String text;
+    Function onClick;
+    Icon icon;
+    Color color;
+    if (deleteRequestSent) {
+      text = null;
+      icon = null;
+      color = null;
+      onClick = null;
+    }
+    else if (targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'NOT_FRIEND' && !addRequestSent) {
+      text = 'Add';
+      icon = Icon(
+        Icons.add_circle_outline_sharp,
+        color: Theme.of(context).accentColor,
+        size: 30,
+      );
+      color = Theme.of(context).accentColor;
+      onClick = () {onAddClick(context, targetUser.id);};
+    } else if (targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'IS_FRIEND') {
+      text = 'Delete';
+      icon = Icon(
+        Icons.delete,
+        color: Theme.of(context).errorColor,
+        size: 30,
+      );
+      color = Theme.of(context).errorColor;
+      onClick = () {onDeleteClick(context, targetUser.id);};
+    } else if (targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'NOT_FRIEND' && addRequestSent ||
+        targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'PENDING'
+    ) {
+      text = 'Pending';
+      icon = Icon(
+        Icons.pending,
+        color: Theme.of(context).disabledColor,
+        size: 30,
+      );
+      color = Theme.of(context).disabledColor;
+      onClick = null;
+    } else {
+      text = null;
+      icon = null;
+      color = null;
+      onClick = null;
+    }
+
+    if (text == null) {
+      return null;
+    }
+
+    return Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 5,
+              )
+            ]
+        ),
+        height: 90,
+        alignment: Alignment.center,
+        child: InkWell(
+          onTap: onClick,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                icon,
+                SizedBox(width: 10,),
+                Text(text,
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w500,
+                      color: color
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+    );
   }
 
   @override
@@ -96,9 +213,10 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
         ),
       ),
       body: foundUser == null ? null : Padding(
-        padding: const EdgeInsets.only(top: 8.0),
+        padding: const EdgeInsets.all(8.0),
         child: AddFriendUserCard(foundUser),
       ),
+      bottomSheet: foundUser == null ? null : _getBottomSheet(context, foundUser),
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:location_based_social_app/model/friend_request.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
@@ -9,7 +8,6 @@ import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
-import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/liked_posts_screen.dart';
 import 'package:location_based_social_app/screen/my_posts_screen.dart';
@@ -20,7 +18,7 @@ import 'package:location_based_social_app/screen/search_friend_screen.dart';
 import 'package:location_based_social_app/screen/setting_screen.dart';
 import 'package:location_based_social_app/screen/splash_screen.dart';
 import 'package:location_based_social_app/screen/tab_screen.dart';
-import 'package:location_based_social_app/screen/unnotified_comments_screen.dart';
+import 'package:location_based_social_app/screen/notification_tab_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -77,7 +75,7 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.blueAccent,
           fontFamily: 'OpenSans',
           primaryTextTheme: TextTheme(
-            headline6: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500)
+            headline6: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500, fontSize: 23),
           )
         ),
         home: auth.isAuth ? 
@@ -94,7 +92,7 @@ class MyApp extends StatelessWidget {
           SearchFriendScreen.router: (context) => SearchFriendScreen(),
           FriendRequestScreen.router: (context) => FriendRequestScreen(),
           PostLocationMapViewScreen.router: (context) => PostLocationMapViewScreen(),
-          UnnotifiedCommentsScreen.router: (context) => UnnotifiedCommentsScreen(),
+          NotificationTabScreen.router: (context) => NotificationTabScreen(),
           MyPostsScreen.router: (context) => MyPostsScreen(),
           LikedPostsScreen.router: (context) => LikedPostsScreen(),
         },

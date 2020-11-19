@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:location_based_social_app/model/comment_notification.dart';
+import 'package:location_based_social_app/model/post_notification.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
 class NotificationsProvider with ChangeNotifier {
-  List<CommentNotification> _commentNotifications = [];
+  List<PostNotification> _postNotifications = [];
 
   String _token;
 
@@ -15,16 +15,28 @@ class NotificationsProvider with ChangeNotifier {
     _token = token;
   }
 
-  List<CommentNotification> get commentNotifications {
-    return [..._commentNotifications];
+  List<PostNotification> get allNotifications {
+    return [..._postNotifications];
+  }
+
+  List<PostNotification> get commentNotifications {
+    return _postNotifications.where((element) => element.type == NotificationType.COMMENT).toList();
+  }
+
+  List<PostNotification> get likeNotifications {
+    return _postNotifications.where((element) => element.type == NotificationType.LIKE).toList();
+  }
+
+  int get unnotifiedNotificationsCount {
+    return _postNotifications.where((element) => !element.notified).length;
   }
 
   static const Map<String, String> requestHeader = {
     'Content-type': 'application/json',
   };
 
-  Future<void> getUnnotifiedCommentNotifications() async {
-    String url = '${SERVICE_DOMAIN}/unnotifiedComments';
+  Future<void> getAllNotifications() async {
+    String url = '${SERVICE_DOMAIN}/allNotifications';
 
     try {
       final res = await http.get(
@@ -38,27 +50,50 @@ class NotificationsProvider with ChangeNotifier {
 
       final responseData = json.decode(res.body) as List<dynamic>;
 
-      final List<CommentNotification> unnotifiedNotifications = responseData.map((e) {
-        Map<String, dynamic> commentData = e['comment'];
-        String commentContent = commentData['content'];
-        Map<String, dynamic> sendFromUserData = commentData['sendFrom'];
-        User sendFrom = User(
+      final List<PostNotification> notifications = responseData.map((e) {
+        NotificationType notificationType = e['type'] == 'comment' ? NotificationType.COMMENT : NotificationType.LIKE;
+
+        if (notificationType == NotificationType.COMMENT) {
+          Map<String, dynamic> commentData = e['comment'];
+          String commentContent = commentData['content'];
+          Map<String, dynamic> sendFromUserData = commentData['sendFrom'];
+          User sendFrom = User(
             id: sendFromUserData['_id'],
             name: sendFromUserData['name'],
             avatarUrl: sendFromUserData['avatarUrl'],
             birthday: DateTime.parse(sendFromUserData['birthday']),
-        );
+          );
 
-        CommentType commentType = commentData['sendTo'] == null ? CommentType.COMMENT : CommentType.REPLY;
-        return CommentNotification(
-          id: e['_id'],
-          sendFrom: sendFrom,
-          content: commentContent,
-          type: commentType,
-          time: DateTime.parse(commentData['createdAt']));
+          return PostNotification(
+              id: e['_id'],
+              sendFrom: sendFrom,
+              content: commentContent,
+              type: notificationType,
+              notified: e['notified'],
+              time: DateTime.parse(commentData['createdAt']));
+        }
+        else {
+          Map<String, dynamic> sendFromUserData = e['fromUser'];
+
+          User sendFrom = User(
+            id: sendFromUserData['_id'],
+            name: sendFromUserData['name'],
+            avatarUrl: sendFromUserData['avatarUrl'],
+            birthday: DateTime.parse(sendFromUserData['birthday']),
+          );
+
+          return PostNotification(
+              id: e['_id'],
+              sendFrom: sendFrom,
+              content: '${sendFrom.name} liked your post',
+              type: notificationType,
+              notified: e['notified'],
+              time: DateTime.parse(e['createdAt']));
+        }
+
       }).toList();
 
-      _commentNotifications = unnotifiedNotifications;
+      _postNotifications = notifications;
       notifyListeners();
     }
     catch (error) {
@@ -66,7 +101,11 @@ class NotificationsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> markCommentNotificationsAsNotified(List<String> notificationIds) async {
+  Future<void> markNotificationsAsNotified(List<String> commentNotificationIds, List<String> likeNotificationIds) async {
+
+    if (commentNotificationIds.isEmpty && likeNotificationIds.isEmpty) {
+      return;
+    }
 
     try {
       String url = '${SERVICE_DOMAIN}/markNotificationNotified';
@@ -74,7 +113,8 @@ class NotificationsProvider with ChangeNotifier {
           url,
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
-            'notificationIds': notificationIds,
+            'commentNotificationIds': commentNotificationIds,
+            'likeNotificationIds': likeNotificationIds
           })
       );
 
@@ -82,7 +122,10 @@ class NotificationsProvider with ChangeNotifier {
         return;
       }
 
-      _commentNotifications = [];
+      _postNotifications.forEach((element) {
+        element.notified = true;
+      });
+
       notifyListeners();
 
     } catch (error) {

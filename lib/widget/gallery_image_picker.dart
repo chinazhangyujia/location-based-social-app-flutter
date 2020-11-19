@@ -23,6 +23,10 @@ class GalleryImagePicker extends StatelessWidget {
       maxWidth: 500
     );
 
+    if (pickedImages == null) {
+      return;
+    }
+
     onAddImage(File(pickedImage.path));
   }
 

@@ -1,23 +1,25 @@
 import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/model/user.dart';
 
-enum CommentType {
+enum NotificationType {
   COMMENT,
-  REPLY
+  LIKE
 }
 
-class CommentNotification {
+class PostNotification {
   final String id;
   final User sendFrom;
   final String content;
-  final CommentType type;
+  final NotificationType type;
   final DateTime time;
+  bool notified;
 
-  const CommentNotification({
+  PostNotification({
     @required this.id,
     @required this.sendFrom,
     @required this.content,
     @required this.type,
-    @required this.time
+    @required this.time,
+    @required this.notified
   });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/post.dart';
+import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
@@ -39,6 +40,8 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
     });
 
     try {
+      Provider.of<NotificationsProvider>(context, listen: false).getAllNotifications();
+
       postsProvider
           .fetchPosts(refresh: true)
           .then((value) {
@@ -77,7 +80,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
       body: RefreshIndicator(
         onRefresh: onRefresh,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ListView.builder(
             controller: _scrollController,
             itemCount: posts.length + 1,

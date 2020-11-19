@@ -8,7 +8,7 @@ import 'package:location_based_social_app/screen/friend_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/profile_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
-import 'package:location_based_social_app/screen/unnotified_comments_screen.dart';
+import 'package:location_based_social_app/screen/notification_tab_screen.dart';
 import 'package:provider/provider.dart';
 
 class TabScreen extends StatefulWidget {
@@ -25,19 +25,27 @@ class _TabScreenState extends State<TabScreen> {
     pages = [
       {
         'title' : 'Plot of Beach',
-        'page' : PostHomeScreen()
+        'page' : PostHomeScreen(),
+        'subpage': [
+          {
+            'tabName': 'Nearby',
+            'page': PostHomeScreen(),
+          },
+          {
+            'tabName': 'Friends',
+            'page': FriendPostsScreen()
+          }
+        ]
       },
       {
         'title': 'Friends',
-        'page': FriendScreen()
-      },
-      {
-        'title' : 'Activity',
-        'page' : FriendPostsScreen()
+        'page': FriendScreen(),
+        'subpage': [],
       },
       {
         'title' : 'Profile',
-        'page' : ProfileScreen()
+        'page' : ProfileScreen(),
+        'subpage': [],
       }
     ];
 
@@ -55,7 +63,7 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     int unnotifiedFriendRequestCount = Provider.of<FriendRequestProvider>(context).unnotifiedRequests.length;
-    int unnotifiedCommentsCount = Provider.of<NotificationsProvider>(context).commentNotifications.length;
+    int unnotifiedNotificationsCount = Provider.of<NotificationsProvider>(context).unnotifiedNotificationsCount;
 
     List<Widget> appBarActions = null;
     if (pages[selectedPageIndex]['title'] == 'Friends') {
@@ -80,56 +88,73 @@ class _TabScreenState extends State<TabScreen> {
           },
         )
       ];
-    } else if (pages[selectedPageIndex]['title'] == 'Activity') {
+    } else if (pages[selectedPageIndex]['title'] == 'Plot of Beach') {
       appBarActions = [
         IconButton(
-          icon: unnotifiedCommentsCount > 0 ? Badge(
+          icon: unnotifiedNotificationsCount > 0 ? Badge(
             position: BadgePosition.topEnd(top: -10, end: -10),
             badgeContent: Text(
-              unnotifiedCommentsCount.toString(),
+              unnotifiedNotificationsCount.toString(),
               style: TextStyle(color: Colors.white),
             ),
             child: Icon(Icons.notifications),
           ) : Icon(Icons.notifications),
           onPressed: () {
-            Navigator.of(context).pushNamed(UnnotifiedCommentsScreen.router);
+            Navigator.of(context).pushNamed(NotificationTabScreen.router);
           },
         ),
       ];
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.5,
-        title: Text(pages[selectedPageIndex]['title']),
-        actions: appBarActions,
-      ),
-      body: pages[selectedPageIndex]['page'],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: selectPage,
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Theme.of(context).accentColor,
-        backgroundColor: Theme.of(context).primaryColor,
-        currentIndex: selectedPageIndex,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('home')
+    return DefaultTabController(
+      length: (pages[selectedPageIndex]['subpage'] as List).length,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.5,
+          title: Text(pages[selectedPageIndex]['title']),
+          actions: appBarActions,
+          bottom: (pages[selectedPageIndex]['subpage'] as List).isNotEmpty ? PreferredSize(
+            preferredSize: Size.fromHeight(50),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TabBar(
+                isScrollable: true,
+                tabs: (pages[selectedPageIndex]['subpage'] as List)
+                    .map((e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(e['tabName'], style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
+                    ),).toList(),
+              ),
+            ),
+          ) : null,
+        ),
+        body: (pages[selectedPageIndex]['subpage'] as List).isEmpty ?
+          pages[selectedPageIndex]['page'] : TabBarView(
+            children: (pages[selectedPageIndex]['subpage'] as List)
+                .map((e) => e['page'] as Widget).toList()
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              title: Text('friends')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.photo),
-            title: Text('activity')
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text('profile')
-          )
-        ],
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: selectPage,
+          unselectedItemColor: Colors.black,
+          selectedItemColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).primaryColor,
+          currentIndex: selectedPageIndex,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              title: Text('home')
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.people),
+                title: Text('friends')
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('profile')
+            )
+          ],
+        ),
       ),
     );
   }

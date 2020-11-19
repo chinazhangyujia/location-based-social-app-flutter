@@ -24,13 +24,13 @@ class PostText extends StatelessWidget {
                   postText, softWrap: true,
                   maxLines: shouldCollapse ? 5 : null,
                   style: TextStyle(
-                    fontSize: 17
+                    fontSize: 18
                   ),
                 ),
                 if (shouldCollapse) ExpandableButton(
                   child: Text(
                     'Show More',
-                    style: TextStyle(color: Colors.grey, fontSize: 17),
+                    style: TextStyle(color: Colors.grey, fontSize: 18),
                   ),
                 )
               ],
@@ -40,7 +40,7 @@ class PostText extends StatelessWidget {
             postText,
             softWrap: true,
             style: TextStyle(
-              fontSize: 17
+              fontSize: 18
             ),
           ),
         ),

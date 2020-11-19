@@ -45,7 +45,7 @@ class CommentItem extends StatelessWidget {
                   children: [
                     GestureDetector(
                       child: Text(comment.sendFrom.name,
-                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        style: TextStyle(fontSize: 18),
                       ),
                       onTap: () {
                         tapUserName(context, comment.sendFrom);
@@ -53,7 +53,7 @@ class CommentItem extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(DateFormat("MMM dd, yyyy hh:mm").format(comment.postTime),
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                      style: TextStyle(fontSize: 17, color: Colors.black54),
                     )
                   ],
                 ),
@@ -62,7 +62,7 @@ class CommentItem extends StatelessWidget {
                   child: RichText(
                     maxLines: null,
                     text: TextSpan(
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(fontSize: 19, color: Colors.black, fontWeight: FontWeight.w300),
                       children: [
                         if (comment.sendTo != null) TextSpan(
                           text: '@${comment.sendTo.name} ',
