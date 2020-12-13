@@ -69,7 +69,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
         body: RefreshIndicator(
           onRefresh: fetchPosts,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ListView.builder(
                 controller: _scrollController,
                 itemCount: posts.length + 1,

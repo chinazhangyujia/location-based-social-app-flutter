@@ -143,15 +143,15 @@ class _TabScreenState extends State<TabScreen> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              title: Text('home')
+              label: 'home'
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.people),
-                title: Text('friends')
+              icon: Icon(Icons.people),
+              label: 'friends'
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
-              title: Text('profile')
+              label: 'profile'
             )
           ],
         ),

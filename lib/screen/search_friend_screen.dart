@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/provider/chat_provider.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/screen/chat_screen.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/add_friend_user_card.dart';
 import 'package:provider/provider.dart';
@@ -68,6 +70,11 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     }
   }
 
+  Future<void> goToChatScreen(BuildContext context) async {
+    await Provider.of<ChatProvider>(context, listen: false).connectToThread(foundUser);
+    Navigator.of(context).pushNamed(ChatScreen.router, arguments: foundUser);
+  }
+
   Future<void> onDeleteClick(BuildContext context, String friendUserId) async {
     try {
       await Provider.of<FriendsProvider>(context, listen: false).cancelFriendship(friendUserId);
@@ -84,6 +91,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     Function onClick;
     Icon icon;
     Color color;
+    final double size = 24;
     if (deleteRequestSent) {
       text = null;
       icon = null;
@@ -95,7 +103,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       icon = Icon(
         Icons.add_circle_outline_sharp,
         color: Theme.of(context).accentColor,
-        size: 30,
+        size: size,
       );
       color = Theme.of(context).accentColor;
       onClick = () {onAddClick(context, targetUser.id);};
@@ -104,7 +112,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       icon = Icon(
         Icons.delete,
         color: Theme.of(context).errorColor,
-        size: 30,
+        size: size,
       );
       color = Theme.of(context).errorColor;
       onClick = () {onDeleteClick(context, targetUser.id);};
@@ -115,7 +123,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       icon = Icon(
         Icons.pending,
         color: Theme.of(context).disabledColor,
-        size: 30,
+        size: size,
       );
       color = Theme.of(context).disabledColor;
       onClick = null;
@@ -143,25 +151,52 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
         ),
         height: 90,
         alignment: Alignment.center,
-        child: InkWell(
-          onTap: onClick,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 15),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                icon,
-                SizedBox(width: 10,),
-                Text(text,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: color
-                  ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            InkWell(
+              onTap: () {
+                goToChatScreen(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.chat_bubble_outline, color: Theme.of(context).accentColor,),
+                    SizedBox(width: 10,),
+                    Text('Message',
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).accentColor
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            InkWell(
+              onTap: onClick,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    icon,
+                    SizedBox(width: 10,),
+                    Text(text,
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w500,
+                          color: color
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         )
     );
   }

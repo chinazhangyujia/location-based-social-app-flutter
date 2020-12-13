@@ -1,0 +1,207 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:location_based_social_app/model/chat_message.dart';
+import 'package:location_based_social_app/model/user.dart';
+import 'package:location_based_social_app/util/config.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:http/http.dart' as http;
+
+class ChatProvider with ChangeNotifier {
+
+  String _openingThread;
+  List<ChatMessage> _messagesForOpeningThread = [];
+
+  IOWebSocketChannel _channel;
+
+  String _token;
+
+  static const Map<String, String> requestHeader = {
+    'Content-type': 'application/json',
+  };
+
+  void update(String token) {
+    _token = token;
+  }
+
+  String get openingThread {
+    return _openingThread;
+  }
+
+  List<ChatMessage> get messagesForOpeningThread {
+    return _messagesForOpeningThread;
+  }
+
+  Future<void> connectToThread(User sendTo) async {
+
+     _channel = IOWebSocketChannel.connect(
+        '${WEBSOCKET_DOMAIN}/chat?chatWith=${sendTo.id}',
+        headers: {
+          'Authorization': 'Bearer $_token'
+        }
+     );
+
+     _channel.stream.listen((event) {
+       final responseData = json.decode(event) as Map<String, dynamic>;
+
+       String type = responseData['type'];
+       if (type == 'thread') {
+         _openingThread = responseData['thread']['_id'];
+       } else if (type == 'message') {
+
+         ChatMessage newMessage = _convertResponseToChatMessage(responseData);
+         _messagesForOpeningThread.insert(0, newMessage);
+         notifyListeners();
+       }
+
+     }, onError: (error) {
+       print('error happens');
+       _openingThread = null;
+     }, onDone: () {
+       print('connection done');
+       _openingThread = null;
+     });
+
+     int waitForThreadMS = 3000;
+     while (_openingThread == null && waitForThreadMS > 0) {
+       await Future.delayed(Duration(milliseconds: 10));
+       waitForThreadMS -= 10;
+     }
+
+     if (_openingThread == null) {
+       print('socket connect timeout');
+       return;
+     }
+     else {
+       print('takes ${3000 - waitForThreadMS} ms to connect websocket');
+     }
+  }
+
+  Future<void> sendMessage(User sendFrom, User sendTo, String content) async {
+
+    if (content.isEmpty) {
+      return;
+    }
+
+    if (_channel == null || _openingThread == null) {
+      await _reconnectWebsocket(sendTo);
+
+      if (_channel == null || _openingThread == null) {
+        return;
+      }
+    }
+
+    _channel.sink.add(json.encode({
+      'event': 'message',
+      'thread': _openingThread,
+      'sendFrom': sendFrom.id,
+      'sendTo': sendTo.id,
+      'content': content
+    }));
+  }
+
+  Future<void> closeSockets() async {
+
+    if (_openingThread == null) {
+      return;
+    }
+
+    _channel.sink.add(json.encode({
+      'event': 'leave',
+      'thread': _openingThread
+    }));
+    _channel.sink.close();
+
+    _channel = null;
+    _openingThread = null;
+    _messagesForOpeningThread = [];
+  }
+
+  Future<void> getMessagesForThread(User chatWith) async {
+
+    if (_channel == null || _openingThread == null) {
+      await _reconnectWebsocket(chatWith);
+
+      if (_channel == null || _openingThread == null) {
+        return;
+      }
+    }
+
+    try {
+      String url = '${SERVICE_DOMAIN}/chatMessage?thread=$_openingThread';
+
+      final res = await http.get(
+        url,
+        headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+      );
+
+      if (res.statusCode != 200) {
+        return;
+      }
+
+      final responseData = json.decode(res.body) as List<dynamic>;
+
+      final List<ChatMessage> fetchedChatMessages = responseData.map((e) {
+        return _convertResponseToChatMessage(e);
+      }).toList();
+
+      _messagesForOpeningThread = fetchedChatMessages;
+
+      notifyListeners();
+    }
+    catch (e) {
+      print(e);
+    }
+  }
+
+  ChatMessage _convertResponseToChatMessage(Map<String, dynamic> responseData) {
+    Map<String, dynamic> sendToData = responseData['sendTo'];
+    User sendTo = User(
+        id: sendToData['_id'],
+        name: sendToData['name'],
+        avatarUrl: sendToData['avatarUrl'],
+        birthday: DateTime.parse(sendToData['birthday']),
+        introduction: sendToData['introduction']);
+
+    Map<String, dynamic> sendFromData = responseData['sendFrom'];
+    User sendFrom = User(
+        id: sendFromData['_id'],
+        name: sendFromData['name'],
+        avatarUrl: sendFromData['avatarUrl'],
+        birthday: DateTime.parse(sendFromData['birthday']),
+        introduction: sendFromData['introduction']);
+
+    return ChatMessage(
+        id: responseData['_id'],
+        threadId: responseData['chatThread'],
+        sendFrom: sendFrom,
+        sendTo: sendTo,
+        content: responseData['content'],
+        sendTime: DateTime.parse(responseData['createdAt'])
+    );
+  }
+
+  Future<void> _reconnectWebsocket(User chatWith) async {
+    if (_channel == null || _openingThread == null) {
+      print("haven't connect to websocket");
+      await connectToThread(chatWith);
+    }
+    else {
+      return;
+    }
+
+    int waitForThreadMS = 3000;
+    while (_openingThread == null && waitForThreadMS > 0) {
+      await Future.delayed(Duration(milliseconds: 10));
+      waitForThreadMS -= 10;
+    }
+
+    if (_openingThread == null) {
+      print('socket connect timeout');
+      return;
+    }
+    else {
+      print('takes ${3000 - waitForThreadMS} ms to connect websocket');
+    }
+  }
+}

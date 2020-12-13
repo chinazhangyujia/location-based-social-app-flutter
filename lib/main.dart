@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
+import 'package:location_based_social_app/provider/chat_provider.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
@@ -7,6 +8,7 @@ import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
+import 'package:location_based_social_app/screen/chat_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/liked_posts_screen.dart';
@@ -55,6 +57,10 @@ class MyApp extends StatelessWidget {
             create: (_) => NotificationsProvider(),
             update: (_, auth, notificationsProvider) => notificationsProvider..update(auth.token)
         ),
+        ChangeNotifierProxyProvider<AuthProvider, ChatProvider>(
+            create: (_) => ChatProvider(),
+            update: (_, auth, chatProvider) => chatProvider..update(auth.token)
+        ),
       ],
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
         title: "PlotOfBeach",
@@ -95,6 +101,7 @@ class MyApp extends StatelessWidget {
           NotificationTabScreen.router: (context) => NotificationTabScreen(),
           MyPostsScreen.router: (context) => MyPostsScreen(),
           LikedPostsScreen.router: (context) => LikedPostsScreen(),
+          ChatScreen.router: (context) => ChatScreen(),
         },
       ),)
     );
