@@ -15,16 +15,19 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
 
-  TextEditingController textController;
+  ScrollController _scrollController;
+  TextEditingController _textController;
   FocusNode textFieldFocusNode;
 
   bool _isInit = true;
+  bool _loading = false;
   User _chatWith;
   ChatProvider _chatProvider;
 
   @override
   void initState() {
-    textController = TextEditingController();
+    _textController = TextEditingController();
+    _scrollController = ScrollController();
     textFieldFocusNode = FocusNode();
     super.initState();
   }
@@ -34,8 +37,24 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_isInit) {
       _chatProvider = Provider.of<ChatProvider>(context, listen: false);
       _chatWith = ModalRoute.of(context).settings.arguments as User;
-      await _chatProvider.getMessagesForThread(_chatWith);
+      await _chatProvider.getMessagesForThread(chatWith: _chatWith, refresh: true);
       _isInit = false;
+
+      _scrollController.addListener(() {
+        if (!_loading && _scrollController.position.maxScrollExtent ==
+            _scrollController.position.pixels) {
+          setState(() {
+            _loading = true;
+          });
+
+          _chatProvider.getMessagesForThread(chatWith: _chatWith)
+              .then((_) {
+            setState(() {
+              _loading = false;
+            });
+          });
+        }
+      });
     }
     super.didChangeDependencies();
   }
@@ -43,7 +62,8 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _chatProvider.closeSockets();
-    textController.dispose();
+    _textController.dispose();
+    _scrollController.dispose();
     textFieldFocusNode.dispose();
     super.dispose();
   }
@@ -54,8 +74,8 @@ class _ChatScreenState extends State<ChatScreen> {
       loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
     }
 
-    _chatProvider.sendMessage(loginUser, _chatWith, textController.text);
-    textController.clear();
+    _chatProvider.sendMessage(loginUser, _chatWith, _textController.text);
+    _textController.clear();
   }
 
   @override
@@ -77,24 +97,25 @@ class _ChatScreenState extends State<ChatScreen> {
                 FocusScope.of(context).unfocus();
               },
               child: ListView.builder(
+                controller: _scrollController,
                 padding: EdgeInsets.all(10.0),
+                itemCount: chatMessages.length + 1,
                 itemBuilder: (context, index) {
-                  if (index > 0) {
-                    return ChatMessageItem(
-                      alignment: chatMessages[index - 1].sendTo.id == _chatWith.id
-                          ? ChatMessageAlignment.end
-                          : ChatMessageAlignment.start,
-                      message: chatMessages[index - 1].content,
-                      sendAt: chatMessages[index - 1].sendTime,
-                    );
-                  }
-                  else {
+                  if (index == 0) {
                     return SizedBox(
                       height: 70,
                     );
                   }
+                  else {
+                    return ChatMessageItem(
+                    alignment: chatMessages[index - 1].sendTo.id == _chatWith.id
+                    ? ChatMessageAlignment.end
+                        : ChatMessageAlignment.start,
+                    message: chatMessages[index - 1].content,
+                    sendAt: chatMessages[index - 1].sendTime,
+                    );
+                  }
                 },
-                itemCount: chatMessages.length + 1,
                 reverse: true,
               ),
             ),
@@ -131,7 +152,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         onSubmitted: (_) {
                           sendMessage(context);
                         },
-                        controller: textController,
+                        controller: _textController,
                         style: TextStyle(
                             fontSize: 16
                         ),

@@ -117,7 +117,7 @@ class ChatProvider with ChangeNotifier {
     _messagesForOpeningThread = [];
   }
 
-  Future<void> getMessagesForThread(User chatWith) async {
+  Future<void> getMessagesForThread({User chatWith, int fetchSize = 10, bool refresh = false}) async {
 
     if (_channel == null || _openingThread == null) {
       await _reconnectWebsocket(chatWith);
@@ -128,7 +128,11 @@ class ChatProvider with ChangeNotifier {
     }
 
     try {
-      String url = '${SERVICE_DOMAIN}/chatMessage?thread=$_openingThread';
+      String url = '${SERVICE_DOMAIN}/chatMessage?thread=$_openingThread&fetchSize=$fetchSize';
+
+      if (_messagesForOpeningThread.isNotEmpty && !refresh) {
+        url += '&fromId=${_messagesForOpeningThread.last.id}';
+      }
 
       final res = await http.get(
         url,
@@ -145,7 +149,11 @@ class ChatProvider with ChangeNotifier {
         return _convertResponseToChatMessage(e);
       }).toList();
 
-      _messagesForOpeningThread = fetchedChatMessages;
+      if (refresh) {
+        _messagesForOpeningThread = fetchedChatMessages;
+      } else {
+        _messagesForOpeningThread.addAll(fetchedChatMessages);
+      }
 
       notifyListeners();
     }
