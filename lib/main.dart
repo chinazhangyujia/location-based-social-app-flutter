@@ -103,7 +103,6 @@ class MyApp extends StatelessWidget {
           MyPostsScreen.router: (context) => MyPostsScreen(),
           LikedPostsScreen.router: (context) => LikedPostsScreen(),
           ChatScreen.router: (context) => ChatScreen(),
-          ChatThreadsScreen.router: (context) => ChatThreadsScreen(),
         },
       ),)
     );
