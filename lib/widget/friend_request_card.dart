@@ -15,6 +15,8 @@ class FriendRequestCard extends StatelessWidget {
     try {
       await Provider.of<FriendRequestProvider>(context, listen: false).handleRequest(
           status, requestId);
+
+      await Provider.of<FriendsProvider>(context, listen: false).getAllFriends();
     } catch (error) {
       renderErrorDialog(context, 'Failed to handle friend request. Please try later');
     }

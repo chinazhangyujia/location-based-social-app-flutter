@@ -52,7 +52,7 @@ class PostsProvider with ChangeNotifier
       if (fetchSize != null) {
         url += '&fetchSize=${fetchSize}';
         if (_posts.isNotEmpty && !refresh) {
-          url += '&fromId=${_posts.last.id}'; // todo verify if Id could contains special characters
+          url += '&fromId=${_posts.last.id}';
         }
       }
 
@@ -93,7 +93,7 @@ class PostsProvider with ChangeNotifier
       if (fetchSize != null) {
         url += '?fetchSize=${fetchSize}';
         if (_friendPosts.isNotEmpty && !refresh) {
-          url += '&fromId=${_friendPosts.last.id}'; // todo verify if Id could contains special characters
+          url += '&fromId=${_friendPosts.last.id}';
         }
       }
 

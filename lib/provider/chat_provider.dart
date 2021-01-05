@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/model/chat_message.dart';
+import 'package:location_based_social_app/model/chat_thread_summary.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_based_social_app/dummy_data/dummy_data.dart';
 
 class ChatProvider with ChangeNotifier {
+
+  List<ChatThreadSummary> _chatThreadSummaries = [];
 
   String _openingThread;
   List<ChatMessage> _messagesForOpeningThread = [];
@@ -24,12 +28,22 @@ class ChatProvider with ChangeNotifier {
     _token = token;
   }
 
+  List<ChatThreadSummary> get chatThreadSummaries {
+    return _chatThreadSummaries;
+  }
+
   String get openingThread {
     return _openingThread;
   }
 
   List<ChatMessage> get messagesForOpeningThread {
     return _messagesForOpeningThread;
+  }
+
+  Future<void> getAllThreadSummaries() async {
+    _chatThreadSummaries = DUMMY_CHAT_THREAD_SUMMARYIES;
+
+    // notifyListeners();
   }
 
   Future<void> connectToThread(User sendTo) async {

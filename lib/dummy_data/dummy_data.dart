@@ -1,3 +1,4 @@
+import 'package:location_based_social_app/model/chat_thread_summary.dart';
 import 'package:location_based_social_app/model/comment.dart';
 import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/notification.dart';
@@ -94,4 +95,9 @@ List<User> DUMMY_FRIENDS = [
       birthday: DateTime(1993, 6, 23),
       introduction: 'My name is Yujia. I am a software engineer. I am a software engineer. I am a software engineer. I am a software engineer.'
   ),
+];
+
+List<ChatThreadSummary> DUMMY_CHAT_THREAD_SUMMARYIES = [
+  ChatThreadSummary(chatWith: DUMMY_FRIENDS[0], lastMessage: 'hello?', threadId: '1', lastMessageSentAt: DateTime.now()),
+  ChatThreadSummary(chatWith: DUMMY_FRIENDS[1], lastMessage: 'are you still here?', threadId: '2', lastMessageSentAt: DateTime.now()),
 ];

@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
-import 'package:location_based_social_app/screen/post_detail_screen.dart';
 import 'package:location_based_social_app/util/config.dart';
 
 class FriendRequestProvider with ChangeNotifier {
@@ -157,7 +156,6 @@ class FriendRequestProvider with ChangeNotifier {
         throw HttpException('Failed to handle friend request. Please try later');
       }
 
-      // todo refresh friends list.
       _pendingRequests.removeWhere((r) => r.id == requestId);
 
       notifyListeners();

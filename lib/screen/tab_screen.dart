@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/notifications_provider.dart';
+import 'package:location_based_social_app/screen/chat_threads_screen.dart';
 import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend_screen.dart';
@@ -40,6 +41,11 @@ class _TabScreenState extends State<TabScreen> {
       {
         'title': 'Friends',
         'page': FriendScreen(),
+        'subpage': [],
+      },
+      {
+        'title': 'Chats',
+        'page': ChatThreadsScreen(),
         'subpage': [],
       },
       {
@@ -148,6 +154,10 @@ class _TabScreenState extends State<TabScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
               label: 'friends'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.chat_bubble_outline),
+                label: 'chats'
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person),

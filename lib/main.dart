@@ -9,6 +9,7 @@ import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/auth_screen.dart';
 import 'package:location_based_social_app/screen/chat_screen.dart';
+import 'package:location_based_social_app/screen/chat_threads_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/liked_posts_screen.dart';
@@ -102,6 +103,7 @@ class MyApp extends StatelessWidget {
           MyPostsScreen.router: (context) => MyPostsScreen(),
           LikedPostsScreen.router: (context) => LikedPostsScreen(),
           ChatScreen.router: (context) => ChatScreen(),
+          ChatThreadsScreen.router: (context) => ChatThreadsScreen(),
         },
       ),)
     );
