@@ -23,8 +23,13 @@ class _ChatThreadsScreenState extends State<ChatThreadsScreen> {
   }
 
   Future<void> goToChatScreen(BuildContext context, User chatWith) async {
-    await Provider.of<ChatProvider>(context, listen: false).connectToThread(chatWith);
-    Navigator.of(context).pushNamed(ChatScreen.router, arguments: chatWith);
+    try {
+      await Provider.of<ChatProvider>(context, listen: false).connectToThread(
+          chatWith);
+      Navigator.of(context).pushNamed(ChatScreen.router, arguments: chatWith);
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -39,8 +44,9 @@ class _ChatThreadsScreenState extends State<ChatThreadsScreen> {
           itemBuilder: (context, index) => Column(
             children: [
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () {
-
+                  goToChatScreen(context, chatThreadSummaries[index].chatWith);
                 },
                 child: ChatThreadSummaryItem(chatThreadSummaries[index])
               ),

@@ -7,7 +7,6 @@ import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:http/http.dart' as http;
-import 'package:location_based_social_app/dummy_data/dummy_data.dart';
 
 class ChatProvider with ChangeNotifier {
 
@@ -41,9 +40,30 @@ class ChatProvider with ChangeNotifier {
   }
 
   Future<void> getAllThreadSummaries() async {
-    _chatThreadSummaries = DUMMY_CHAT_THREAD_SUMMARYIES;
+    try {
+      String url = '${SERVICE_DOMAIN}/chatThreadSummaries';
 
-    // notifyListeners();
+      final res = await http.get(
+        url,
+        headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+      );
+
+      if (res.statusCode != 200) {
+        return;
+      }
+
+      final responseData = json.decode(res.body) as List<dynamic>;
+
+      List<ChatThreadSummary> chatThreadSummaries = responseData.map((e) {
+        return _convertResponseToThreadSummary(e);
+      }).toList();
+
+      _chatThreadSummaries = chatThreadSummaries;
+      notifyListeners();
+    }
+    catch (e) {
+
+    }
   }
 
   Future<void> connectToThread(User sendTo) async {
@@ -64,7 +84,7 @@ class ChatProvider with ChangeNotifier {
        } else if (type == 'message') {
 
          ChatMessage newMessage = _convertResponseToChatMessage(responseData);
-         _messagesForOpeningThread.insert(0, newMessage);
+         _appendComingMessage(_openingThread, newMessage);
          notifyListeners();
        }
 
@@ -174,6 +194,36 @@ class ChatProvider with ChangeNotifier {
     catch (e) {
       print(e);
     }
+  }
+
+  void _appendComingMessage(String thread, ChatMessage newMessage) {
+    _messagesForOpeningThread.insert(0, newMessage);
+
+    ChatThreadSummary effectedSummary = _chatThreadSummaries.firstWhere((element) => element.threadId == thread);
+    if (effectedSummary == null) {
+      // error shouldn't happen
+      return;
+    }
+
+    effectedSummary.lastMessage = newMessage.content;
+    effectedSummary.lastMessageSentAt = newMessage.sendTime;
+  }
+
+  ChatThreadSummary _convertResponseToThreadSummary(Map<String, dynamic> responseData) {
+    Map<String, dynamic> chatWithData = responseData['chatWith'];
+    User chatWith = User(
+        id: chatWithData['_id'],
+        name: chatWithData['name'],
+        avatarUrl: chatWithData['avatarUrl'],
+        birthday: DateTime.parse(chatWithData['birthday']),
+        introduction: chatWithData['introduction']);
+
+    return ChatThreadSummary(
+      chatWith: chatWith,
+      lastMessage: responseData['lastMessage'],
+      lastMessageSentAt: DateTime.parse(responseData['createdAt']),
+      threadId: responseData['_id']
+    );
   }
 
   ChatMessage _convertResponseToChatMessage(Map<String, dynamic> responseData) {

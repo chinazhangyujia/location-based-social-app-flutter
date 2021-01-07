@@ -3,11 +3,11 @@ import 'package:location_based_social_app/model/user.dart';
 
 class ChatThreadSummary {
   final User chatWith;
-  final String lastMessage;
+  String lastMessage;
   final String threadId;
-  final DateTime lastMessageSentAt;
+  DateTime lastMessageSentAt;
 
-  const ChatThreadSummary({
+  ChatThreadSummary({
     @required this.chatWith,
     @required this.lastMessage,
     @required this.threadId,
