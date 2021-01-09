@@ -47,6 +47,7 @@ class PostItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () {
               onTapHeader(context, user);
             },
@@ -57,6 +58,7 @@ class PostItem extends StatelessWidget {
             ),
           ),
           GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: disableClick ? null : () {
               onTapPost(context);
             },

@@ -23,7 +23,7 @@ class GalleryImagePicker extends StatelessWidget {
       maxWidth: 500
     );
 
-    if (pickedImages == null) {
+    if (pickedImage == null) {
       return;
     }
 
@@ -57,7 +57,10 @@ class GalleryImagePicker extends StatelessWidget {
           ),
         )).toList(),
         if (pickedImages.length < 6) GestureDetector(
-          onTap: () {pickImage(context);},
+          onTap: () {
+            pickImage(context);
+          },
+          behavior: HitTestBehavior.opaque,
           child: Container(
             decoration: BoxDecoration(
                 border: Border.all(width: 1, color: Colors.grey),

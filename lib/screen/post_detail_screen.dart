@@ -134,6 +134,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               onTap: () {
                 onUnfocusTextField(context);
               },
+              behavior: HitTestBehavior.opaque,
               child: SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 5),

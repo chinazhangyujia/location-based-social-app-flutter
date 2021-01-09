@@ -47,6 +47,7 @@ class CommentItem extends StatelessWidget {
                       child: Text(comment.sendFrom.name,
                         style: TextStyle(fontSize: 18),
                       ),
+                      behavior: HitTestBehavior.opaque,
                       onTap: () {
                         tapUserName(context, comment.sendFrom);
                       },
@@ -74,6 +75,7 @@ class CommentItem extends StatelessWidget {
                       ]
                     ),
                   ),
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     onClickComment(comment.sendFrom);
                   },

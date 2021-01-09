@@ -199,9 +199,8 @@ class ChatProvider with ChangeNotifier {
   void _appendComingMessage(String thread, ChatMessage newMessage) {
     _messagesForOpeningThread.insert(0, newMessage);
 
-    ChatThreadSummary effectedSummary = _chatThreadSummaries.firstWhere((element) => element.threadId == thread);
+    ChatThreadSummary effectedSummary = _chatThreadSummaries.firstWhere((element) => element.threadId == thread, orElse: () => null);
     if (effectedSummary == null) {
-      // error shouldn't happen
       return;
     }
 

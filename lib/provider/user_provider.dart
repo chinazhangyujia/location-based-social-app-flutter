@@ -91,7 +91,12 @@ class UserProvider with ChangeNotifier {
   Future<void> updateUserInfo({String selfIntroduction, String avatarUrl}) async {
     String url = '${SERVICE_DOMAIN}/user/updateUserInfo';
 
-    if (selfIntroduction == null || selfIntroduction.trim().isEmpty) {
+    // when user update avatar, the self intro will be null. We don't change it.
+    // when user remove self intro, the self intro will be passed in as empty string.
+    if (selfIntroduction == null) {
+      selfIntroduction = _introduction;
+    }
+    else if (selfIntroduction.trim().isEmpty) {
       selfIntroduction = null;
     }
 
@@ -109,12 +114,18 @@ class UserProvider with ChangeNotifier {
     }
 
     final responseData = json.decode(res.body);
-    if (responseData['nModified'] != 1 || responseData['ok'] != 1) {
+    if ((selfIntroduction != null || avatarUrl != null) && (responseData['nModified'] != 1 || responseData['ok'] != 1)) {
       throw HttpException('Failed to update user info. Please try again later');
     }
 
-    _introduction = selfIntroduction;
-    _avatarUrl = avatarUrl;
+    if (_introduction != selfIntroduction) {
+      _introduction = selfIntroduction;
+    }
+
+    if (avatarUrl != null) {
+      _avatarUrl = avatarUrl;
+    }
+
     notifyListeners();
   }
 

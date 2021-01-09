@@ -52,6 +52,7 @@ class NotificationScreen extends StatelessWidget {
                             child: Text(notifications[index].sendFrom.name,
                               style: TextStyle(fontSize: 18),
                             ),
+                            behavior: HitTestBehavior.opaque,
                             onTap: () {
                               tapUserName(context, notifications[index].sendFrom);
                             },

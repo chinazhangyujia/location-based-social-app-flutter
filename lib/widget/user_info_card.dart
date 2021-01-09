@@ -92,7 +92,7 @@ class UserInfoCard extends StatelessWidget {
               InkWell(
                 child: CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(user.avatarUrl),
+                  backgroundImage: user.avatarUrl != null ? NetworkImage(user.avatarUrl) : null,
                 ),
                 onTap: () {
                   showModalBottomSheet(

@@ -96,6 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
               onTap: () {
                 FocusScope.of(context).unfocus();
               },
+              behavior: HitTestBehavior.opaque,
               child: ListView.builder(
                 controller: _scrollController,
                 padding: EdgeInsets.all(10.0),

@@ -12,6 +12,7 @@ class MultilineTextField extends StatelessWidget {
       cursorColor: Colors.blueAccent,
       onChanged: onEdit,
       maxLines: null,
+      style: TextStyle(fontSize: 18),
       decoration: InputDecoration(
         border: InputBorder.none,
         hintText: hint,
