@@ -15,19 +15,3 @@ Function renderErrorDialog = (BuildContext context, String message) {
     ],
   ));
 };
-
-Function renderInfoDialog = (BuildContext context, String title, String message) {
-  showDialog(context: context, builder: (context) => AlertDialog(
-    title: Text(title),
-    content: Text(message),
-    actions: [
-      FlatButton(
-          textColor: Theme.of(context).accentColor,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('OK')
-      )
-    ],
-  ));
-};

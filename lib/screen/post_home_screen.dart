@@ -42,14 +42,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
     try {
       Provider.of<NotificationsProvider>(context, listen: false).getAllNotifications();
 
-      postsProvider
-          .fetchPosts(refresh: true)
-          .then((value) {
-        if (value.isEmpty) {
-          renderInfoDialog(
-              context, 'No post around here', 'Write the first post?');
-        }
-      });
+      postsProvider.fetchPosts(refresh: true);
     } catch (error) {
 
     }
@@ -81,7 +74,13 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
         onRefresh: onRefresh,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ListView.builder(
+          child: posts.length == 0 ?
+          Center(
+            child: Text('No post around here.\n Write the first post.',
+              style: TextStyle(fontSize: 25, color: Colors.grey, fontWeight: FontWeight.bold),
+            ),
+          ) :
+          ListView.builder(
             controller: _scrollController,
             itemCount: posts.length + 1,
             itemBuilder: (context, index) {

@@ -25,7 +25,7 @@ class _TabScreenState extends State<TabScreen> {
   void initState() {
     pages = [
       {
-        'title' : 'Plot of Beach',
+        'title' : 'My App',
         'page' : PostHomeScreen(),
         'subpage': [
           {
@@ -94,7 +94,7 @@ class _TabScreenState extends State<TabScreen> {
           },
         )
       ];
-    } else if (pages[selectedPageIndex]['title'] == 'Plot of Beach') {
+    } else if (pages[selectedPageIndex]['title'] == 'My App') {
       appBarActions = [
         IconButton(
           icon: unnotifiedNotificationsCount > 0 ? Badge(
