@@ -351,10 +351,11 @@ class PostsProvider with ChangeNotifier
       return Post(
           id: e['_id'],
           user: User(
-              id: userData['_id'],
-              name: userData['name'],
-              avatarUrl: userData['avatarUrl'],
-              birthday: DateTime.parse(userData['birthday']),
+            id: userData['_id'],
+            name: userData['name'],
+            avatarUrl: userData['avatarUrl'],
+            birthday: DateTime.parse(userData['birthday']),
+            introduction: userData['introduction']
           ),
           postedTimeStamp: DateTime.parse(e['createdAt']),
           photoUrls: e['imageUrls'].cast<String>(),
