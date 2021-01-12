@@ -17,7 +17,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   ScrollController _scrollController;
   TextEditingController _textController;
-  FocusNode textFieldFocusNode;
+  FocusNode _textFieldFocusNode;
 
   bool _isInit = true;
   bool _loading = false;
@@ -28,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     _textController = TextEditingController();
     _scrollController = ScrollController();
-    textFieldFocusNode = FocusNode();
+    _textFieldFocusNode = FocusNode();
     super.initState();
   }
 
@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _chatProvider.closeSockets();
     _textController.dispose();
     _scrollController.dispose();
-    textFieldFocusNode.dispose();
+    _textFieldFocusNode.dispose();
     super.dispose();
   }
 
@@ -76,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _chatProvider.sendMessage(loginUser, _chatWith, _textController.text);
     _textController.clear();
+    FocusScope.of(context).requestFocus(_textFieldFocusNode);
   }
 
   @override
@@ -148,7 +149,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           color: Color.fromRGBO(244, 244, 244, 1)
                       ),
                       child: TextField(
-                        focusNode: textFieldFocusNode,
+                        focusNode: _textFieldFocusNode,
                         cursorColor: Theme.of(context).accentColor,
                         onSubmitted: (_) {
                           sendMessage(context);
