@@ -39,18 +39,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
-  String _validatePost()
+  bool _isPostEmpty()
   {
-    if (pickedImages.isEmpty && (text == null || text.trim().isEmpty)) {
-      return 'Please write something';
-    }
-    return null;
+    return pickedImages.isEmpty && (text == null || text.trim().isEmpty);
   }
 
   void sendPost(BuildContext context, String authToken) async {
-    String errorMessage = _validatePost();
-    if (errorMessage != null) {
-      renderErrorDialog(context, errorMessage);
+    if (_isPostEmpty()) {
+      Navigator.of(context).pop();
       return;
     }
 

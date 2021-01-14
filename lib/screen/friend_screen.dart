@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/screen/search_friend_screen.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
 
@@ -37,6 +38,20 @@ class _FriendScreenState extends State<FriendScreen> {
     }
   }
 
+  Future<void> onClickFriend(BuildContext context, User tappedUser) async {
+    String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
+
+    User userWithMetaData = User(id: tappedUser.id,
+        name: tappedUser.name,
+        avatarUrl: tappedUser.avatarUrl,
+        birthday: tappedUser.birthday,
+        introduction: tappedUser.introduction,
+        metaData: {'friendStatus': friendStatus }
+    );
+
+    Navigator.of(context).pushNamed(SearchFriendScreen.router, arguments: userWithMetaData);
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -51,28 +66,34 @@ class _FriendScreenState extends State<FriendScreen> {
             itemCount: friends.length,
             itemBuilder: (context, index) => Column(
               children: [
-                Slidable(
-                  key: ValueKey(friends[index].id),
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
-                  secondaryActions: <Widget>[
-                    IconSlideAction(
-                      caption: 'Delete',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () {
-                        cancelFriendship(context, friends[index].id);
-                      },
+                GestureDetector(
+                  onTap: () {
+                    onClickFriend(context, friends[index]);
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: Slidable(
+                    key: ValueKey(friends[index].id),
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        caption: 'Delete',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () {
+                          cancelFriendship(context, friends[index].id);
+                        },
+                      ),
+                    ],
+                    child: ListTile(
+                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                      leading: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(friends[index].avatarUrl),
+                      ),
+                      title: Text(friends[index].name, style: TextStyle(fontSize: 18,),),
+                      subtitle: Text(''),
                     ),
-                  ],
-                  child: ListTile(
-                    contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
-                    leading: CircleAvatar(
-                      radius: 25,
-                      backgroundImage: NetworkImage(friends[index].avatarUrl),
-                    ),
-                    title: Text(friends[index].name, style: TextStyle(fontSize: 18,),),
-                    subtitle: Text(''),
                   ),
                 ),
                 Divider(indent: 20, height: 0,)
