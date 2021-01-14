@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
-import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
