@@ -17,7 +17,7 @@ class TabScreen extends StatefulWidget {
   _TabScreenState createState() => _TabScreenState();
 }
 
-class _TabScreenState extends State<TabScreen> {
+class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMixin {
   List<Map<String, Object>> pages;
   int selectedPageIndex;
 
@@ -36,7 +36,8 @@ class _TabScreenState extends State<TabScreen> {
             'tabName': 'Friends',
             'page': FriendPostsScreen()
           }
-        ]
+        ],
+        'controller': TabController(length: 2, vsync: this)
       },
       {
         'title': 'Friends',
@@ -57,6 +58,16 @@ class _TabScreenState extends State<TabScreen> {
 
     selectedPageIndex = 0;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    pages.forEach((e) {
+      if (e['controller'] != null) {
+        (e['controller'] as TabController).dispose();
+      }
+    });
+    super.dispose();
   }
 
   void selectPage(int index)
@@ -125,6 +136,7 @@ class _TabScreenState extends State<TabScreen> {
               alignment: Alignment.centerLeft,
               child: TabBar(
                 isScrollable: true,
+                controller: pages[selectedPageIndex]['controller'],
                 tabs: (pages[selectedPageIndex]['subpage'] as List)
                     .map((e) => Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -136,6 +148,7 @@ class _TabScreenState extends State<TabScreen> {
         ),
         body: (pages[selectedPageIndex]['subpage'] as List).isEmpty ?
           pages[selectedPageIndex]['page'] : TabBarView(
+            controller: pages[selectedPageIndex]['controller'],
             children: (pages[selectedPageIndex]['subpage'] as List)
                 .map((e) => e['page'] as Widget).toList()
           ),

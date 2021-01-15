@@ -19,15 +19,12 @@ class SixPhotosGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return photoUrls.length == 1 ? Container(
       width: MediaQuery.of(context).size.width * 0.7,
-      child: AspectRatio(
-        aspectRatio: 3 / 2,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(3),
-          child: Image.network(
-            photoUrls[0],
-            fit: BoxFit.cover,
-            width: double.infinity,
-          ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(3),
+        child: Image.network(
+          photoUrls[0],
+          fit: BoxFit.cover,
+          width: double.infinity,
         ),
       ),
     ) :

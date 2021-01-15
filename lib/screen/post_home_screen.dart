@@ -74,13 +74,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
         onRefresh: onRefresh,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: posts.length == 0 ?
-          Center(
-            child: Text('No post around here.\n Write the first post.',
-              style: TextStyle(fontSize: 25, color: Colors.grey, fontWeight: FontWeight.bold),
-            ),
-          ) :
-          ListView.builder(
+          child: ListView.builder(
             controller: _scrollController,
             itemCount: posts.length + 1,
             itemBuilder: (context, index) {
