@@ -3,7 +3,6 @@ import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
-import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/post_item.dart';
 import 'package:provider/provider.dart';
 
