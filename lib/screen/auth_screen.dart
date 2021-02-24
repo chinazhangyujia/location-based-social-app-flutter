@@ -124,7 +124,6 @@ class _AuthCardState extends State<AuthCard> {
             _signUpData['email'],
             _signUpData['password'],
             _signUpData['nickname'],
-            _signUpData['uniqueName'],
             _signUpData['birthday']);
       }
     } on HttpException catch (error) {

@@ -8,7 +8,7 @@ class SixPhotosGrid extends StatelessWidget {
     1: 1,
     2: 3,
     3: 3,
-    4: 2,
+    4: 3,
     5: 3,
     6: 3
   };

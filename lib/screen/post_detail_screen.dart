@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:location_based_social_app/dummy_data/dummy_data.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/comment.dart';
 import 'package:location_based_social_app/model/post.dart';

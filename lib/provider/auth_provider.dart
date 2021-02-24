@@ -58,7 +58,7 @@ class AuthProvider with ChangeNotifier {
 
   }
 
-  Future<void> signup(String email, String password, String name, String uniqueName, String birthday) async {
+  Future<void> signup(String email, String password, String name, String birthday) async {
     String url = '${SERVICE_DOMAIN}/user/signup';
 
     try {
@@ -66,7 +66,6 @@ class AuthProvider with ChangeNotifier {
         'email': email,
         'password': password,
         'name': name,
-        'uniqueName': uniqueName,
         'birthday': birthday
       }), headers: requestHeader);
 

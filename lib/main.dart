@@ -7,9 +7,8 @@ import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/provider/notifications_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
-import 'package:location_based_social_app/screen/auth_screen.dart';
+import 'package:location_based_social_app/screen/auth_steps/auth_steps_screen.dart';
 import 'package:location_based_social_app/screen/chat_screen.dart';
-import 'package:location_based_social_app/screen/chat_threads_screen.dart';
 import 'package:location_based_social_app/screen/edit_self_introduction_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/liked_posts_screen.dart';
@@ -66,20 +65,20 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(builder: (context, auth, _) => MaterialApp(
         title: "PlotOfBeach",
         theme: ThemeData(
-          primarySwatch: const MaterialColor(0xFFFFFFFF,
+          primarySwatch: const MaterialColor(0xFFFFFEE5,
             const <int, Color>{
-              50: const Color(0xFFFFFFFF),
-              100: const Color(0xFFFFFFFF),
-              200: const Color(0xFFFFFFFF),
-              300: const Color(0xFFFFFFFF),
-              400: const Color(0xFFFFFFFF),
-              500: const Color(0xFFFFFFFF),
-              600: const Color(0xFFFFFFFF),
-              700: const Color(0xFFFFFFFF),
-              800: const Color(0xFFFFFFFF),
-              900: const Color(0xFFFFFFFF),
+              50: const Color(0xFFFFFEE5),
+              100: const Color(0xFFFFFEE5),
+              200: const Color(0xFFFFFEE5),
+              300: const Color(0xFFFFFEE5),
+              400: const Color(0xFFFFFEE5),
+              500: const Color(0xFFFFFEE5),
+              600: const Color(0xFFFFFEE5),
+              700: const Color(0xFFFFFEE5),
+              800: const Color(0xFFFFFEE5),
+              900: const Color(0xFFFFFEE5),
             },),
-          accentColor: Colors.blueAccent,
+          accentColor: Color.fromRGBO(66, 103, 178, 1),
           fontFamily: 'OpenSans',
           primaryTextTheme: TextTheme(
             headline6: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500, fontSize: 23),
@@ -90,7 +89,7 @@ class MyApp extends StatelessWidget {
           FutureBuilder(
             future: auth.tryAutoLogin(),
             builder: (context, authResSnapshot)
-              => authResSnapshot.connectionState == ConnectionState.waiting ? SplashScreen() : AuthScreen()),
+              => authResSnapshot.connectionState == ConnectionState.waiting ? SplashScreen() : AuthStepsScreen()),
         routes: {
           NewPostScreen.router: (context) => NewPostScreen(),
           SettingScreen.router: (context) => SettingScreen(),
