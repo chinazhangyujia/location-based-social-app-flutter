@@ -15,6 +15,7 @@ import 'package:location_based_social_app/screen/image_detail_screen.dart';
 import 'package:location_based_social_app/screen/liked_posts_screen.dart';
 import 'package:location_based_social_app/screen/my_posts_screen.dart';
 import 'package:location_based_social_app/screen/new_post_screen.dart';
+import 'package:location_based_social_app/screen/pick_location_map_screen.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
 import 'package:location_based_social_app/screen/post_location_map_view_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
@@ -104,6 +105,7 @@ class MyApp extends StatelessWidget {
           LikedPostsScreen.router: (context) => LikedPostsScreen(),
           ChatScreen.router: (context) => ChatScreen(),
           ImageDetailScreen.router: (context) => ImageDetailScreen(),
+          PickLocationMapScreen.router: (context) => PickLocationMapScreen()
         },
       ),)
     );

@@ -6,6 +6,7 @@ import 'package:location_based_social_app/screen/chat_threads_screen.dart';
 import 'package:location_based_social_app/screen/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend_screen.dart';
+import 'package:location_based_social_app/screen/map_view_posts_screen.dart';
 import 'package:location_based_social_app/screen/post_home_screen.dart';
 import 'package:location_based_social_app/screen/profile_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
@@ -17,27 +18,31 @@ class TabScreen extends StatefulWidget {
   _TabScreenState createState() => _TabScreenState();
 }
 
-class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMixin {
+class _TabScreenState extends State<TabScreen>
+    with SingleTickerProviderStateMixin {
   List<Map<String, Object>> pages;
   int selectedPageIndex;
+  int selectedSubPageIndex;
+
+  TabController _subPageTabController;
 
   @override
   void initState() {
+    _subPageTabController = TabController(length: 3, vsync: this);
+
     pages = [
       {
-        'title' : 'My App',
-        'page' : PostHomeScreen(),
+        'title': 'My App',
+        'page': PostHomeScreen(),
         'subpage': [
           {
             'tabName': 'Nearby',
             'page': PostHomeScreen(),
           },
-          {
-            'tabName': 'Friends',
-            'page': FriendPostsScreen()
-          }
+          {'tabName': 'Friends', 'page': FriendPostsScreen()},
+          {'tabName': 'Map', 'page': MapViewPostsScreen()}
         ],
-        'controller': TabController(length: 2, vsync: this)
+        'controller': _subPageTabController
       },
       {
         'title': 'Friends',
@@ -50,28 +55,24 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
         'subpage': [],
       },
       {
-        'title' : 'Profile',
-        'page' : ProfileScreen(),
+        'title': 'Profile',
+        'page': ProfileScreen(),
         'subpage': [],
       }
     ];
 
     selectedPageIndex = 0;
+    selectedSubPageIndex = 0;
     super.initState();
   }
 
   @override
   void dispose() {
-    pages.forEach((e) {
-      if (e['controller'] != null) {
-        (e['controller'] as TabController).dispose();
-      }
-    });
+    _subPageTabController.dispose();
     super.dispose();
   }
 
-  void selectPage(int index)
-  {
+  void selectPage(int index) {
     setState(() {
       selectedPageIndex = index;
     });
@@ -79,21 +80,26 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    int unnotifiedFriendRequestCount = Provider.of<FriendRequestProvider>(context).unnotifiedRequests.length;
-    int unnotifiedNotificationsCount = Provider.of<NotificationsProvider>(context).unnotifiedNotificationsCount;
+    int unnotifiedFriendRequestCount =
+        Provider.of<FriendRequestProvider>(context).unnotifiedRequests.length;
+    int unnotifiedNotificationsCount =
+        Provider.of<NotificationsProvider>(context)
+            .unnotifiedNotificationsCount;
 
     List<Widget> appBarActions = null;
     if (pages[selectedPageIndex]['title'] == 'Friends') {
       appBarActions = [
         IconButton(
-          icon: unnotifiedFriendRequestCount > 0 ? Badge(
-            position: BadgePosition.topEnd(top: -10, end: -10),
-            badgeContent: Text(
-              unnotifiedFriendRequestCount.toString(),
-              style: TextStyle(color: Colors.white),
-            ),
-            child: Icon(Icons.notifications),
-          ) : Icon(Icons.notifications),
+          icon: unnotifiedFriendRequestCount > 0
+              ? Badge(
+                  position: BadgePosition.topEnd(top: -10, end: -10),
+                  badgeContent: Text(
+                    unnotifiedFriendRequestCount.toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  child: Icon(Icons.notifications),
+                )
+              : Icon(Icons.notifications),
           onPressed: () {
             Navigator.of(context).pushNamed(FriendRequestScreen.router);
           },
@@ -108,14 +114,16 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
     } else if (pages[selectedPageIndex]['title'] == 'My App') {
       appBarActions = [
         IconButton(
-          icon: unnotifiedNotificationsCount > 0 ? Badge(
-            position: BadgePosition.topEnd(top: -10, end: -10),
-            badgeContent: Text(
-              unnotifiedNotificationsCount.toString(),
-              style: TextStyle(color: Colors.white),
-            ),
-            child: Icon(Icons.notifications),
-          ) : Icon(Icons.notifications),
+          icon: unnotifiedNotificationsCount > 0
+              ? Badge(
+                  position: BadgePosition.topEnd(top: -10, end: -10),
+                  badgeContent: Text(
+                    unnotifiedNotificationsCount.toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  child: Icon(Icons.notifications),
+                )
+              : Icon(Icons.notifications),
           onPressed: () {
             Navigator.of(context).pushNamed(NotificationTabScreen.router);
           },
@@ -130,28 +138,39 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
           elevation: 0.5,
           title: Text(pages[selectedPageIndex]['title']),
           actions: appBarActions,
-          bottom: (pages[selectedPageIndex]['subpage'] as List).isNotEmpty ? PreferredSize(
-            preferredSize: Size.fromHeight(50),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TabBar(
-                isScrollable: true,
-                controller: pages[selectedPageIndex]['controller'],
-                tabs: (pages[selectedPageIndex]['subpage'] as List)
-                    .map((e) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(e['tabName'], style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),
-                    ),).toList(),
-              ),
-            ),
-          ) : null,
+          bottom: (pages[selectedPageIndex]['subpage'] as List).isNotEmpty
+              ? PreferredSize(
+                  preferredSize: Size.fromHeight(50),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      isScrollable: true,
+                      controller: pages[selectedPageIndex]['controller'],
+                      tabs: (pages[selectedPageIndex]['subpage'] as List)
+                          .map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                e['tabName'],
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                )
+              : null,
         ),
-        body: (pages[selectedPageIndex]['subpage'] as List).isEmpty ?
-          pages[selectedPageIndex]['page'] : TabBarView(
-            controller: pages[selectedPageIndex]['controller'],
-            children: (pages[selectedPageIndex]['subpage'] as List)
-                .map((e) => e['page'] as Widget).toList()
-          ),
+        body: (pages[selectedPageIndex]['subpage'] as List).isEmpty
+            ? pages[selectedPageIndex]['page']
+            : TabBarView(
+                controller: pages[selectedPageIndex]['controller'],
+                children: (pages[selectedPageIndex]['subpage'] as List)
+                    .map((e) => e['page'] as Widget)
+                    .toList(),
+              ),
         bottomNavigationBar: BottomNavigationBar(
           onTap: selectPage,
           unselectedItemColor: Colors.black,
@@ -160,22 +179,11 @@ class _TabScreenState extends State<TabScreen> with SingleTickerProviderStateMix
           currentIndex: selectedPageIndex,
           type: BottomNavigationBarType.fixed,
           items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'friends'),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'home'
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              label: 'friends'
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.chat_bubble_outline),
-                label: 'chats'
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'profile'
-            )
+                icon: Icon(Icons.chat_bubble_outline), label: 'chats'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile')
           ],
         ),
       ),

@@ -10,12 +10,12 @@ import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
-class PostsProvider with ChangeNotifier
-{
-  List<Post> _posts = [];
+class PostsProvider with ChangeNotifier {
+  List<Post> _nearbyPosts = [];
   List<Post> _friendPosts = [];
   List<Post> _myPosts = [];
   List<Post> _likedPosts = [];
+  List<Post> _mapViewPosts = [];
 
   String _token;
 
@@ -27,8 +27,12 @@ class PostsProvider with ChangeNotifier
     _token = token;
   }
 
-  List<Post> get posts {
-    return _posts;
+  List<Post> get nearbyPosts {
+    return _nearbyPosts;
+  }
+
+  List<Post> get mapViewPosts {
+    return _mapViewPosts;
   }
 
   List<Post> get friendPosts {
@@ -43,23 +47,30 @@ class PostsProvider with ChangeNotifier
     return _likedPosts;
   }
 
-  Future<List<Post>> fetchPosts({int fetchSize = 5, bool refresh = false}) async {
+  Future<List<Post>> fetchPosts(
+      {int fetchSize = 5,
+      bool refresh = false,
+      LocationPoint location,
+      bool isNearby}) async {
     try {
-      Location locationTracker = Location();
-      LocationData currentLocation = await locationTracker.getLocation();
+      List<Post> posts;
+      if (isNearby) {
+        posts = _nearbyPosts;
+      } else {
+        posts = _mapViewPosts;
+      }
 
-      String url = '${SERVICE_DOMAIN}/allPosts?long=${currentLocation.longitude}&lat=${currentLocation.latitude}';
+      String url =
+          '${SERVICE_DOMAIN}/allPosts?long=${location.longitude}&lat=${location.latitude}';
       if (fetchSize != null) {
         url += '&fetchSize=${fetchSize}';
-        if (_posts.isNotEmpty && !refresh) {
-          url += '&fromId=${_posts.last.id}';
+        if (posts.isNotEmpty && !refresh) {
+          url += '&fromId=${posts.last.id}';
         }
       }
 
-      final res = await http.get(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
-      );
+      final res = await http.get(url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to fetch posts');
@@ -69,25 +80,28 @@ class PostsProvider with ChangeNotifier
       final List<Post> fetchedPosts = _responseDataToPosts(responseData);
 
       if (!refresh) {
-        _posts.addAll(fetchedPosts);
+        posts.addAll(fetchedPosts);
+      } else {
+        posts = fetchedPosts;
       }
-      else {
-        _posts = fetchedPosts;
+
+      if (isNearby) {
+        _nearbyPosts = posts;
+      } else {
+        _mapViewPosts = posts;
       }
 
       notifyListeners();
 
       return fetchedPosts;
-    }
-    catch (error)
-    {
+    } catch (error) {
       throw error;
     }
   }
 
-  Future<void> fetchFriendPosts({int fetchSize = 5, bool refresh = false}) async {
+  Future<void> fetchFriendPosts(
+      {int fetchSize = 5, bool refresh = false}) async {
     try {
-
       String url = '${SERVICE_DOMAIN}/friendPosts';
 
       if (fetchSize != null) {
@@ -97,10 +111,8 @@ class PostsProvider with ChangeNotifier
         }
       }
 
-      final res = await http.get(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
-      );
+      final res = await http.get(url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to fetch posts');
@@ -116,16 +128,13 @@ class PostsProvider with ChangeNotifier
       }
 
       notifyListeners();
-    }
-    catch (error)
-    {
+    } catch (error) {
       throw error;
     }
   }
 
   Future<void> fetchMyPosts({int fetchSize = 5, bool refresh = false}) async {
     try {
-
       String url = '${SERVICE_DOMAIN}/myPosts';
 
       if (fetchSize != null) {
@@ -135,10 +144,8 @@ class PostsProvider with ChangeNotifier
         }
       }
 
-      final res = await http.get(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
-      );
+      final res = await http.get(url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to fetch posts');
@@ -154,14 +161,13 @@ class PostsProvider with ChangeNotifier
       }
 
       notifyListeners();
-    }
-    catch (error)
-    {
+    } catch (error) {
       throw error;
     }
   }
 
-  Future<void> fetchLikedPosts({int fetchSize = 5, bool refresh = false}) async {
+  Future<void> fetchLikedPosts(
+      {int fetchSize = 5, bool refresh = false}) async {
     try {
       String url = '${SERVICE_DOMAIN}/likedPosts';
 
@@ -172,10 +178,8 @@ class PostsProvider with ChangeNotifier
         }
       }
 
-      final res = await http.get(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
-      );
+      final res = await http.get(url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to fetch posts');
@@ -191,9 +195,7 @@ class PostsProvider with ChangeNotifier
       }
 
       notifyListeners();
-    }
-    catch (error)
-    {
+    } catch (error) {
       throw error;
     }
   }
@@ -201,13 +203,10 @@ class PostsProvider with ChangeNotifier
   // deprecated
   Future<void> fetchPostsWithUnnotifiedComment() async {
     try {
-
       String url = '${SERVICE_DOMAIN}/postWithUnnotifiedComment';
 
-      final res = await http.get(
-          url,
-          headers: {...requestHeader, 'Authorization': 'Bearer $_token'}
-      );
+      final res = await http.get(url,
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to fetch posts');
@@ -216,56 +215,60 @@ class PostsProvider with ChangeNotifier
       final responseData = json.decode(res.body) as List<dynamic>;
 
       final List<Post> fetchedPosts = responseData.map((e) {
-
         Map<String, dynamic> userData = e['owner'];
         List<dynamic> postLocation = e['location']['coordinates'];
-        double longitude = postLocation[0] is int ? postLocation[0].toDouble() : postLocation[0];
-        double latitude = postLocation[1] is int ? postLocation[1].toDouble() : postLocation[1];
+        double longitude = postLocation[0] is int
+            ? postLocation[0].toDouble()
+            : postLocation[0];
+        double latitude = postLocation[1] is int
+            ? postLocation[1].toDouble()
+            : postLocation[1];
 
         return Post(
             id: e['_id'],
             user: User(
-                id: userData['_id'],
-                name: userData['name'],
-                avatarUrl: userData['avatarUrl'],
-                birthday: DateTime.parse(userData['birthday']),
+              id: userData['_id'],
+              name: userData['name'],
+              avatarUrl: userData['avatarUrl'],
+              birthday: DateTime.parse(userData['birthday']),
             ),
             postedTimeStamp: DateTime.parse(e['createdAt']),
             photoUrls: e['imageUrls'].cast<String>(),
             content: e['content'],
             postLocation: LocationPoint(longitude, latitude),
             likesCount: e['likesCount'],
-            userLiked: e['userLiked']
-        );
+            userLiked: e['userLiked']);
       }).toList();
 
       // _postsWithUnnotifiedComment = fetchedPosts;
 
       notifyListeners();
-    }
-    catch (error)
-    {
+    } catch (error) {
       throw error;
     }
   }
 
-  Future<void> uploadNewPost(String content, List<String> photoUrls, User loginUser) async {
-
+  Future<void> uploadNewPost(
+      String content, List<String> photoUrls, User loginUser) async {
     try {
       Location locationTracker = Location();
       LocationData currentLocation = await locationTracker.getLocation();
 
       String url = '${SERVICE_DOMAIN}/post';
 
-      final res = await http.post(
-          url,
+      final res = await http.post(url,
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
             'imageUrls': photoUrls,
-            'location': {'type': 'Point', 'coordinates': [currentLocation.longitude, currentLocation.latitude]}
-          })
-      );
+            'location': {
+              'type': 'Point',
+              'coordinates': [
+                currentLocation.longitude,
+                currentLocation.latitude
+              ]
+            }
+          }));
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to post. Please try again later');
@@ -274,21 +277,19 @@ class PostsProvider with ChangeNotifier
       final responseData = json.decode(res.body);
 
       Post createdPost = Post(
-        id: responseData['_id'],
-        user: loginUser,
-        postedTimeStamp: DateTime.parse(responseData['createdAt']),
-        photoUrls: responseData['imageUrls'].cast<String>(),
-        content: responseData['content'],
-        postLocation: LocationPoint(currentLocation.longitude, currentLocation.latitude),
-        likesCount: 0,
-        userLiked: false
-      );
+          id: responseData['_id'],
+          user: loginUser,
+          postedTimeStamp: DateTime.parse(responseData['createdAt']),
+          photoUrls: responseData['imageUrls'].cast<String>(),
+          content: responseData['content'],
+          postLocation: LocationPoint(
+              currentLocation.longitude, currentLocation.latitude),
+          likesCount: 0,
+          userLiked: false);
 
-      _posts.insert(0, createdPost);
+      _nearbyPosts.insert(0, createdPost);
       notifyListeners();
-    }
-    catch (error)
-    {
+    } catch (error) {
       throw error;
     }
   }
@@ -300,30 +301,25 @@ class PostsProvider with ChangeNotifier
     String url = '${SERVICE_DOMAIN}/likePost';
 
     try {
-      final res = await http.post(
-          url,
+      final res = await http.post(url,
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'postId': postId,
             'like': like,
-          })
-      );
+          }));
 
       if (res.statusCode != 200) {
         throw HttpException('Failed like the post. Please try again later');
       }
 
-      _changeLikeInPosts(_posts, postId, like);
+      _changeLikeInPosts(_nearbyPosts, postId, like);
+      _changeLikeInPosts(_mapViewPosts, postId, like);
       _changeLikeInPosts(_friendPosts, postId, like);
       _changeLikeInPosts(_myPosts, postId, like);
       _changeLikeInPosts(_likedPosts, postId, like);
 
       notifyListeners();
-
-    } catch (error) {
-
-    }
-
+    } catch (error) {}
   }
 
   void _changeLikeInPosts(List<Post> posts, String postId, bool like) {
@@ -342,28 +338,27 @@ class PostsProvider with ChangeNotifier
 
   List<Post> _responseDataToPosts(List<dynamic> responseData) {
     final List<Post> fetchedPosts = responseData.map((e) {
-
       Map<String, dynamic> userData = e['owner'];
       List<dynamic> postLocation = e['location']['coordinates'];
-      double longitude = postLocation[0] is int ? postLocation[0].toDouble() : postLocation[0];
-      double latitude = postLocation[1] is int ? postLocation[1].toDouble() : postLocation[1];
+      double longitude =
+          postLocation[0] is int ? postLocation[0].toDouble() : postLocation[0];
+      double latitude =
+          postLocation[1] is int ? postLocation[1].toDouble() : postLocation[1];
 
       return Post(
           id: e['_id'],
           user: User(
-            id: userData['_id'],
-            name: userData['name'],
-            avatarUrl: userData['avatarUrl'],
-            birthday: DateTime.parse(userData['birthday']),
-            introduction: userData['introduction']
-          ),
+              id: userData['_id'],
+              name: userData['name'],
+              avatarUrl: userData['avatarUrl'],
+              birthday: DateTime.parse(userData['birthday']),
+              introduction: userData['introduction']),
           postedTimeStamp: DateTime.parse(e['createdAt']),
           photoUrls: e['imageUrls'].cast<String>(),
           content: e['content'],
           postLocation: LocationPoint(longitude, latitude),
           likesCount: e['likesCount'],
-          userLiked: e['userLiked']
-      );
+          userLiked: e['userLiked']);
     }).toList();
 
     return fetchedPosts;
