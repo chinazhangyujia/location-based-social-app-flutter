@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
 
+/**
+ * classes in the file is deprecated
+ */
 class UserNotification {
   String get avatarUrl {}
 

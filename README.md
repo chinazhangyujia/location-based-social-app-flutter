@@ -1,16 +1,18 @@
 # location_based_social_app
 
-A new Flutter project.
+This is frontend repo for this project
 
-## Getting Started
+Test in simulator:
+# start simulator
+open -a Simulator
+# build and run project in simulator (make sure backend is running)
+flutter run
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Description of folders:
+/dummy_data: json data used to test frontend independently with backend
+/exception: custom defined exception
+/model: classes that represent data fetched from backend server. Basically api call -> json -> instance of classes in this folder
+/provider: global status store for all the data that fetched from backend. Widgets will listen to the change of fields in these classes. Update of fields will trigger rerender. The access layer of service call.
+/screen: screens. Currently the style of screens are from material.dart which means ISO and Android will have same style
+/widget: shared widgets

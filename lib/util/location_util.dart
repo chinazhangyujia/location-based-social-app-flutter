@@ -6,5 +6,3 @@ Future<LocationPoint> getCurrentLocation() async {
   LocationData currentLocation = await locationTracker.getLocation();
   return LocationPoint(currentLocation.longitude, currentLocation.latitude);
 }
-
-const DEFAULT_LOCATION = LocationPoint(-122.048, 37.442);

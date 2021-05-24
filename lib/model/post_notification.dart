@@ -6,6 +6,11 @@ enum NotificationType {
   LIKE
 }
 
+/**
+ * When any other user like or comment on the current user's post
+ * we want to show a red number on the corner of the bell icon on the top right.
+ * This class represents a notification
+ */
 class PostNotification {
   final String id;
   final User sendFrom;

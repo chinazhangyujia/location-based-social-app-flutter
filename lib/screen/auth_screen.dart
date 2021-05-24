@@ -9,6 +9,10 @@ import 'package:validators/validators.dart';
 
 enum AuthMode { Signup, Login }
 
+/**
+ * deprecated
+ * replaced by AuthStepsScreen
+ */
 class AuthScreen extends StatelessWidget {
   static const router = '/auth';
 

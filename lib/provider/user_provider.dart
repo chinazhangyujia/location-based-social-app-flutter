@@ -6,6 +6,9 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
+/**
+ * provider for current loggin user data
+ */
 class UserProvider with ChangeNotifier {
   String _id;
   String _nickname;

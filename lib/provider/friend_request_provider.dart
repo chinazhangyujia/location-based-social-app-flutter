@@ -6,6 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
+/**
+ * provider for friend request
+ */
 class FriendRequestProvider with ChangeNotifier {
   List<FriendRequest> _pendingRequests = [];
 
@@ -133,7 +136,7 @@ class FriendRequestProvider with ChangeNotifier {
   }
 
   /**
-   * Accept or deny request
+   * Accept or reject request
    */
   Future<void> handleRequest(String status, String requestId) async {
     if (status != 'accepted' && status != 'denied') {

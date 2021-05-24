@@ -39,8 +39,7 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
           });
 
           postsProvider
-              .fetchPosts(
-                  refresh: false, location: location, isNearby: false)
+              .fetchPosts(refresh: false, location: location, isNearby: false)
               .then((_) {
             setState(() {
               _loading = false;
@@ -48,11 +47,6 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
           });
         }
       });
-
-      try {
-        postsProvider.fetchPosts(
-            refresh: true, location: location, isNearby: false);
-      } catch (error) {}
     });
   }
 
@@ -91,10 +85,12 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
     String payload = json.encode(
         {'longitude': location.longitude, 'latitude': location.latitude});
     sharedPreferences.setString(MapViewPostsScreen.cacheKey, payload);
+    _selectedLocation = location;
 
-    setState(() {
-      _selectedLocation = location;
-    });
+    try {
+      Provider.of<PostsProvider>(context, listen: false)
+          .fetchPosts(refresh: true, location: location, isNearby: false);
+    } catch (error) {}
   }
 
   void onClickMap(BuildContext context) async {
@@ -113,53 +109,57 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
   Widget build(BuildContext context) {
     List<Post> posts = Provider.of<PostsProvider>(context).mapViewPosts;
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: onRefresh,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ListView.builder(
-              controller: _scrollController,
-              itemCount: posts.length + 1,
-              itemBuilder: (context, index) {
-                if (index == posts.length && _loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (index < posts.length) {
-                  return Column(
-                    children: [PostItem(post: posts[index]), Divider()],
-                  );
-                }
-                return null;
-              }),
-        ),
+      body: Column(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.map,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      'Select on map',
+                      style: TextStyle(fontSize: 25),
+                    )
+                  ],
+                )),
+            onTap: () {
+              onClickMap(context);
+            },
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: onRefresh,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: posts.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == posts.length && _loading) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (index < posts.length) {
+                        return Column(
+                          children: [PostItem(post: posts[index]), Divider()],
+                        );
+                      }
+                      return null;
+                    }),
+              ),
+            ),
+          ),
+        ],
       ),
     );
-
-
-// GestureDetector(
-//           behavior: HitTestBehavior.opaque,
-//           child: Container(
-//               padding: const EdgeInsets.all(10),
-//               alignment: Alignment.centerLeft,
-//               child: Row(
-//                 children: [
-//                   Icon(
-//                     Icons.map,
-//                     size: 30,
-//                   ),
-//                   SizedBox(
-//                     width: 20,
-//                   ),
-//                   Text(
-//                     'Select on map',
-//                     style: TextStyle(fontSize: 25),
-//                   )
-//                 ],
-//               )),
-//           onTap: () {
-//             onClickMap(context);
-//           },
-//         )
   }
 }

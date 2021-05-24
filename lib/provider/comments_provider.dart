@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
+/**
+ * Provider for comments of posts
+ */
 class CommentsProvider with ChangeNotifier {
   Map<String, List<Comment>> _commentsForPost = Map();
 

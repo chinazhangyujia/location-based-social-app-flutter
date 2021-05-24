@@ -8,15 +8,30 @@ import 'package:location_based_social_app/util/config.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:http/http.dart' as http;
 
+/**
+ * Provider for realtime chat data and service call
+ */
 class ChatProvider with ChangeNotifier {
 
+  /**
+   * The list of chat threads in the chat screen.
+   */
   List<ChatThreadSummary> _chatThreadSummaries = [];
 
+  /**
+   * The thread that user currently clicked in
+   */
   String _openingThread;
+  /**
+   * messages in the current thread
+   */
   List<ChatMessage> _messagesForOpeningThread = [];
 
   IOWebSocketChannel _channel;
 
+  /**
+   * User authentication token
+   */
   String _token;
 
   static const Map<String, String> requestHeader = {
@@ -66,6 +81,10 @@ class ChatProvider with ChangeNotifier {
     }
   }
 
+  /**
+   * create web socket with server and listen to it
+   * update message list when hearing from web socket
+   */
   Future<void> connectToThread(User sendTo) async {
 
      _channel = IOWebSocketChannel.connect(
@@ -151,6 +170,9 @@ class ChatProvider with ChangeNotifier {
     _messagesForOpeningThread = [];
   }
 
+  /**
+   * called when user click in any thread
+   */
   Future<void> getMessagesForThread({User chatWith, int fetchSize = 10, bool refresh = false}) async {
 
     if (_channel == null || _openingThread == null) {

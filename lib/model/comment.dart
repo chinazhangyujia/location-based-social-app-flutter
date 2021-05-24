@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/model/user.dart';
 
+/**
+ * comment for a post
+ */
 class Comment {
   final String id;
   final User sendFrom;

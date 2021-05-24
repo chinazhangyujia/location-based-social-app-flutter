@@ -6,6 +6,9 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/util/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/**
+ * The provider for authentication ralated data and sevice call
+ */
 class AuthProvider with ChangeNotifier {
   String _token;
   String _userId;
@@ -26,6 +29,10 @@ class AuthProvider with ChangeNotifier {
     'Content-type': 'application/json',
   };
 
+  /**
+   * when user open this app, we call this method to try to auto sign in.
+   * If success, we show home screen. Otherwise, we will show user login screen.
+   */
   Future<bool> tryAutoLogin() async {
     final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (!sharedPreferences.containsKey('auth_data')) {
