@@ -1,4 +1,4 @@
-const String _PROD_SERVICE_DOMAIN = 'https://location-based-social-app.herokuapp.com'; // deployed service on heroku
+const String _PROD_SERVICE_DOMAIN = 'https://location-based-social-app-0.herokuapp.com'; // deployed service on heroku
 const String _DEV_SERVICE_DOMAIN = 'http://localhost:3000'; // local test service
 
 final String SERVICE_DOMAIN = _DEV_SERVICE_DOMAIN;
