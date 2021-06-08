@@ -15,7 +15,7 @@ class PostHomeScreen extends StatefulWidget {
 
 class _PostHomeScreenState extends State<PostHomeScreen> {
   LocationPoint _currentLocation;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   bool _loading = false;
 
@@ -59,8 +59,8 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
   }
 
   Future<LocationPoint> _initializeLocation() async {
-    Location locationTracker = Location();
-    LocationData currentLocation = await locationTracker.getLocation();
+    final Location locationTracker = Location();
+    final LocationData currentLocation = await locationTracker.getLocation();
     return LocationPoint(currentLocation.longitude, currentLocation.latitude);
   }
 
@@ -79,7 +79,7 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Post> posts = Provider.of<PostsProvider>(context).nearbyPosts;
+    final List<Post> posts = Provider.of<PostsProvider>(context).nearbyPosts;
 
     return Scaffold(
       body: RefreshIndicator(
@@ -91,12 +91,12 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
               itemCount: posts.length + 1,
               itemBuilder: (context, index) {
                 if (index == posts.length && _loading) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else if (index < posts.length) {
                   return Column(
-                    children: [PostItem(post: posts[index]), Divider()],
+                    children: [PostItem(post: posts[index]), const Divider()],
                   );
                 }
                 return null;
@@ -104,10 +104,10 @@ class _PostHomeScreenState extends State<PostHomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).pushNamed(NewPostScreen.router);
         },
+        child: const Icon(Icons.add),
       ),
     );
   }

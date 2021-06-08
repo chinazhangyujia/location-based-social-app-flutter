@@ -24,11 +24,11 @@ class FriendsProvider with ChangeNotifier {
   };
 
   Future<void> getAllFriends() async {
-    String url = '${SERVICE_DOMAIN}/friends';
+    final String url = '$SERVICE_DOMAIN/friends';
 
     try {
       final res = await http.get(
-        url,
+        Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
       );
 
@@ -38,32 +38,32 @@ class FriendsProvider with ChangeNotifier {
 
       final responseData = json.decode(res.body) as List<dynamic>;
 
-      List<User> friends = responseData.map((e) {
-        Map<String, dynamic> friend = e['friendUser'];
+      final List<User> friends = responseData.map((e) {
+        final Map<String, dynamic> friend = e['friendUser'] as Map<String, dynamic>;
 
         return User(
-            id: friend['_id'],
-            name: friend['name'],
-            avatarUrl: friend['avatarUrl'],
-            birthday: DateTime.parse(friend['birthday']),
+            id: friend['_id'] as String,
+            name: friend['name'] as String,
+            avatarUrl: friend['avatarUrl'] as String,
+            birthday: DateTime.parse(friend['birthday'] as String),
         );
       }).toList();
 
-      this._friends = friends;
+      _friends = friends;
 
       notifyListeners();
     }
     catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
   Future<String> getFriendStatus(String targetUserId) async {
-    String url = '${SERVICE_DOMAIN}/friendStatus?user=${targetUserId}';
+    final String url = '$SERVICE_DOMAIN/friendStatus?user=$targetUserId';
 
     try {
       final res = await http.get(
-          url,
+          Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
       );
 
@@ -79,11 +79,11 @@ class FriendsProvider with ChangeNotifier {
   }
 
   Future<void> cancelFriendship(String friendUserId) async {
-    String url = '${SERVICE_DOMAIN}/cancelFriendship';
+    final String url = '$SERVICE_DOMAIN/cancelFriendship';
 
     try {
       final res = await http.post(
-          url,
+          Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'friendUser': friendUserId
@@ -95,13 +95,13 @@ class FriendsProvider with ChangeNotifier {
       }
 
       final responseData = json.decode(res.body) as Map<String, dynamic>;
-      String updatedFriendUserId = responseData['friendUser'];
+      final String updatedFriendUserId = responseData['friendUser'] as String;
 
       _friends.removeWhere((element) => element.id == updatedFriendUserId);
       notifyListeners();
     }
     catch (error) {
-      throw error;
+      rethrow;
     }
   }
 

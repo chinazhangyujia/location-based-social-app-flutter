@@ -1,0 +1,6 @@
+include: package:lint/analysis_options.yaml
+
+linter:
+  rules:
+    sized_box_for_whitespace: false
+    constant_identifier_names: false

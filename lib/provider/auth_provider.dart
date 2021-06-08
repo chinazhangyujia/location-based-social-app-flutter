@@ -6,9 +6,7 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/util/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/**
- * The provider for authentication ralated data and sevice call
- */
+/// The provider for authentication ralated data and sevice call
 class AuthProvider with ChangeNotifier {
   String _token;
   String _userId;
@@ -29,30 +27,28 @@ class AuthProvider with ChangeNotifier {
     'Content-type': 'application/json',
   };
 
-  /**
-   * when user open this app, we call this method to try to auto sign in.
-   * If success, we show home screen. Otherwise, we will show user login screen.
-   */
+  /// when user open this app, we call this method to try to auto sign in.
+  /// If success, we show home screen. Otherwise, we will show user login screen.
   Future<bool> tryAutoLogin() async {
     final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     if (!sharedPreferences.containsKey('auth_data')) {
       return false;
     }
 
-    Map<String, dynamic> authData = json.decode(sharedPreferences.getString('auth_data'));
+    final Map<String, dynamic> authData = json.decode(sharedPreferences.getString('auth_data')) as Map<String, dynamic>;
 
     if (authData['userId'] == null || authData['token'] == null) {
       return false;
     }
 
-    String url = '${SERVICE_DOMAIN}/user/me';
+    final String url = '$SERVICE_DOMAIN/user/me';
     try {
-      final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer ${authData['token']}'});
+      final res = await http.get(Uri.parse(url), headers: {...requestHeader, 'Authorization': 'Bearer ${authData['token']}'});
       final responseData = json.decode(res.body);
 
       if (responseData['_id'] == authData['userId']) {
-        _token = authData['token'];
-        _userId = authData['userId'];
+        _token = authData['token'] as String;
+        _userId = authData['userId'] as String;
         notifyListeners();
         return true;
       }
@@ -66,10 +62,10 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signup(String email, String password, String name, String birthday) async {
-    String url = '${SERVICE_DOMAIN}/user/signup';
+    final String url = '$SERVICE_DOMAIN/user/signup';
 
     try {
-      final res = await http.post(url, body: json.encode({
+      final res = await http.post(Uri.parse(url), body: json.encode({
         'email': email,
         'password': password,
         'name': name,
@@ -78,30 +74,30 @@ class AuthProvider with ChangeNotifier {
 
       final responseData = json.decode(res.body);
       if (res.statusCode != 200) {
-        throw HttpException(responseData['message']);
+        throw HttpException(responseData['message'] as String);
       }
-      _userId = responseData['user']['_id'];
-      _token = responseData['token'];
+      _userId = responseData['user']['_id'] as String;
+      _token = responseData['token'] as String;
 
       notifyListeners();
 
       final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      String payload = json.encode({
+      final String payload = json.encode({
         'userId': _userId,
         'token': _token
       });
       sharedPreferences.setString('auth_data', payload);
 
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
   Future<void> login(String email, String password) async {
-    String url = '${SERVICE_DOMAIN}/user/login';
+    final String url = '$SERVICE_DOMAIN/user/login';
 
     try {
-      final res = await http.post(url, body: json.encode({
+      final res = await http.post(Uri.parse(url), body: json.encode({
         'email': email,
         'password': password,
       }), headers: requestHeader);
@@ -111,13 +107,13 @@ class AuthProvider with ChangeNotifier {
       }
 
       final responseData = json.decode(res.body);
-      _userId = responseData['user']['_id'];
-      _token = responseData['token'];
+      _userId = responseData['user']['_id'] as String;
+      _token = responseData['token'] as String;
 
       notifyListeners();
 
       final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      String payload = json.encode({
+      final String payload = json.encode({
         'userId': _userId,
         'token': _token
       });

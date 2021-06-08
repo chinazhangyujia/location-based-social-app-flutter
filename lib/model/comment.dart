@@ -1,16 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:location_based_social_app/model/user.dart';
 
-/**
- * comment for a post
- */
+/// comment for a post
 class Comment {
   final String id;
   final User sendFrom;
 
-  /**
-   * null if it is a comment to the post
-   */
+  /// null if it is a comment to the post
   final User sendTo;
 
   final String content;

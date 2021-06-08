@@ -14,7 +14,7 @@ class SettingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Column(
         children: [
@@ -29,21 +29,21 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        Text('Unique Name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-                        Spacer(),
-                        Text(userProvider.uniqueName, style: TextStyle(fontSize: 16, color: Colors.black38))
+                        const Text('Unique Name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                        const Spacer(),
+                        Text(userProvider.uniqueName, style: const TextStyle(fontSize: 16, color: Colors.black38))
                       ],
                     )
                   ),
-                  Divider(),
+                  const Divider(),
                   Container(
                     padding: const EdgeInsets.all(5),
                     height: 40,
                     child: Row(
                       children: [
-                        Text('Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                        Spacer(),
-                        Text(userProvider.email, style: TextStyle(fontSize: 16, color: Colors.black38))
+                        const Text('Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                        const Spacer(),
+                        Text(userProvider.email, style: const TextStyle(fontSize: 16, color: Colors.black38))
                       ],
                     )
                   ),
@@ -51,23 +51,23 @@ class SettingScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           Card(
             elevation: 0.5,
             child: InkWell(
+              onTap: () {
+                authProvider.logout();
+                Navigator.of(context).pop();
+              },
               child: Container(
                 width: double.infinity,
                 height: 50,
-                child: Center(
+                child: const Center(
                   child: Text('Log Out',
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
-              onTap: () {
-                authProvider.logout();
-                Navigator.of(context).pop();
-              },
             ),
           )
         ],

@@ -14,7 +14,7 @@ class LikedPostsScreen extends StatefulWidget {
 
 class _LikedPostsScreenState extends State<LikedPostsScreen> {
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   bool _loading = false;
 
@@ -51,19 +51,17 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
   Future<void> fetchPosts() async {
     try {
       Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(refresh: true);
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    PostsProvider postsProvider = Provider.of<PostsProvider>(context);
-    List<Post> posts = postsProvider.likedPosts;
+    final PostsProvider postsProvider = Provider.of<PostsProvider>(context);
+    final List<Post> posts = postsProvider.likedPosts;
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Liked Posts'),
+          title: const Text('Liked Posts'),
           elevation: 0.5,
         ),
         body: RefreshIndicator(
@@ -75,12 +73,12 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
                 itemCount: posts.length + 1,
                 itemBuilder: (context, index) {
                   if (index == posts.length && _loading) {
-                    return Center(child: CircularProgressIndicator(),);
+                    return const Center(child: CircularProgressIndicator(),);
                   } else if (index < posts.length) {
                     return Column(
                       children: [
                         PostItem(post: posts[index], linkToMap: true,),
-                        Divider()
+                        const Divider()
                       ],
                     );
                   }

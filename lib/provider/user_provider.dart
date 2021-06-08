@@ -6,9 +6,7 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
-/**
- * provider for current loggin user data
- */
+/// provider for current loggin user data
 class UserProvider with ChangeNotifier {
   String _id;
   String _nickname;
@@ -55,74 +53,77 @@ class UserProvider with ChangeNotifier {
   };
 
   Future<User> getCurrentUser() async {
-    String url = '${SERVICE_DOMAIN}/user/me';
+    final String url = '$SERVICE_DOMAIN/user/me';
 
     try {
-      final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
+      final res = await http.get(Uri.parse(url),
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
       if (res.statusCode != 200) {
-        throw HttpException('Failed to get login user info. Please try again later');
+        throw HttpException(
+            'Failed to get login user info. Please try again later');
       }
 
       final responseData = json.decode(res.body) as Map<String, dynamic>;
 
-      _id = responseData['_id'];
-      _uniqueName = responseData['uniqueName'];
-      _nickname = responseData['name'];
-      _email = responseData['email'];
-      _birthday = DateTime.parse(responseData['birthday']);
-      _introduction = responseData['introduction'];
-      _avatarUrl = responseData['avatarUrl'];
+      _id = responseData['_id'] as String;
+      _uniqueName = responseData['uniqueName'] as String;
+      _nickname = responseData['name'] as String;
+      _email = responseData['email'] as String;
+      _birthday = DateTime.parse(responseData['birthday'] as String);
+      _introduction = responseData['introduction'] as String;
+      _avatarUrl = responseData['avatarUrl'] as String;
 
-      if (_uniqueName == null || _nickname == null || _email == null || _birthday == null) {
+      if (_uniqueName == null ||
+          _nickname == null ||
+          _email == null ||
+          _birthday == null) {
         throw HttpException('Failed to get user info. Please try later');
       }
 
       notifyListeners();
 
-      return User(id: _id,
-        name: _nickname,
-        avatarUrl: _avatarUrl,
-        birthday: _birthday,
-        introduction: _introduction
-      );
-
+      return User(
+          id: _id,
+          name: _nickname,
+          avatarUrl: _avatarUrl,
+          birthday: _birthday,
+          introduction: _introduction);
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
-  Future<void> updateUserInfo({String selfIntroduction, String avatarUrl}) async {
-    String url = '${SERVICE_DOMAIN}/user/updateUserInfo';
+  Future<void> updateUserInfo(
+      {String selfIntroduction, String avatarUrl}) async {
+    final String url = '$SERVICE_DOMAIN/user/updateUserInfo';
+    String inputIntroduction;
 
     // when user update avatar, the self intro will be null. We don't change it.
     // when user remove self intro, the self intro will be passed in as empty string.
     if (selfIntroduction == null) {
-      selfIntroduction = _introduction;
-    }
-    else if (selfIntroduction.trim().isEmpty) {
-      selfIntroduction = null;
+      inputIntroduction = _introduction;
+    } else if (selfIntroduction.trim().isEmpty) {
+      inputIntroduction = null;
+    } else {
+      inputIntroduction = selfIntroduction;
     }
 
-    final res = await http.post(
-        url,
+    final res = await http.post(Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
-        body: json.encode({
-          'intro': selfIntroduction,
-          'avatarUrl': avatarUrl
-        })
-    );
+        body: json.encode({'intro': inputIntroduction, 'avatarUrl': avatarUrl}));
 
     if (res.statusCode != 200) {
       throw HttpException('Failed to update user info. Please try again later');
     }
 
     final responseData = json.decode(res.body);
-    if ((selfIntroduction != null || avatarUrl != null) && (responseData['nModified'] != 1 || responseData['ok'] != 1)) {
+    if ((inputIntroduction != null || avatarUrl != null) &&
+        (responseData['nModified'] != 1 || responseData['ok'] != 1)) {
       throw HttpException('Failed to update user info. Please try again later');
     }
 
-    if (_introduction != selfIntroduction) {
-      _introduction = selfIntroduction;
+    if (_introduction != inputIntroduction) {
+      _introduction = inputIntroduction;
     }
 
     if (avatarUrl != null) {
@@ -133,15 +134,15 @@ class UserProvider with ChangeNotifier {
   }
 
   Future<User> getUserByUniqueName(String uniqueName) async {
-    String url = '${SERVICE_DOMAIN}/userByUniqueName/$uniqueName';
+    final String url = '$SERVICE_DOMAIN/userByUniqueName/$uniqueName';
 
     try {
-      final res = await http.get(url, headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
+      final res = await http.get(Uri.parse(url),
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
         throw HttpException('Failed to find user. Please try again later');
       }
-
 
       if (res.body == null || res.body.isEmpty) {
         return null;
@@ -153,31 +154,34 @@ class UserProvider with ChangeNotifier {
         return null;
       }
 
-      String id = responseData['_id'];
-      String uniqueName = responseData['uniqueName'];
-      String nickname = responseData['name'];
-      String email = responseData['email'];
-      DateTime birthday = DateTime.parse(responseData['birthday']);
-      String introduction = responseData['introduction'];
-      String friendStatus = responseData['friendStatus'];
-      String avatarUrl = responseData['avatarUrl'];
+      final String id = responseData['_id'] as String;
+      final String uniqueName = responseData['uniqueName'] as String;
+      final String nickname = responseData['name'] as String;
+      final String email = responseData['email'] as String;
+      final DateTime birthday = DateTime.parse(responseData['birthday'] as String);
+      final String introduction = responseData['introduction'] as String;
+      final String friendStatus = responseData['friendStatus'] as String;
+      final String avatarUrl = responseData['avatarUrl'] as String;
 
-      if (uniqueName == null || nickname == null || email == null || birthday == null || friendStatus == null) {
+      if (uniqueName == null ||
+          nickname == null ||
+          email == null ||
+          birthday == null ||
+          friendStatus == null) {
         throw HttpException('Failed to find user. Please try later');
       }
 
-      User fetchedUser = User(id: id,
+      final User fetchedUser = User(
+          id: id,
           name: nickname,
           avatarUrl: avatarUrl,
           birthday: birthday,
           introduction: introduction,
-          metaData: {'friendStatus': friendStatus }
-      );
+          metaData: {'friendStatus': friendStatus});
 
       return fetchedUser;
-
     } catch (error) {
-      throw error;
+      rethrow;
     }
   }
 }

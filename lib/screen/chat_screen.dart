@@ -70,9 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> sendMessage(BuildContext context) async {
     User loginUser = Provider.of<UserProvider>(context, listen: false).loginUser;
-    if (loginUser == null) {
-      loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
-    }
+    loginUser ??= await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
 
     _chatProvider.sendMessage(loginUser, _chatWith, _textController.text);
     _textController.clear();
@@ -100,11 +98,11 @@ class _ChatScreenState extends State<ChatScreen> {
               behavior: HitTestBehavior.opaque,
               child: ListView.builder(
                 controller: _scrollController,
-                padding: EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(10.0),
                 itemCount: chatMessages.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return SizedBox(
+                    return const SizedBox(
                       height: 70,
                     );
                   }
@@ -133,20 +131,20 @@ class _ChatScreenState extends State<ChatScreen> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 1,
                           blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
+                          offset: const Offset(0, 3), // changes position of shadow
                         ),
                       ]
                   ),
-                  padding: EdgeInsets.only(bottom: 15, top: 13, left: 10, right: 10),
+                  padding: const EdgeInsets.only(bottom: 15, top: 13, left: 10, right: 10),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
+                    constraints: const BoxConstraints(
                         minHeight: 40,
                         maxHeight: 100
                     ),
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color.fromRGBO(244, 244, 244, 1)
+                          color: const Color.fromRGBO(244, 244, 244, 1)
                       ),
                       child: TextField(
                         focusNode: _textFieldFocusNode,
@@ -155,14 +153,14 @@ class _ChatScreenState extends State<ChatScreen> {
                           sendMessage(context);
                         },
                         controller: _textController,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16
                         ),
                         textAlignVertical: TextAlignVertical.center,
                         keyboardType: TextInputType.multiline,
                         maxLines: null,
                         textInputAction: TextInputAction.send,
-                        decoration: new InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: "Type a message...",
                           hintStyle: TextStyle(
                               fontSize: 16

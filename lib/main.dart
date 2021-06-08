@@ -68,21 +68,21 @@ class MyApp extends StatelessWidget {
         title: "PlotOfBeach",
         theme: ThemeData(
           primarySwatch: const MaterialColor(0xFFFFFEE5,
-            const <int, Color>{
-              50: const Color(0xFFFFFEE5),
-              100: const Color(0xFFFFFEE5),
-              200: const Color(0xFFFFFEE5),
-              300: const Color(0xFFFFFEE5),
-              400: const Color(0xFFFFFEE5),
-              500: const Color(0xFFFFFEE5),
-              600: const Color(0xFFFFFEE5),
-              700: const Color(0xFFFFFEE5),
-              800: const Color(0xFFFFFEE5),
-              900: const Color(0xFFFFFEE5),
+            <int, Color>{
+              50: Color(0xFFFFFEE5),
+              100: Color(0xFFFFFEE5),
+              200: Color(0xFFFFFEE5),
+              300: Color(0xFFFFFEE5),
+              400: Color(0xFFFFFEE5),
+              500: Color(0xFFFFFEE5),
+              600: Color(0xFFFFFEE5),
+              700: Color(0xFFFFFEE5),
+              800: Color(0xFFFFFEE5),
+              900: Color(0xFFFFFEE5),
             },),
-          accentColor: Color.fromRGBO(66, 103, 178, 1),
+          accentColor: const Color.fromRGBO(66, 103, 178, 1),
           fontFamily: 'OpenSans',
-          primaryTextTheme: TextTheme(
+          primaryTextTheme: const TextTheme(
             headline6: TextStyle(fontFamily: 'Montserrat', fontWeight: FontWeight.w500, fontSize: 23),
           )
         ),

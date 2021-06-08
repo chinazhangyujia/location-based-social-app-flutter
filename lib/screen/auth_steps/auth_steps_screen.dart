@@ -17,11 +17,11 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
   String _path;
   int _currentStep = 0;
 
-  Map<String, String> _signInData = {
+  final Map<String, String> _signInData = {
     'email': '',
     'password': '',
   };
-  Map<String, String> _signUpData = {
+  final Map<String, String> _signUpData = {
     'email': '',
     'password': '',
     'nickname': '',
@@ -35,7 +35,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
   }
 
   void _submitForSignIn(BuildContext context) async {
-    AuthProvider authProvider =
+    final AuthProvider authProvider =
         Provider.of<AuthProvider>(context, listen: false);
 
     try {
@@ -48,7 +48,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
   }
 
   void _submitForSignUp(BuildContext context) async {
-    AuthProvider authProvider =
+    final AuthProvider authProvider =
         Provider.of<AuthProvider>(context, listen: false);
 
     try {
@@ -87,7 +87,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, List<Widget>> _steps = {
+    final Map<String, List<Widget>> _steps = {
       'signin': [
         EmailAndPassword(
             _setPath, (_) {}, _setEmailAndPasswordSignIn, _submitForSignIn)

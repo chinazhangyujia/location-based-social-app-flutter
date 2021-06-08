@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/user.dart';
@@ -38,8 +36,8 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
 
   Future<void> onSendUniqueName(BuildContext context) async {
     try {
-      String uniqueName = textController.text;
-      User userByUniqueName = await Provider.of<UserProvider>(context, listen: false)
+      final String uniqueName = textController.text;
+      final User userByUniqueName = await Provider.of<UserProvider>(context, listen: false)
           .getUserByUniqueName(uniqueName);
 
       setState(() {
@@ -88,10 +86,10 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
 
   Widget _getBottomSheet(BuildContext context, User targetUser) {
     String text;
-    Function onClick;
+    void Function() onClick;
     Icon icon;
     Color color;
-    final double size = 24;
+    const double size = 24;
     if (deleteRequestSent) {
       text = null;
       icon = null;
@@ -164,7 +162,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.chat_bubble_outline, color: Theme.of(context).accentColor,),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     Text('Message',
                       style: TextStyle(
                           fontSize: 22,
@@ -184,7 +182,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     icon,
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     Text(text,
                       style: TextStyle(
                           fontSize: 22,
@@ -212,9 +210,9 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: Text('Search'),
+        title: const Text('Search'),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(55),
+          preferredSize: const Size.fromHeight(55),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: Container(
@@ -222,7 +220,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
               height: 37,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
-                color: Color.fromRGBO(244, 244, 244, 1)
+                color: const Color.fromRGBO(244, 244, 244, 1)
               ),
               child: TextField(
                 onSubmitted: (_) {
@@ -233,7 +231,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                 textAlignVertical: TextAlignVertical.center,
                 textAlign: TextAlign.center,
                 textInputAction: TextInputAction.send,
-                decoration: new InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   enabledBorder: InputBorder.none,

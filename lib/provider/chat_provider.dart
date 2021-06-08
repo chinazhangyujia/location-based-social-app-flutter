@@ -8,30 +8,20 @@ import 'package:location_based_social_app/util/config.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:http/http.dart' as http;
 
-/**
- * Provider for realtime chat data and service call
- */
+/// Provider for realtime chat data and service call
 class ChatProvider with ChangeNotifier {
 
-  /**
-   * The list of chat threads in the chat screen.
-   */
+  /// The list of chat threads in the chat screen.
   List<ChatThreadSummary> _chatThreadSummaries = [];
 
-  /**
-   * The thread that user currently clicked in
-   */
+  /// The thread that user currently clicked in
   String _openingThread;
-  /**
-   * messages in the current thread
-   */
+  /// messages in the current thread
   List<ChatMessage> _messagesForOpeningThread = [];
 
   IOWebSocketChannel _channel;
 
-  /**
-   * User authentication token
-   */
+  /// User authentication token
   String _token;
 
   static const Map<String, String> requestHeader = {
@@ -56,10 +46,10 @@ class ChatProvider with ChangeNotifier {
 
   Future<void> getAllThreadSummaries() async {
     try {
-      String url = '${SERVICE_DOMAIN}/chatThreadSummaries';
+      final String url = '$SERVICE_DOMAIN/chatThreadSummaries';
 
       final res = await http.get(
-        url,
+        Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
       );
 
@@ -69,55 +59,49 @@ class ChatProvider with ChangeNotifier {
 
       final responseData = json.decode(res.body) as List<dynamic>;
 
-      List<ChatThreadSummary> chatThreadSummaries = responseData.map((e) {
-        return _convertResponseToThreadSummary(e);
+      final List<ChatThreadSummary> chatThreadSummaries = responseData.map((e) {
+        return _convertResponseToThreadSummary(e as Map<String, dynamic>);
       }).toList();
 
       _chatThreadSummaries = chatThreadSummaries;
       notifyListeners();
     }
-    catch (e) {
-
-    }
+    catch (e) {}
   }
 
-  /**
-   * create web socket with server and listen to it
-   * update message list when hearing from web socket
-   */
+  /// create web socket with server and listen to it
+  /// update message list when hearing from web socket
   Future<void> connectToThread(User sendTo) async {
 
      _channel = IOWebSocketChannel.connect(
-        '${WEBSOCKET_DOMAIN}/chat?chatWith=${sendTo.id}',
+        '$WEBSOCKET_DOMAIN/chat?chatWith=${sendTo.id}',
         headers: {
           'Authorization': 'Bearer $_token'
         }
      );
 
      _channel.stream.listen((event) {
-       final responseData = json.decode(event) as Map<String, dynamic>;
+       final responseData = json.decode(event as String) as Map<String, dynamic>;
 
-       String type = responseData['type'];
+       final String type = responseData['type'] as String;
        if (type == 'thread') {
-         _openingThread = responseData['thread']['_id'];
+         _openingThread = responseData['thread']['_id'] as String;
        } else if (type == 'message') {
 
-         ChatMessage newMessage = _convertResponseToChatMessage(responseData);
+         final ChatMessage newMessage = _convertResponseToChatMessage(responseData);
          _appendComingMessage(_openingThread, newMessage);
          notifyListeners();
        }
 
      }, onError: (error) {
-       print('error happens');
        _openingThread = null;
      }, onDone: () {
-       print('connection done');
        _openingThread = null;
      });
 
      int waitForThreadMS = 3000;
      while (_openingThread == null && waitForThreadMS > 0) {
-       await Future.delayed(Duration(milliseconds: 10));
+       await Future.delayed(const Duration(milliseconds: 10));
        waitForThreadMS -= 10;
      }
 
@@ -170,9 +154,7 @@ class ChatProvider with ChangeNotifier {
     _messagesForOpeningThread = [];
   }
 
-  /**
-   * called when user click in any thread
-   */
+  /// called when user click in any thread
   Future<void> getMessagesForThread({User chatWith, int fetchSize = 10, bool refresh = false}) async {
 
     if (_channel == null || _openingThread == null) {
@@ -184,14 +166,14 @@ class ChatProvider with ChangeNotifier {
     }
 
     try {
-      String url = '${SERVICE_DOMAIN}/chatMessage?thread=$_openingThread&fetchSize=$fetchSize';
+      String url = '$SERVICE_DOMAIN/chatMessage?thread=$_openingThread&fetchSize=$fetchSize';
 
       if (_messagesForOpeningThread.isNotEmpty && !refresh) {
         url += '&fromId=${_messagesForOpeningThread.last.id}';
       }
 
       final res = await http.get(
-        url,
+        Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
       );
 
@@ -202,7 +184,7 @@ class ChatProvider with ChangeNotifier {
       final responseData = json.decode(res.body) as List<dynamic>;
 
       final List<ChatMessage> fetchedChatMessages = responseData.map((e) {
-        return _convertResponseToChatMessage(e);
+        return _convertResponseToChatMessage(e as Map<String, dynamic>);
       }).toList();
 
       if (refresh) {
@@ -213,15 +195,13 @@ class ChatProvider with ChangeNotifier {
 
       notifyListeners();
     }
-    catch (e) {
-      print(e);
-    }
+    catch (e) {}
   }
 
   void _appendComingMessage(String thread, ChatMessage newMessage) {
     _messagesForOpeningThread.insert(0, newMessage);
 
-    ChatThreadSummary effectedSummary = _chatThreadSummaries.firstWhere((element) => element.threadId == thread, orElse: () => null);
+    final ChatThreadSummary effectedSummary = _chatThreadSummaries.firstWhere((element) => element.threadId == thread, orElse: () => null);
     if (effectedSummary == null) {
       return;
     }
@@ -231,46 +211,46 @@ class ChatProvider with ChangeNotifier {
   }
 
   ChatThreadSummary _convertResponseToThreadSummary(Map<String, dynamic> responseData) {
-    Map<String, dynamic> chatWithData = responseData['chatWith'];
-    User chatWith = User(
-        id: chatWithData['_id'],
-        name: chatWithData['name'],
-        avatarUrl: chatWithData['avatarUrl'],
-        birthday: DateTime.parse(chatWithData['birthday']),
-        introduction: chatWithData['introduction']);
+    final Map<String, dynamic> chatWithData = responseData['chatWith'] as Map<String, dynamic>;
+    final User chatWith = User(
+        id: chatWithData['_id'] as String,
+        name: chatWithData['name'] as String,
+        avatarUrl: chatWithData['avatarUrl'] as String,
+        birthday: DateTime.parse(chatWithData['birthday'] as String),
+        introduction: chatWithData['introduction'] as String);
 
     return ChatThreadSummary(
       chatWith: chatWith,
-      lastMessage: responseData['lastMessage'],
-      lastMessageSentAt: DateTime.parse(responseData['createdAt']),
-      threadId: responseData['_id']
+      lastMessage: responseData['lastMessage'] as String,
+      lastMessageSentAt: DateTime.parse(responseData['createdAt'] as String),
+      threadId: responseData['_id'] as String
     );
   }
 
   ChatMessage _convertResponseToChatMessage(Map<String, dynamic> responseData) {
-    Map<String, dynamic> sendToData = responseData['sendTo'];
-    User sendTo = User(
-        id: sendToData['_id'],
-        name: sendToData['name'],
-        avatarUrl: sendToData['avatarUrl'],
-        birthday: DateTime.parse(sendToData['birthday']),
-        introduction: sendToData['introduction']);
+    final Map<String, dynamic> sendToData = responseData['sendTo'] as Map<String, dynamic>;
+    final User sendTo = User(
+        id: sendToData['_id'] as String,
+        name: sendToData['name'] as String,
+        avatarUrl: sendToData['avatarUrl'] as String,
+        birthday: DateTime.parse(sendToData['birthday'] as String),
+        introduction: sendToData['introduction'] as String);
 
-    Map<String, dynamic> sendFromData = responseData['sendFrom'];
-    User sendFrom = User(
-        id: sendFromData['_id'],
-        name: sendFromData['name'],
-        avatarUrl: sendFromData['avatarUrl'],
-        birthday: DateTime.parse(sendFromData['birthday']),
-        introduction: sendFromData['introduction']);
+    final Map<String, dynamic> sendFromData = responseData['sendFrom'] as Map<String, dynamic>;
+    final User sendFrom = User(
+        id: sendFromData['_id'] as String,
+        name: sendFromData['name'] as String,
+        avatarUrl: sendFromData['avatarUrl'] as String,
+        birthday: DateTime.parse(sendFromData['birthday'] as String),
+        introduction: sendFromData['introduction'] as String);
 
     return ChatMessage(
-        id: responseData['_id'],
-        threadId: responseData['chatThread'],
+        id: responseData['_id'] as String,
+        threadId: responseData['chatThread'] as String,
         sendFrom: sendFrom,
         sendTo: sendTo,
-        content: responseData['content'],
-        sendTime: DateTime.parse(responseData['createdAt'])
+        content: responseData['content'] as String,
+        sendTime: DateTime.parse(responseData['createdAt'] as String)
     );
   }
 
@@ -285,7 +265,7 @@ class ChatProvider with ChangeNotifier {
 
     int waitForThreadMS = 3000;
     while (_openingThread == null && waitForThreadMS > 0) {
-      await Future.delayed(Duration(milliseconds: 10));
+      await Future.delayed(const Duration(milliseconds: 10));
       waitForThreadMS -= 10;
     }
 

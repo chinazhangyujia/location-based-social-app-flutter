@@ -7,7 +7,7 @@ class PostMetaDataBar extends StatelessWidget {
   final bool userLiked;
   final String postId;
 
-  PostMetaDataBar({@required this.likesCount, @required this.userLiked, @required this.postId});
+  const PostMetaDataBar({@required this.likesCount, @required this.userLiked, @required this.postId});
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +18,13 @@ class PostMetaDataBar extends StatelessWidget {
           Row(
             children: [
               InkWell(
-                child: userLiked ? Icon(Icons.favorite, color: Colors.red,) : Icon(Icons.favorite_border,),
                 onTap: () {
                   Provider.of<PostsProvider>(context, listen: false).likePost(postId, !userLiked);
                 },
+                child: userLiked ? const Icon(Icons.favorite, color: Colors.red,) : const Icon(Icons.favorite_border,),
               ),
-              SizedBox(width: 5,),
-              if (likesCount > 0) Text('${likesCount} likes', style: TextStyle(fontSize: 16),)
+              const SizedBox(width: 5,),
+              if (likesCount > 0) Text('$likesCount likes', style: const TextStyle(fontSize: 16),)
             ],
           )
         ],

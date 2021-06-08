@@ -27,14 +27,12 @@ class _ChatThreadsScreenState extends State<ChatThreadsScreen> {
       await Provider.of<ChatProvider>(context, listen: false).connectToThread(
           chatWith);
       Navigator.of(context).pushNamed(ChatScreen.router, arguments: chatWith);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    List<ChatThreadSummary> chatThreadSummaries = Provider.of<ChatProvider>(context).chatThreadSummaries;
+    final List<ChatThreadSummary> chatThreadSummaries = Provider.of<ChatProvider>(context).chatThreadSummaries;
 
     return Scaffold(
       body: Padding(
@@ -50,7 +48,7 @@ class _ChatThreadsScreenState extends State<ChatThreadsScreen> {
                 },
                 child: ChatThreadSummaryItem(chatThreadSummaries[index])
               ),
-              Divider()
+              const Divider()
             ],
           )
         ),

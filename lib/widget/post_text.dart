@@ -5,11 +5,11 @@ class PostText extends StatelessWidget {
 
   final String postText;
 
-  PostText(this.postText);
+  const PostText(this.postText);
 
   @override
   Widget build(BuildContext context) {
-    bool shouldCollapse = postText.length > 300;
+    final bool shouldCollapse = postText.length > 300;
     
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -23,12 +23,12 @@ class PostText extends StatelessWidget {
                 Text(
                   postText, softWrap: true,
                   maxLines: shouldCollapse ? 5 : null,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18
                   ),
                 ),
                 if (shouldCollapse) ExpandableButton(
-                  child: Text(
+                  child: const Text(
                     'Show More',
                     style: TextStyle(color: Colors.grey, fontSize: 18),
                   ),
@@ -39,7 +39,7 @@ class PostText extends StatelessWidget {
           expanded: Text(
             postText,
             softWrap: true,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18
             ),
           ),

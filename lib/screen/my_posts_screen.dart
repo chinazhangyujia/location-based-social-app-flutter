@@ -14,7 +14,7 @@ class MyPostsScreen extends StatefulWidget {
 
 class _MyPostsScreenState extends State<MyPostsScreen> {
 
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   bool _loading = false;
 
@@ -51,19 +51,17 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
   Future<void> fetchPosts() async {
     try {
       Provider.of<PostsProvider>(context, listen: false).fetchMyPosts(refresh: true);
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    PostsProvider postsProvider = Provider.of<PostsProvider>(context);
-    List<Post> posts = postsProvider.myPosts;
+    final PostsProvider postsProvider = Provider.of<PostsProvider>(context);
+    final List<Post> posts = postsProvider.myPosts;
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('My Posts'),
+          title: const Text('My Posts'),
           elevation: 0.5,
         ),
         body: RefreshIndicator(
@@ -75,12 +73,12 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
                 itemCount: posts.length + 1,
                 itemBuilder: (context, index) {
                   if (index == posts.length && _loading) {
-                    return Center(child: CircularProgressIndicator(),);
+                    return const Center(child: CircularProgressIndicator(),);
                   } else if (index < posts.length) {
                     return Column(
                       children: [
                         PostItem(post: posts[index], linkToMap: true,),
-                        Divider()
+                        const Divider()
                       ],
                     );
                   }

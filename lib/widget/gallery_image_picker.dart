@@ -12,13 +12,13 @@ class GalleryImagePicker extends StatelessWidget {
   GalleryImagePicker(this.pickedImages, this.onAddImage);
 
   Future<void> pickImage(BuildContext context) async {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
 
     if (pickedImages.length >= 6) {
       return;
     }
 
-    PickedFile pickedImage = await imagePicker.getImage(
+    final PickedFile pickedImage = await imagePicker.getImage(
       source: ImageSource.gallery,
       maxWidth: 500
     );
@@ -35,7 +35,7 @@ class GalleryImagePicker extends StatelessWidget {
     return GridView(
       primary: false,
       shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         childAspectRatio: 1,
         crossAxisSpacing: 5,
@@ -66,7 +66,7 @@ class GalleryImagePicker extends StatelessWidget {
                 border: Border.all(width: 1, color: Colors.grey),
                 borderRadius: BorderRadius.circular(10)
             ),
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         )
       ],

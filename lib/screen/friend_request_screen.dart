@@ -11,10 +11,10 @@ class FriendRequestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<FriendRequest> requests = Provider.of<FriendRequestProvider>(context).pendingRequests;
+    final List<FriendRequest> requests = Provider.of<FriendRequestProvider>(context).pendingRequests;
 
     final FriendRequestProvider friendRequestProvider = Provider.of<FriendRequestProvider>(context, listen: false);
-    List<String> unnotifiedFriendRequestIds = friendRequestProvider.unnotifiedRequests.map((e) => e.id).toList();
+    final List<String> unnotifiedFriendRequestIds = friendRequestProvider.unnotifiedRequests.map((e) => e.id).toList();
     if (unnotifiedFriendRequestIds.isNotEmpty) {
       friendRequestProvider.markRequestsAsNotified(unnotifiedFriendRequestIds);
     }
@@ -22,15 +22,15 @@ class FriendRequestScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: Text('New Friends'),
+        title: const Text('New Friends'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: ListView.builder(
           itemCount: requests.length,
           itemBuilder: (context, index) {
-            User sendFrom = requests[index].sendFrom;
-            String requestId = requests[index].id;
+            final User sendFrom = requests[index].sendFrom;
+            final String requestId = requests[index].id;
 
             return FriendRequestCard(sendFrom, requestId);
           }

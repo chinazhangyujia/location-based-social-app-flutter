@@ -6,7 +6,7 @@ class EmailAndPassword extends StatefulWidget {
   final void Function(String, String) _setEmailAndPassword;
   final void Function(BuildContext) _submit;
 
-  EmailAndPassword(
+  const EmailAndPassword(
       this._setPath, this._setStep, this._setEmailAndPassword, this._submit);
 
   @override
@@ -31,7 +31,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
   }
 
   void _onClickNext(BuildContext context) {
-    String inputError = _getInputError();
+    final String inputError = _getInputError();
     if (inputError != null) {
       setState(() {
         _errorMessage = inputError;
@@ -51,65 +51,63 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
         SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 150,
               ),
-              Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Text(
-                        'Email',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      'Email',
+                      style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(width: 2)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(width: 2)),
-                          filled: true,
-                          fillColor: Colors.white),
-                      style: TextStyle(fontSize: 20),
-                      cursorColor: Colors.blue,
-                      keyboardType: TextInputType.emailAddress,
-                      onChanged: (value) {
-                        _email = value;
-                      },
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: const BorderSide(width: 2)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: const BorderSide(width: 2)),
+                        filled: true,
+                        fillColor: Colors.white),
+                    style: const TextStyle(fontSize: 20),
+                    cursorColor: Colors.blue,
+                    keyboardType: TextInputType.emailAddress,
+                    onChanged: (value) {
+                      _email = value;
+                    },
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      'Password',
+                      style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Text(
-                        'Password',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(width: 2)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(width: 2)),
-                          filled: true,
-                          fillColor: Colors.white),
-                      style: TextStyle(fontSize: 20),
-                      cursorColor: Colors.blue,
-                      obscureText: true,
-                      onChanged: (value) {
-                        _password = value;
-                      },
-                    )
-                  ],
-                ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: const BorderSide(width: 2)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: const BorderSide(width: 2)),
+                        filled: true,
+                        fillColor: Colors.white),
+                    style: const TextStyle(fontSize: 20),
+                    cursorColor: Colors.blue,
+                    obscureText: true,
+                    onChanged: (value) {
+                      _password = value;
+                    },
+                  )
+                ],
               ),
               Container(
                   alignment: Alignment.centerLeft,
@@ -123,28 +121,30 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                               color: Theme.of(context).errorColor),
                         )
                       : null),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               Container(
                 alignment: Alignment.topCenter,
-                child: RaisedButton(
-                  child: Text(
+                child: ElevatedButton(
+                  onPressed: () {
+                    _onClickNext(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding:
+                      const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                    primary: Theme.of(context).accentColor,
+                  ),
+                  child: const Text(
                     'Next',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                         fontSize: 20),
                   ),
-                  onPressed: () {
-                    _onClickNext(context);
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                  color: Theme.of(context).accentColor,
                 ),
               ),
             ],

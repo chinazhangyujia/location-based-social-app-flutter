@@ -32,8 +32,8 @@ class _PostLocationMapViewScreenState extends State<PostLocationMapViewScreen> {
     super.dispose();
   }
 
-  void initMap() async {
-    await mapController.animateCamera(CameraUpdate.newLatLngZoom(
+  void initMap() {
+    mapController.animateCamera(CameraUpdate.newLatLngZoom(
       LatLng(postLocation.latitude, postLocation.longitude),
       widget.zoom
     ));
@@ -43,7 +43,7 @@ class _PostLocationMapViewScreenState extends State<PostLocationMapViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Post Location'),
+        title: const Text('Post Location'),
         elevation: 0.5,
       ),
       body: GoogleMap(
@@ -57,7 +57,7 @@ class _PostLocationMapViewScreenState extends State<PostLocationMapViewScreen> {
         },
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-        markers: Set.from([Marker(markerId: MarkerId('1'), position: LatLng(postLocation.latitude, postLocation.longitude))]),
+        markers: {Marker(markerId: MarkerId('1'), position: LatLng(postLocation.latitude, postLocation.longitude))},
       ),
     );
   }

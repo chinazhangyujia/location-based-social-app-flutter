@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/comment.dart';
@@ -52,14 +50,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   void onSendComment(BuildContext context, String postId) async {
-    String commentContent = textController.text.trim();
+    final String commentContent = textController.text.trim();
     if (commentContent.isEmpty) {
       textController.clear();
       return;
     }
 
     try {
-      User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
+      final User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
 
       if (_atUser != null) {
         await Provider.of<CommentsProvider>(context, listen: false).postComment(
@@ -118,12 +116,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
 
-    List<Comment> comments = Provider.of<CommentsProvider>(context).getCommentsForPost(post.id);
+    final List<Comment> comments = Provider.of<CommentsProvider>(context).getCommentsForPost(post.id);
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: Text('detail'),
+        title: const Text('detail'),
       ),
       body: Container(
         height: double.infinity,
@@ -136,28 +134,28 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               behavior: HitTestBehavior.opaque,
               child: SingleChildScrollView(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
                   width: double.infinity,
                   child: Column(
                     children: [
                       PostItem(post: post, disableClick: true,),
-                      if (comments.isNotEmpty) SizedBox(height: 15,),
+                      if (comments.isNotEmpty) const SizedBox(height: 15,),
                       if (comments.isNotEmpty) Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Comments (${comments.length})',
-                              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                             ),
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10,),
                             ...comments.map((e) => Column(
                               children: [
                                 CommentItem(
                                   comment: e,
                                   onClickComment: onClickComment,
                                 ),
-                                Divider()
+                                const Divider()
                               ],
                             )).toList()
                           ],
@@ -183,20 +181,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 1,
                       blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
                   ]
                 ),
-                padding: EdgeInsets.only(bottom: 15, top: 13, left: 10, right: 10),
+                padding: const EdgeInsets.only(bottom: 15, top: 13, left: 10, right: 10),
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
+                  constraints: const BoxConstraints(
                     minHeight: 40,
                     maxHeight: 100
                   ),
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Color.fromRGBO(244, 244, 244, 1)
+                        color: const Color.fromRGBO(244, 244, 244, 1)
                     ),
                     child: TextField(
                       focusNode: textFieldFocusNode,
@@ -205,25 +203,25 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         onSendComment(context, post.id);
                       },
                       controller: textController,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16
                       ),
                       textAlignVertical: TextAlignVertical.center,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
                       textInputAction: TextInputAction.send,
-                      decoration: new InputDecoration(
+                      decoration: InputDecoration(
                         prefix: _atUser != null ? Text('@${_atUser.name} ', style: TextStyle(color: Theme.of(context).accentColor),) : null,
                         // filled: true,
                         hintText: _atUser != null ? null : "... Add comment",
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           fontSize: 16
                         ),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         errorBorder: InputBorder.none,
                         disabledBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                        contentPadding: const EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
                       ),
                     ),
                   ),

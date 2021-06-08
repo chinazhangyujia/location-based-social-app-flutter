@@ -6,9 +6,12 @@ class ImageDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imageUrl = ModalRoute.of(context).settings.arguments as String;
+    final String imageUrl = ModalRoute.of(context).settings.arguments as String;
 
     return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+      },
       child: Scaffold(
         body: Center(
           child: CachedNetworkImage(
@@ -17,19 +20,16 @@ class ImageDetailScreen extends StatelessWidget {
               child: Container(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
+                child: const CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation(Colors.white),
                 ),
               ),
             ),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
       ),
-      onTap: () {
-        Navigator.pop(context);
-      },
     );
   }
 }

@@ -27,12 +27,12 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Map<String, dynamic> parameters =
+      final Map<String, dynamic> parameters =
           ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
 
-      _initialLocation = parameters['initialLocation'];
+      _initialLocation = parameters['initialLocation'] as LocationPoint;
       _currentSelectedLocation = _initialLocation;
-      _setLocation = parameters['setLocation'];
+      _setLocation = parameters['setLocation'] as void Function(LocationPoint);
       _isInit = false;
     }
     super.didChangeDependencies();
@@ -44,8 +44,8 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
     super.dispose();
   }
 
-  void initMap() async {
-    await mapController.animateCamera(CameraUpdate.newLatLngZoom(
+  void initMap() {
+    mapController.animateCamera(CameraUpdate.newLatLngZoom(
         LatLng(_initialLocation.latitude, _initialLocation.longitude),
         widget.zoom));
   }
@@ -54,20 +54,20 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map'),
+        title: const Text('Map'),
         elevation: 0.5,
         actions: [
-          FlatButton(
-            child: Text(
-              'OK',
-              style:
-                  TextStyle(color: Theme.of(context).accentColor, fontSize: 20, fontWeight: FontWeight.w500),
-            ),
+          TextButton(
             onPressed: () {
               _setLocation(_currentSelectedLocation);
               Navigator.of(context).pop();
               return;
             },
+            child: Text(
+              'OK',
+              style:
+                  TextStyle(color: Theme.of(context).accentColor, fontSize: 20, fontWeight: FontWeight.w500),
+            ),
           )
         ],
       ),
@@ -82,12 +82,12 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
         },
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-        markers: Set.from([
+        markers: {
           Marker(
               markerId: MarkerId('1'),
               position: LatLng(_currentSelectedLocation.latitude,
                   _currentSelectedLocation.longitude))
-        ]),
+        },
         onTap: (latLng) {
           _updateLocation(LocationPoint(latLng.longitude, latLng.latitude));
         },

@@ -16,7 +16,7 @@ class _EditSelfIntroductionScreenState extends State<EditSelfIntroductionScreen>
 
   String introduction = '';
 
-  void onEditText(text) {
+  void onEditText(String text) {
     setState(() {
       introduction = text;
     });
@@ -38,13 +38,13 @@ class _EditSelfIntroductionScreenState extends State<EditSelfIntroductionScreen>
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: Text('Self Introduction'),
+        title: const Text('Self Introduction'),
         actions: [
-          FlatButton(
-            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
+          TextButton(
             onPressed: () {
               onClickOk(context);
             },
+            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
           )
         ],
       ),

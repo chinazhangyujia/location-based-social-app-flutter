@@ -1,14 +1,13 @@
-import 'package:flutter/foundation.dart';
-import 'package:location_based_social_app/model/friend_request.dart';
 import 'dart:convert';
-import 'package:location_based_social_app/exception/http_exception.dart';
+
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/model/friend_request.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
-/**
- * provider for friend request
- */
+/// provider for friend request
 class FriendRequestProvider with ChangeNotifier {
   List<FriendRequest> _pendingRequests = [];
 
@@ -33,11 +32,11 @@ class FriendRequestProvider with ChangeNotifier {
   };
 
   Future<void> sendFriendRequest(String targetUserId) async {
-    String url = '${SERVICE_DOMAIN}/addFriendRequest';
+    final String url = '$SERVICE_DOMAIN/addFriendRequest';
 
     try {
       final res = await http.post(
-          url,
+          Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'toUser': targetUserId
@@ -49,16 +48,16 @@ class FriendRequestProvider with ChangeNotifier {
       }
     }
     catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
   Future<void> fetchPendingRequests() async {
-    String url = '${SERVICE_DOMAIN}/pendingRequests';
+    final String url = '$SERVICE_DOMAIN/pendingRequests';
 
     try {
       final res = await http.get(
-          url,
+          Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
       );
 
@@ -68,45 +67,45 @@ class FriendRequestProvider with ChangeNotifier {
 
       final responseData = json.decode(res.body) as List<dynamic>;
 
-      List<FriendRequest> pendingFriendRequests = responseData.map((e) {
-        Map<String, dynamic> sendFrom = e['fromUser'];
+      final List<FriendRequest> pendingFriendRequests = responseData.map((e) {
+        final Map<String, dynamic> sendFrom = e['fromUser'] as Map<String, dynamic>;
 
         return FriendRequest(
-          id: e['_id'],
+          id: e['_id'] as String,
           sendFrom: User(
-              id: sendFrom['_id'],
-              name: sendFrom['name'],
-              avatarUrl: sendFrom['avatarUrl'],
-              birthday: DateTime.parse(sendFrom['birthday']),
+              id: sendFrom['_id'] as String,
+              name: sendFrom['name'] as String,
+              avatarUrl: sendFrom['avatarUrl'] as String,
+              birthday: DateTime.parse(sendFrom['birthday'] as String),
           ),
-          status: e['status'],
-          notified: e['notified']
+          status: e['status'] as String,
+          notified: e['notified'] as bool
         );
       }).toList();
 
-      this._pendingRequests = pendingFriendRequests;
-      this._unnotifiedRequests = pendingFriendRequests.where((req) => !req.notified).toList();
+      _pendingRequests = pendingFriendRequests;
+      _unnotifiedRequests = pendingFriendRequests.where((req) => !req.notified).toList();
 
       notifyListeners();
     }
     catch (error) {
-      throw error;
+      rethrow;
     }
   }
 
   Future<void> markRequestsAsNotified(List<String> requestIds) async {
-    String url = '${SERVICE_DOMAIN}/markRequestAsNotified';
+    final String url = '$SERVICE_DOMAIN/markRequestAsNotified';
 
     try {
       await http.post(
-          url,
+          Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'requestIds': requestIds
           })
       );
 
-      List<FriendRequest> afterNotified = [];
+      final List<FriendRequest> afterNotified = [];
       _pendingRequests.forEach((element) {
         if (element.notified || !requestIds.contains(element.id)) {
           afterNotified.add(element);
@@ -135,19 +134,17 @@ class FriendRequestProvider with ChangeNotifier {
     }
   }
 
-  /**
-   * Accept or reject request
-   */
+  /// Accept or reject request
   Future<void> handleRequest(String status, String requestId) async {
     if (status != 'accepted' && status != 'denied') {
       return;
     }
 
-    String url = '${SERVICE_DOMAIN}/handleFriendRequest';
+    final String url = '$SERVICE_DOMAIN/handleFriendRequest';
 
     try {
       final res = await http.post(
-        url,
+        Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
         body: json.encode({
           'requestId': requestId,
@@ -164,7 +161,7 @@ class FriendRequestProvider with ChangeNotifier {
       notifyListeners();
     }
     catch (error) {
-      throw error;
+      rethrow;
     }
   }
 

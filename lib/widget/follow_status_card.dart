@@ -11,7 +11,7 @@ class FollowStatusCard extends StatelessWidget {
           InkWell(
             onTap: () {},
             child: Column(
-              children: [
+              children: const [
                 Text('6', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),),
                 Text('Following', style: TextStyle(fontSize: 15),)
               ],
@@ -20,7 +20,7 @@ class FollowStatusCard extends StatelessWidget {
           InkWell(
             onTap: () {},
             child: Column(
-              children: [
+              children: const [
                 Text('10', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                 Text('Follower', style: TextStyle(fontSize: 15),)
               ],

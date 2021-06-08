@@ -10,12 +10,12 @@ class CommentItem extends StatelessWidget {
   final Comment comment;
   final Function onClickComment;
 
-  CommentItem({@required this.comment, @required this.onClickComment});
+  const CommentItem({@required this.comment, @required this.onClickComment});
 
   Future<void> tapUserName(BuildContext context, User tappedUser) async {
-    String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
+    final String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
 
-    User userWithMetaData = User(id: tappedUser.id,
+    final User userWithMetaData = User(id: tappedUser.id,
         name: tappedUser.name,
         avatarUrl: tappedUser.avatarUrl,
         birthday: tappedUser.birthday,
@@ -29,14 +29,14 @@ class CommentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(comment.sendFrom.avatarUrl),
           ),
-          SizedBox(width: 15,),
+          const SizedBox(width: 15,),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,26 +44,29 @@ class CommentItem extends StatelessWidget {
                 Row(
                   children: [
                     GestureDetector(
-                      child: Text(comment.sendFrom.name,
-                        style: TextStyle(fontSize: 18),
-                      ),
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
                         tapUserName(context, comment.sendFrom);
                       },
+                      child: Text(comment.sendFrom.name,
+                        style: const TextStyle(fontSize: 18),
+                      ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(DateFormat("MMM dd, yyyy hh:mm").format(comment.postTime),
-                      style: TextStyle(fontSize: 17, color: Colors.black54),
+                      style: const TextStyle(fontSize: 17, color: Colors.black54),
                     )
                   ],
                 ),
-                SizedBox(height: 5,),
+                const SizedBox(height: 5,),
                 GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    onClickComment(comment.sendFrom);
+                  },
                   child: RichText(
-                    maxLines: null,
                     text: TextSpan(
-                      style: TextStyle(fontSize: 19, color: Colors.black, fontWeight: FontWeight.w300),
+                      style: const TextStyle(fontSize: 19, color: Colors.black, fontWeight: FontWeight.w300),
                       children: [
                         if (comment.sendTo != null) TextSpan(
                           text: '@${comment.sendTo.name} ',
@@ -75,10 +78,6 @@ class CommentItem extends StatelessWidget {
                       ]
                     ),
                   ),
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    onClickComment(comment.sendFrom);
-                  },
                 )
               ],
             ),

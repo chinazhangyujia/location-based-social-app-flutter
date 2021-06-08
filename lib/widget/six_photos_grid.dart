@@ -15,6 +15,10 @@ class SixPhotosGrid extends StatelessWidget {
         ? Container(
             width: MediaQuery.of(context).size.width * 0.7,
             child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pushNamed(ImageDetailScreen.router,
+                    arguments: photoUrls[0]);
+              },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(3),
                 child: CachedNetworkImage(
@@ -23,21 +27,17 @@ class SixPhotosGrid extends StatelessWidget {
                     child: Container(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation(Colors.white),
                       ),
                     ),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   fit: BoxFit.cover,
                   width: double.infinity,
                 ),
               ),
-              onTap: () {
-                Navigator.of(context).pushNamed(ImageDetailScreen.router,
-                    arguments: photoUrls[0]);
-              },
             ),
           )
         : GridView.count(
@@ -51,33 +51,31 @@ class SixPhotosGrid extends StatelessWidget {
             children: [
               ...photoUrls
                   .map((url) => GestureDetector(
-                        child: Container(
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(3),
-                              child: CachedNetworkImage(
-                                imageUrl: url,
-                                placeholder: (context, url) => Center(
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor:
-                                          AlwaysStoppedAnimation(Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              )),
-                        ),
                         onTap: () {
                           Navigator.of(context).pushNamed(
                               ImageDetailScreen.router,
                               arguments: url);
                         },
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(3),
+                            child: CachedNetworkImage(
+                              imageUrl: url,
+                              placeholder: (context, url) => Center(
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor:
+                                        AlwaysStoppedAnimation(Colors.white),
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.error),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            )),
                       ))
                   .toList()
             ],

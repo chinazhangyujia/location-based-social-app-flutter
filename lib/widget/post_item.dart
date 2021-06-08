@@ -16,12 +16,12 @@ class PostItem extends StatelessWidget {
   final bool disableClick;
   final bool linkToMap;
 
-  PostItem({@required this.post, this.disableClick = false, this.linkToMap = false});
+  const PostItem({@required this.post, this.disableClick = false, this.linkToMap = false});
 
   Future<void> onTapHeader(BuildContext context, User tappedUser) async {
-    String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
+    final String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
 
-    User userWithMetaData = User(id: tappedUser.id,
+    final User userWithMetaData = User(id: tappedUser.id,
         name: tappedUser.name,
         avatarUrl: tappedUser.avatarUrl,
         birthday: tappedUser.birthday,
@@ -39,10 +39,10 @@ class PostItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    User user = post.user;
+    final User user = post.user;
 
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,11 +75,11 @@ class PostItem extends StatelessWidget {
             child: PostMetaDataBar(likesCount: post.likesCount, userLiked: post.userLiked, postId: post.id,),
           ),
           if (linkToMap) FlatButton(
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             onPressed: () {
               Navigator.of(context).pushNamed(PostLocationMapViewScreen.router, arguments: post.postLocation);
             },
-            child: Text('See Location',
+            child: const Text('See Location',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey

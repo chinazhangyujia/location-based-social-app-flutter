@@ -7,11 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
-/**
- * Provider for comments of posts
- */
+/// Provider for comments of posts
 class CommentsProvider with ChangeNotifier {
-  Map<String, List<Comment>> _commentsForPost = Map();
+  final Map<String, List<Comment>> _commentsForPost = {};
 
   String _token;
 
@@ -20,7 +18,7 @@ class CommentsProvider with ChangeNotifier {
   }
 
   List<Comment> getCommentsForPost(String postId) {
-    return _commentsForPost[postId] != null ? _commentsForPost[postId] : [];
+    return _commentsForPost[postId] ?? [];
   }
 
   static const Map<String, String> requestHeader = {
@@ -28,11 +26,11 @@ class CommentsProvider with ChangeNotifier {
   };
 
   Future<void> getComments(String postId) async {
-    String url = '${SERVICE_DOMAIN}/comment/$postId';
+    final String url = '$SERVICE_DOMAIN/comment/$postId';
 
     try {
       final res = await http.get(
-        url,
+        Uri.parse(url),
         headers: {...requestHeader},
       );
 
@@ -44,32 +42,32 @@ class CommentsProvider with ChangeNotifier {
 
       final List<Comment> fetchedComments = responseData.map((e) {
 
-        Map<String, dynamic> sendFromData = e['sendFrom'];
+        final Map<String, dynamic> sendFromData = e['sendFrom'] as Map<String, dynamic>;
 
-        User sendFrom = User(
-            id: sendFromData['_id'],
-            name: sendFromData['name'],
-            avatarUrl: sendFromData['avatarUrl'],
-            birthday: DateTime.parse(sendFromData['birthday']),
-            introduction: sendFromData['introduction']);
+        final User sendFrom = User(
+            id: sendFromData['_id'] as String,
+            name: sendFromData['name'] as String,
+            avatarUrl: sendFromData['avatarUrl'] as String,
+            birthday: DateTime.parse(sendFromData['birthday'] as String),
+            introduction: sendFromData['introduction'] as String);
 
-        User sendTo = null;
-        Map<String, dynamic> sendToData = e['sendTo'];
+        User sendTo;
+        final Map<String, dynamic> sendToData = e['sendTo'] as Map<String, dynamic>;
         if (sendToData != null) {
           sendTo = User(
-              id: sendToData['_id'],
-              name: sendToData['name'],
-              avatarUrl: sendToData['avatarUrl'],
-              birthday: DateTime.parse(sendToData['birthday']),
-              introduction: sendToData['introduction']);
+              id: sendToData['_id'] as String,
+              name: sendToData['name'] as String,
+              avatarUrl: sendToData['avatarUrl'] as String,
+              birthday: DateTime.parse(sendToData['birthday'] as String),
+              introduction: sendToData['introduction'] as String);
         }
 
         return Comment(
-            id: e['_id'],
+            id: e['_id'] as String,
             sendFrom: sendFrom,
             sendTo: sendTo,
-            content: e['content'],
-            postTime: DateTime.parse(e['createdAt'])
+            content: e['content'] as String,
+            postTime: DateTime.parse(e['createdAt'] as String)
         );
       }).toList();
 
@@ -89,14 +87,14 @@ class CommentsProvider with ChangeNotifier {
     @required User loginUser
   }) async {
     try {
-      String url = '${SERVICE_DOMAIN}/comment';
+      final String url = '$SERVICE_DOMAIN/comment';
 
       final res = await http.post(
-          url,
+          Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
-            'sendTo': sendTo == null ? null : sendTo.id,
+            'sendTo': sendTo?.id,
             'post': postId
           })
       );
@@ -107,12 +105,12 @@ class CommentsProvider with ChangeNotifier {
 
       final responseData = json.decode(res.body);
 
-      Comment createdComment = Comment(
-          id: responseData['_id'],
+      final Comment createdComment = Comment(
+          id: responseData['_id'] as String,
           sendFrom: loginUser,
           sendTo: sendTo,
-          content: responseData['content'],
-          postTime: DateTime.parse(responseData['createdAt'])
+          content: responseData['content'] as String,
+          postTime: DateTime.parse(responseData['createdAt'] as String)
       );
 
       if (_commentsForPost.containsKey(postId)) {
@@ -126,7 +124,7 @@ class CommentsProvider with ChangeNotifier {
     }
     catch (error)
     {
-      throw error;
+      rethrow;
     }
   }
 }

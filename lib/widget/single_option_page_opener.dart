@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class SingleOptionPageOpener extends StatelessWidget {
   final Icon icon;
   final String title;
-  final Function onTap;
+  final void Function() onTap;
 
-  SingleOptionPageOpener({
+  const SingleOptionPageOpener({
     @required this.icon,
     @required this.title,
     @required this.onTap
@@ -18,15 +18,15 @@ class SingleOptionPageOpener extends StatelessWidget {
       child: Container(
         width: double.infinity,
         height: 60,
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         alignment: Alignment.center,
         child: Row(
           children: [
             icon,
-            SizedBox(width: 8,),
-            Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
-            Spacer(),
-            Icon(Icons.navigate_next)
+            const SizedBox(width: 8,),
+            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+            const Spacer(),
+            const Icon(Icons.navigate_next)
           ],
         ),
       ),

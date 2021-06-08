@@ -4,7 +4,7 @@ class UserName extends StatefulWidget {
   final void Function(String) _setUserName;
   final void Function(int) _setStep;
 
-  UserName(this._setUserName, this._setStep);
+  const UserName(this._setUserName, this._setStep);
 
   @override
   _UserNameState createState() => _UserNameState();
@@ -31,7 +31,7 @@ class _UserNameState extends State<UserName> {
   }
 
   void _onClickNext() {
-    String inputError = _getInputError();
+    final String inputError = _getInputError();
     if (inputError != null) {
       setState(() {
         _errorMessage = inputError;
@@ -50,39 +50,37 @@ class _UserNameState extends State<UserName> {
         SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 150,
               ),
-              Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      child: Text(
-                        'User Name',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      'User Name',
+                      style: TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    TextField(
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(width: 2)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                              borderSide: BorderSide(width: 2)),
-                          filled: true,
-                          fillColor: Colors.white),
-                      style: TextStyle(fontSize: 20),
-                      cursorColor: Colors.blue,
-                      onChanged: (value) {
-                        _userName = value;
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: const BorderSide(width: 2)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                            borderSide: const BorderSide(width: 2)),
+                        filled: true,
+                        fillColor: Colors.white),
+                    style: const TextStyle(fontSize: 20),
+                    cursorColor: Colors.blue,
+                    onChanged: (value) {
+                      _userName = value;
+                    },
+                  ),
+                ],
               ),
               Container(
                   alignment: Alignment.centerLeft,
@@ -96,26 +94,27 @@ class _UserNameState extends State<UserName> {
                               color: Theme.of(context).errorColor),
                         )
                       : null),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               Container(
                 alignment: Alignment.topCenter,
-                child: RaisedButton(
-                  child: Text(
+                child: ElevatedButton(
+                  onPressed: _onClickNext,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
+                    primary: Theme.of(context).accentColor,
+                  ),
+                  child: const Text(
                     'Next',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
                         fontSize: 20),
-                  ),
-                  onPressed: _onClickNext,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                  color: Theme.of(context).accentColor
+                  )
                 ),
               ),
             ],

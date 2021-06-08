@@ -23,29 +23,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    User loginUser = Provider.of<UserProvider>(context).loginUser;
+    final User loginUser = Provider.of<UserProvider>(context).loginUser;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: loginUser == null ?
-            Center(child: CircularProgressIndicator(),) :
+            const Center(child: CircularProgressIndicator(),) :
         Column(
           children: [
-            Card(child: UserInfoCard(loginUser), elevation: 0.4,),
-            SizedBox(height: 10,),
+            Card(elevation: 0.4, child: UserInfoCard(loginUser),),
+            const SizedBox(height: 10,),
             Card(
+              elevation: 0.4,
               child: Column(
                 children: [
                   SingleOptionPageOpener(
-                      icon: Icon(Icons.favorite),
+                      icon: const Icon(Icons.favorite),
                       title: 'Favorite',
                       onTap: () {
                         Navigator.of(context).pushNamed(LikedPostsScreen.router);
                       }
                   ),
-                  Divider(indent: 30, height: 10,),
+                  const Divider(indent: 30, height: 10,),
                   SingleOptionPageOpener(
-                      icon: Icon(Icons.photo),
+                      icon: const Icon(Icons.photo),
                       title: 'My Post',
                       onTap: () {
                         Navigator.of(context).pushNamed(MyPostsScreen.router);
@@ -53,16 +54,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )
                 ],
               ),
-              elevation: 0.4,
             ),
-            SizedBox(height: 10,),
-            Card(child: SingleOptionPageOpener(
-              icon: Icon(Icons.settings),
+            const SizedBox(height: 10,),
+            Card(elevation: 0.4, child: SingleOptionPageOpener(
+              icon: const Icon(Icons.settings),
               title: 'Setting',
               onTap: () {
                 Navigator.of(context).pushNamed(SettingScreen.router);
               }
-            ), elevation: 0.4,),
+            ),),
           ],
         ),
       )

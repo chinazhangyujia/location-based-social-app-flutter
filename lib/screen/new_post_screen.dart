@@ -49,22 +49,22 @@ class _NewPostScreenState extends State<NewPostScreen> {
     }
 
     try {
-      List<String> downloadUrls = [];
+      final List<String> downloadUrls = [];
 
       if (pickedImages.isNotEmpty) {
         setState(() {
           _isLoading = true;
         });
 
-        for (File file in pickedImages) {
-          S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken, S3Folder.POST_IMAGE);
+        for (final File file in pickedImages) {
+          final S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken, S3Folder.POST_IMAGE);
           await ImageUploadUtil.uploadToS3(s3url.uploadUrl, file);
           downloadUrls.add(s3url.downloadUrl);
         }
       }
 
-      String postContent = (text == null || text.trim().isEmpty) ? null : text.trim();
-      User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
+      final String postContent = (text == null || text.trim().isEmpty) ? null : text.trim();
+      final User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
 
       await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(postContent, downloadUrls, loginUser);
 
@@ -83,28 +83,28 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
         leading: IconButton(
-          icon: Icon(Icons.clear),
+          icon: const Icon(Icons.clear),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text('New Post'),
+        title: const Text('New Post'),
         actions: [
-          FlatButton(
-            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
+          TextButton(
             onPressed: () {
               sendPost(context, authProvider.token);
             },
+            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
           )
         ],
       ),
-      body: _isLoading ? Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
+      body: _isLoading ? const Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(

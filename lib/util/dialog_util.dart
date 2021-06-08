@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-Function renderErrorDialog = (BuildContext context, String message) {
+void renderErrorDialog(BuildContext context, String message) {
   showDialog(context: context, builder: (context) => AlertDialog(
-    title: Text('An Error Occurred'),
+    title: const Text('An Error Occurred'),
     content: Text(message),
     actions: [
-      FlatButton(
-        textColor: Theme.of(context).accentColor,
+      TextButton(
+        style: ButtonStyle(foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).accentColor)),
         onPressed: () {
           Navigator.of(context).pop();
         },
@@ -14,4 +14,4 @@ Function renderErrorDialog = (BuildContext context, String message) {
       )
     ],
   ));
-};
+}

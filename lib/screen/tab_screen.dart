@@ -80,13 +80,13 @@ class _TabScreenState extends State<TabScreen>
 
   @override
   Widget build(BuildContext context) {
-    int unnotifiedFriendRequestCount =
+    final int unnotifiedFriendRequestCount =
         Provider.of<FriendRequestProvider>(context).unnotifiedRequests.length;
-    int unnotifiedNotificationsCount =
+    final int unnotifiedNotificationsCount =
         Provider.of<NotificationsProvider>(context)
             .unnotifiedNotificationsCount;
 
-    List<Widget> appBarActions = null;
+    List<Widget> appBarActions;
     if (pages[selectedPageIndex]['title'] == 'Friends') {
       appBarActions = [
         IconButton(
@@ -95,17 +95,17 @@ class _TabScreenState extends State<TabScreen>
                   position: BadgePosition.topEnd(top: -10, end: -10),
                   badgeContent: Text(
                     unnotifiedFriendRequestCount.toString(),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  child: Icon(Icons.notifications),
+                  child: const Icon(Icons.notifications),
                 )
-              : Icon(Icons.notifications),
+              : const Icon(Icons.notifications),
           onPressed: () {
             Navigator.of(context).pushNamed(FriendRequestScreen.router);
           },
         ),
         IconButton(
-          icon: Icon(Icons.search),
+          icon: const Icon(Icons.search),
           onPressed: () {
             Navigator.of(context).pushNamed(SearchFriendScreen.router);
           },
@@ -119,11 +119,11 @@ class _TabScreenState extends State<TabScreen>
                   position: BadgePosition.topEnd(top: -10, end: -10),
                   badgeContent: Text(
                     unnotifiedNotificationsCount.toString(),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  child: Icon(Icons.notifications),
+                  child: const Icon(Icons.notifications),
                 )
-              : Icon(Icons.notifications),
+              : const Icon(Icons.notifications),
           onPressed: () {
             Navigator.of(context).pushNamed(NotificationTabScreen.router);
           },
@@ -136,23 +136,23 @@ class _TabScreenState extends State<TabScreen>
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.5,
-          title: Text(pages[selectedPageIndex]['title']),
+          title: Text(pages[selectedPageIndex]['title'] as String),
           actions: appBarActions,
           bottom: (pages[selectedPageIndex]['subpage'] as List).isNotEmpty
               ? PreferredSize(
-                  preferredSize: Size.fromHeight(50),
+                  preferredSize: const Size.fromHeight(50),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: TabBar(
                       isScrollable: true,
-                      controller: pages[selectedPageIndex]['controller'],
+                      controller: pages[selectedPageIndex]['controller'] as TabController,
                       tabs: (pages[selectedPageIndex]['subpage'] as List)
                           .map(
                             (e) => Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
                               child: Text(
-                                e['tabName'],
-                                style: TextStyle(
+                                e['tabName'] as String,
+                                style: const TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w500),
                               ),
                             ),
@@ -164,9 +164,9 @@ class _TabScreenState extends State<TabScreen>
               : null,
         ),
         body: (pages[selectedPageIndex]['subpage'] as List).isEmpty
-            ? pages[selectedPageIndex]['page']
+            ? pages[selectedPageIndex]['page'] as Widget
             : TabBarView(
-                controller: pages[selectedPageIndex]['controller'],
+                controller: pages[selectedPageIndex]['controller'] as TabController,
                 children: (pages[selectedPageIndex]['subpage'] as List)
                     .map((e) => e['page'] as Widget)
                     .toList(),
@@ -178,7 +178,7 @@ class _TabScreenState extends State<TabScreen>
           backgroundColor: Theme.of(context).primaryColor,
           currentIndex: selectedPageIndex,
           type: BottomNavigationBarType.fixed,
-          items: [
+          items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
             BottomNavigationBarItem(icon: Icon(Icons.people), label: 'friends'),
             BottomNavigationBarItem(

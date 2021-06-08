@@ -20,11 +20,15 @@ class NotificationsProvider with ChangeNotifier {
   }
 
   List<PostNotification> get commentNotifications {
-    return _postNotifications.where((element) => element.type == NotificationType.COMMENT).toList();
+    return _postNotifications
+        .where((element) => element.type == NotificationType.COMMENT)
+        .toList();
   }
 
   List<PostNotification> get likeNotifications {
-    return _postNotifications.where((element) => element.type == NotificationType.LIKE).toList();
+    return _postNotifications
+        .where((element) => element.type == NotificationType.LIKE)
+        .toList();
   }
 
   int get unnotifiedNotificationsCount {
@@ -36,11 +40,11 @@ class NotificationsProvider with ChangeNotifier {
   };
 
   Future<void> getAllNotifications() async {
-    String url = '${SERVICE_DOMAIN}/allNotifications';
+    final String url = '$SERVICE_DOMAIN/allNotifications';
 
     try {
       final res = await http.get(
-        url,
+        Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
       );
 
@@ -51,72 +55,72 @@ class NotificationsProvider with ChangeNotifier {
       final responseData = json.decode(res.body) as List<dynamic>;
 
       final List<PostNotification> notifications = responseData.map((e) {
-        NotificationType notificationType = e['type'] == 'comment' ? NotificationType.COMMENT : NotificationType.LIKE;
+        final NotificationType notificationType = e['type'] == 'comment'
+            ? NotificationType.COMMENT
+            : NotificationType.LIKE;
 
         if (notificationType == NotificationType.COMMENT) {
-          Map<String, dynamic> commentData = e['comment'];
-          String commentContent = commentData['content'];
-          Map<String, dynamic> sendFromUserData = commentData['sendFrom'];
-          User sendFrom = User(
-            id: sendFromUserData['_id'],
-            name: sendFromUserData['name'],
-            avatarUrl: sendFromUserData['avatarUrl'],
-            birthday: DateTime.parse(sendFromUserData['birthday']),
+          final Map<String, dynamic> commentData =
+              e['comment'] as Map<String, dynamic>;
+          final String commentContent = commentData['content'] as String;
+          final Map<String, dynamic> sendFromUserData =
+              commentData['sendFrom'] as Map<String, dynamic>;
+          final User sendFrom = User(
+            id: sendFromUserData['_id'] as String,
+            name: sendFromUserData['name'] as String,
+            avatarUrl: sendFromUserData['avatarUrl'] as String,
+            birthday: DateTime.parse(sendFromUserData['birthday'] as String),
           );
 
           return PostNotification(
-              id: e['_id'],
+              id: e['_id'] as String,
               sendFrom: sendFrom,
               content: commentContent,
               type: notificationType,
-              notified: e['notified'],
-              time: DateTime.parse(commentData['createdAt']));
-        }
-        else {
-          Map<String, dynamic> sendFromUserData = e['fromUser'];
+              notified: e['notified'] as bool,
+              time: DateTime.parse(commentData['createdAt'] as String));
+        } else {
+          final Map<String, dynamic> sendFromUserData =
+              e['fromUser'] as Map<String, dynamic>;
 
-          User sendFrom = User(
-            id: sendFromUserData['_id'],
-            name: sendFromUserData['name'],
-            avatarUrl: sendFromUserData['avatarUrl'],
-            birthday: DateTime.parse(sendFromUserData['birthday']),
+          final User sendFrom = User(
+            id: sendFromUserData['_id'] as String,
+            name: sendFromUserData['name'] as String,
+            avatarUrl: sendFromUserData['avatarUrl'] as String,
+            birthday: DateTime.parse(sendFromUserData['birthday'] as String),
           );
 
           return PostNotification(
-              id: e['_id'],
+              id: e['_id'] as String,
               sendFrom: sendFrom,
               content: '${sendFrom.name} liked your post',
               type: notificationType,
-              notified: e['notified'],
-              time: DateTime.parse(e['createdAt']));
+              notified: e['notified'] as bool,
+              time: DateTime.parse(e['createdAt'] as String));
         }
-
       }).toList();
 
       _postNotifications = notifications;
       notifyListeners();
-    }
-    catch (error) {
+    } catch (error) {
       return;
     }
   }
 
-  Future<void> markNotificationsAsNotified(List<String> commentNotificationIds, List<String> likeNotificationIds) async {
-
+  Future<void> markNotificationsAsNotified(List<String> commentNotificationIds,
+      List<String> likeNotificationIds) async {
     if (commentNotificationIds.isEmpty && likeNotificationIds.isEmpty) {
       return;
     }
 
     try {
-      String url = '${SERVICE_DOMAIN}/markNotificationNotified';
-      final res = await http.post(
-          url,
+      final String url = '$SERVICE_DOMAIN/markNotificationNotified';
+      final res = await http.post(Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'commentNotificationIds': commentNotificationIds,
             'likeNotificationIds': likeNotificationIds
-          })
-      );
+          }));
 
       if (res.statusCode != 200) {
         return;
@@ -127,10 +131,6 @@ class NotificationsProvider with ChangeNotifier {
       });
 
       notifyListeners();
-
-    } catch (error) {
-
-    }
-
+    } catch (error) {}
   }
 }

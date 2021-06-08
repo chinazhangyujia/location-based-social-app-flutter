@@ -10,12 +10,12 @@ class NotificationScreen extends StatelessWidget {
 
   final List<PostNotification> notifications;
 
-  NotificationScreen(this.notifications);
+  const NotificationScreen(this.notifications);
 
   Future<void> tapUserName(BuildContext context, User tappedUser) async {
-    String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
+    final String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
 
-    User userWithMetaData = User(id: tappedUser.id,
+    final User userWithMetaData = User(id: tappedUser.id,
         name: tappedUser.name,
         avatarUrl: tappedUser.avatarUrl,
         birthday: tappedUser.birthday,
@@ -43,26 +43,26 @@ class NotificationScreen extends StatelessWidget {
                     CircleAvatar(
                       backgroundImage: NetworkImage(notifications[index].sendFrom.avatarUrl),
                     ),
-                    SizedBox(width: 15,),
+                    const SizedBox(width: 15,),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           GestureDetector(
-                            child: Text(notifications[index].sendFrom.name,
-                              style: TextStyle(fontSize: 18),
-                            ),
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
                               tapUserName(context, notifications[index].sendFrom);
                             },
+                            child: Text(notifications[index].sendFrom.name,
+                              style: const TextStyle(fontSize: 18),
+                            ),
                           ),
                           Text(notifications[index].content,
-                            style: TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 18),
                           ),
-                          SizedBox(height: 5,),
+                          const SizedBox(height: 5,),
                           Text(DateFormat("MMM dd, yyyy hh:mm").format(notifications[index].time),
-                            style: TextStyle(fontSize: 17, color: Colors.black54),
+                            style: const TextStyle(fontSize: 17, color: Colors.black54),
                           )
                         ],
                       ),
@@ -70,7 +70,7 @@ class NotificationScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(indent: 10, height: 0,)
+              const Divider(indent: 10, height: 0,)
             ],
           )
       ),

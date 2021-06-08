@@ -19,7 +19,7 @@ class MapViewPostsScreen extends StatefulWidget {
 
 class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
   LocationPoint _selectedLocation;
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   bool _loading = false;
 
   @override
@@ -54,13 +54,13 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
     if (sharedPreferences.containsKey(MapViewPostsScreen.cacheKey)) {
-      Map<String, dynamic> locationData =
-          json.decode(sharedPreferences.getString(MapViewPostsScreen.cacheKey));
+      final Map<String, dynamic> locationData =
+          json.decode(sharedPreferences.getString(MapViewPostsScreen.cacheKey)) as Map<String, dynamic>;
 
-      return LocationPoint(locationData['longitude'], locationData['latitude']);
+      return LocationPoint(locationData['longitude'] as double, locationData['latitude'] as double);
     } else {
-      Location locationTracker = Location();
-      LocationData currentLocation = await locationTracker.getLocation();
+      final Location locationTracker = Location();
+      final LocationData currentLocation = await locationTracker.getLocation();
       return LocationPoint(currentLocation.longitude, currentLocation.latitude);
     }
   }
@@ -82,7 +82,7 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
 
-    String payload = json.encode(
+    final String payload = json.encode(
         {'longitude': location.longitude, 'latitude': location.latitude});
     sharedPreferences.setString(MapViewPostsScreen.cacheKey, payload);
     _selectedLocation = location;
@@ -107,17 +107,20 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Post> posts = Provider.of<PostsProvider>(context).mapViewPosts;
+    final List<Post> posts = Provider.of<PostsProvider>(context).mapViewPosts;
     return Scaffold(
       body: Column(
         children: [
           GestureDetector(
             behavior: HitTestBehavior.opaque,
+            onTap: () {
+              onClickMap(context);
+            },
             child: Container(
                 padding: const EdgeInsets.all(10),
                 alignment: Alignment.centerLeft,
                 child: Row(
-                  children: [
+                  children: const [
                     Icon(
                       Icons.map,
                       size: 30,
@@ -131,9 +134,6 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
                     )
                   ],
                 )),
-            onTap: () {
-              onClickMap(context);
-            },
           ),
           Expanded(
             child: RefreshIndicator(
@@ -145,12 +145,12 @@ class _MapViewPostsScreenState extends State<MapViewPostsScreen> {
                     itemCount: posts.length + 1,
                     itemBuilder: (context, index) {
                       if (index == posts.length && _loading) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       } else if (index < posts.length) {
                         return Column(
-                          children: [PostItem(post: posts[index]), Divider()],
+                          children: [PostItem(post: posts[index]), const Divider()],
                         );
                       }
                       return null;
