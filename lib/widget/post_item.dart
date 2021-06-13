@@ -3,7 +3,6 @@ import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/screen/post_detail_screen.dart';
-import 'package:location_based_social_app/screen/post_location_map_view_screen.dart';
 import 'package:location_based_social_app/screen/search_friend_screen.dart';
 import 'package:location_based_social_app/widget/post_header.dart';
 import 'package:location_based_social_app/widget/post_meta_data_bar.dart';
@@ -72,20 +71,8 @@ class PostItem extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: PostMetaDataBar(likesCount: post.likesCount, userLiked: post.userLiked, postId: post.id,),
+            child: PostMetaDataBar(likesCount: post.likesCount, userLiked: post.userLiked, post: post, linkToMap: linkToMap,),
           ),
-          if (linkToMap) FlatButton(
-            padding: const EdgeInsets.all(0),
-            onPressed: () {
-              Navigator.of(context).pushNamed(PostLocationMapViewScreen.router, arguments: post.postLocation);
-            },
-            child: const Text('See Location',
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.grey
-              ),
-            )
-          )
         ],
       ),
     );
