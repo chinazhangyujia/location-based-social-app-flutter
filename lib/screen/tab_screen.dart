@@ -2,17 +2,19 @@ import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/notifications_provider.dart';
-import 'package:location_based_social_app/screen/chat_threads_screen.dart';
-import 'package:location_based_social_app/screen/friend_posts_screen.dart';
-import 'package:location_based_social_app/screen/friend_request_screen.dart';
-import 'package:location_based_social_app/screen/friend_screen.dart';
-import 'package:location_based_social_app/screen/map_view_posts_screen.dart';
-import 'package:location_based_social_app/screen/post_home_screen.dart';
-import 'package:location_based_social_app/screen/profile_screen.dart';
-import 'package:location_based_social_app/screen/search_friend_screen.dart';
-import 'package:location_based_social_app/screen/notification_tab_screen.dart';
+import 'package:location_based_social_app/screen/chat/chat_threads_screen.dart';
+import 'package:location_based_social_app/screen/post_list/friend_posts_screen.dart';
+import 'package:location_based_social_app/screen/friend/friend_request_screen.dart';
+import 'package:location_based_social_app/screen/friend/friend_screen.dart';
+import 'package:location_based_social_app/screen/post_list/map_view_posts_screen.dart';
+import 'package:location_based_social_app/screen/post_list/nearby_posts_screen.dart';
+import 'package:location_based_social_app/screen/profile/profile_screen.dart';
+import 'package:location_based_social_app/screen/friend/search_friend_screen.dart';
+import 'package:location_based_social_app/screen/notification/notification_tab_screen.dart';
 import 'package:provider/provider.dart';
 
+/// Tab screen for this app
+/// The entry point for other pages such as post list, friend, chat, profile...
 class TabScreen extends StatefulWidget {
   @override
   _TabScreenState createState() => _TabScreenState();
@@ -33,11 +35,11 @@ class _TabScreenState extends State<TabScreen>
     pages = [
       {
         'title': 'My App',
-        'page': PostHomeScreen(),
+        'page': NearbyPostsScreen(),
         'subpage': [
           {
             'tabName': 'Nearby',
-            'page': PostHomeScreen(),
+            'page': NearbyPostsScreen(),
           },
           {'tabName': 'Friends', 'page': FriendPostsScreen()},
           {'tabName': 'Map', 'page': MapViewPostsScreen()}
