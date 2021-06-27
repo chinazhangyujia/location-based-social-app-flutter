@@ -5,7 +5,7 @@ import 'package:location_based_social_app/model/user.dart';
 class FriendRequest {
   final String id;
   final User sendFrom;
-  final String status; // pending, denied, accepted
+  final String status; // pending, rejected, accepted
   final bool notified;
 
   const FriendRequest({

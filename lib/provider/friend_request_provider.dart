@@ -136,7 +136,7 @@ class FriendRequestProvider with ChangeNotifier {
 
   /// Accept or reject request
   Future<void> handleRequest(String status, String requestId) async {
-    if (status != 'accepted' && status != 'denied') {
+    if (status != 'accepted' && status != 'rejected') {
       return;
     }
 

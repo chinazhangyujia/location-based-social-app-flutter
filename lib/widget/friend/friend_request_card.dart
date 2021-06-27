@@ -88,7 +88,7 @@ class FriendRequestCard extends StatelessWidget {
                       minWidth: 100,
                       child: ElevatedButton(
                         onPressed: () {
-                          onHandleRequest(context, 'denied', requestId);
+                          onHandleRequest(context, 'rejected', requestId);
                         },
                         style: ElevatedButton.styleFrom(
                           elevation: 0.5,
@@ -106,7 +106,7 @@ class FriendRequestCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                               color: const Color.fromRGBO(244, 244, 244, 1)),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: const Text('Deny',
+                          child: const Text('Reject',
                               style: TextStyle(fontSize: 18)),
                         ),
                       ),

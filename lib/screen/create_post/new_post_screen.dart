@@ -9,6 +9,7 @@ import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/util/image_upload_util.dart';
 import 'package:location_based_social_app/widget/create_post/gallery_image_picker.dart';
 import 'package:location_based_social_app/widget/create_post/multiline_text_field.dart';
+import 'package:location_based_social_app/widget/create_post/post_topic_selector.dart';
 import 'package:provider/provider.dart';
 
 /// screen to write new post
@@ -20,9 +21,9 @@ class NewPostScreen extends StatefulWidget {
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
-
   String text = '';
   List<File> pickedImages = [];
+  String topicName;
 
   bool _isLoading = false;
 
@@ -38,8 +39,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
-  bool _isPostEmpty()
-  {
+  void onSelectTopic(String selectedTopicName) {
+    setState(() {
+      topicName = selectedTopicName;
+    });
+  }
+
+  bool _isPostEmpty() {
     return pickedImages.isEmpty && (text == null || text.trim().isEmpty);
   }
 
@@ -58,19 +64,23 @@ class _NewPostScreenState extends State<NewPostScreen> {
         });
 
         for (final File file in pickedImages) {
-          final S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken, S3Folder.POST_IMAGE);
+          final S3Url s3url =
+              await ImageUploadUtil.getS3Urls(authToken, S3Folder.POST_IMAGE);
           await ImageUploadUtil.uploadToS3(s3url.uploadUrl, file);
           downloadUrls.add(s3url.downloadUrl);
         }
       }
 
-      final String postContent = (text == null || text.trim().isEmpty) ? null : text.trim();
-      final User loginUser = await Provider.of<UserProvider>(context, listen: false).getCurrentUser();
+      final String postContent =
+          (text == null || text.trim().isEmpty) ? null : text.trim();
+      final User loginUser =
+          await Provider.of<UserProvider>(context, listen: false)
+              .getCurrentUser();
 
-      await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(postContent, downloadUrls, loginUser);
+      await Provider.of<PostsProvider>(context, listen: false)
+          .uploadNewPost(postContent, downloadUrls, loginUser);
 
       Navigator.of(context).pop();
-
     } on HttpException catch (error) {
       renderErrorDialog(context, error.message);
     } catch (error) {
@@ -101,22 +111,40 @@ class _NewPostScreenState extends State<NewPostScreen> {
             onPressed: () {
               sendPost(context, authProvider.token);
             },
-            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
+            child: Text(
+              'OK',
+              style:
+                  TextStyle(color: Theme.of(context).accentColor, fontSize: 17),
+            ),
           )
         ],
       ),
-      body: _isLoading ? const Center(child: CircularProgressIndicator(),) : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              MultilineTextField(onEdit: onChangeText, hint: 'Post something about what you see...',),
-              GalleryImagePicker(pickedImages, onAddImage)
-            ],
-          ),
-        ),
-      ),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MultilineTextField(
+                      onEdit: onChangeText,
+                      hint: 'Post something about what you see...',
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    GalleryImagePicker(pickedImages, onAddImage),
+                    PostTopicSelector(
+                      selectedTopic: topicName,
+                      onSelectTopic: onSelectTopic,
+                    )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }
-
