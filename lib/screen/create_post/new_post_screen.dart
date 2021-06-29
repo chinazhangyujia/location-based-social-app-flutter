@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/model/post_topics.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
@@ -24,6 +25,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   String text = '';
   List<File> pickedImages = [];
   String topicName;
+  String errorMessage;
 
   bool _isLoading = false;
 
@@ -55,6 +57,13 @@ class _NewPostScreenState extends State<NewPostScreen> {
       return;
     }
 
+    if (getTopicByName(topicName) == null) {
+      setState(() {
+        errorMessage = 'Please select a topic';
+      });
+      return;
+    }
+
     try {
       final List<String> downloadUrls = [];
 
@@ -77,8 +86,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
           await Provider.of<UserProvider>(context, listen: false)
               .getCurrentUser();
 
-      await Provider.of<PostsProvider>(context, listen: false)
-          .uploadNewPost(postContent, downloadUrls, loginUser);
+      await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(
+          postContent, downloadUrls, loginUser, getTopicByName(topicName));
 
       Navigator.of(context).pop();
     } on HttpException catch (error) {
@@ -140,7 +149,17 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     PostTopicSelector(
                       selectedTopic: topicName,
                       onSelectTopic: onSelectTopic,
-                    )
+                    ),
+                    if (errorMessage != null)
+                      Column(
+                        children: [
+                          const SizedBox(height: 10,),
+                          Text(
+                            errorMessage,
+                            style: TextStyle(color: Theme.of(context).errorColor, fontSize: 20),
+                          ),
+                        ],
+                      )
                   ],
                 ),
               ),

@@ -7,6 +7,8 @@ import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:http/http.dart' as http;
+import 'package:location_based_social_app/model/post_topic.dart';
+import 'package:location_based_social_app/model/post_topics.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
@@ -201,7 +203,7 @@ class PostsProvider with ChangeNotifier {
   }
 
   Future<void> uploadNewPost(
-      String content, List<String> photoUrls, User loginUser) async {
+      String content, List<String> photoUrls, User loginUser, PostTopic topic) async {
     try {
       final Location locationTracker = Location();
       final LocationData currentLocation = await locationTracker.getLocation();
@@ -213,6 +215,7 @@ class PostsProvider with ChangeNotifier {
           body: json.encode({
             'content': content,
             'imageUrls': photoUrls,
+            'topic': topic.name,
             'location': {
               'type': 'Point',
               'coordinates': [
@@ -237,7 +240,8 @@ class PostsProvider with ChangeNotifier {
           postLocation: LocationPoint(
               currentLocation.longitude, currentLocation.latitude),
           likesCount: 0,
-          userLiked: false);
+          userLiked: false, 
+          topic: topic,);
 
       _nearbyPosts.insert(0, createdPost);
       notifyListeners();
@@ -308,7 +312,8 @@ class PostsProvider with ChangeNotifier {
           content: e['content'] as String,
           postLocation: LocationPoint(longitude, latitude),
           likesCount: e['likesCount'] as int,
-          userLiked: e['userLiked'] as bool);
+          userLiked: e['userLiked'] as bool,
+          topic: getTopicByName(e['topic'] as String));
     }).toList();
 
     return fetchedPosts;

@@ -25,40 +25,67 @@ class PostMetaDataBar extends StatelessWidget {
         children: [
           Row(
             children: [
-              InkWell(
-                onTap: () {
-                  Provider.of<PostsProvider>(context, listen: false)
-                      .likePost(post.id, !userLiked);
-                },
-                child: userLiked
-                    ? const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      )
-                    : const Icon(
-                        Icons.favorite_border,
-                      ),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              if (likesCount > 0)
-                Text(
-                  '$likesCount likes',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              const SizedBox(
-                width: 10,
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Provider.of<PostsProvider>(context, listen: false)
+                          .likePost(post.id, !userLiked);
+                    },
+                    child: userLiked
+                        ? const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          )
+                        : const Icon(
+                            Icons.favorite_border,
+                          ),
+                  ),
+                  if (likesCount > 0)
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          '$likesCount likes',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                ],
               ),
               if (linkToMap)
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(
-                        PostLocationMapViewScreen.router,
-                        arguments: post.postLocation);
-                  },
-                  child: const Icon(Icons.location_pin),
-                )
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                            PostLocationMapViewScreen.router,
+                            arguments: post.postLocation);
+                      },
+                      child: const Icon(Icons.location_pin),
+                    ),
+                  ],
+                ),
+              Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Transform.scale(
+                    scale: 0.8,
+                    child: Chip(
+                      label: Text(post.topic.displayName),
+                      backgroundColor: Theme.of(context).accentColor,
+                      labelStyle: const TextStyle(color: Colors.white, fontSize: 19),
+                    ),
+                  )
+                ],
+              )
             ],
           )
         ],

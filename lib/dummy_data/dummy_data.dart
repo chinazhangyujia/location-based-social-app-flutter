@@ -2,6 +2,7 @@ import 'package:location_based_social_app/model/chat_thread_summary.dart';
 import 'package:location_based_social_app/model/comment.dart';
 import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/post.dart';
+import 'package:location_based_social_app/model/post_topics.dart';
 import 'package:location_based_social_app/model/user.dart';
 
 List<Post> DUMMY_POST = [
@@ -20,6 +21,7 @@ List<Post> DUMMY_POST = [
     postLocation: const LocationPoint(-122.048, 37.442),
     likesCount: 0,
     userLiked: false,
+    topic: getTopicByName('WORK'),
   ),
   Post(
     id: '2',
@@ -36,6 +38,7 @@ List<Post> DUMMY_POST = [
     postLocation: const LocationPoint(-122.048, 37.442),
     likesCount: 0,
     userLiked: false,
+    topic: getTopicByName('WORK'),
   ),
 ];
 
