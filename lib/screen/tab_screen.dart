@@ -6,8 +6,7 @@ import 'package:location_based_social_app/screen/chat/chat_threads_screen.dart';
 import 'package:location_based_social_app/screen/post_list/friend_posts_screen.dart';
 import 'package:location_based_social_app/screen/friend/friend_request_screen.dart';
 import 'package:location_based_social_app/screen/friend/friend_screen.dart';
-import 'package:location_based_social_app/screen/post_list/map_view_posts_screen.dart';
-import 'package:location_based_social_app/screen/post_list/nearby_posts_screen.dart';
+import 'package:location_based_social_app/screen/post_list/location_based_posts_screen.dart';
 import 'package:location_based_social_app/screen/profile/profile_screen.dart';
 import 'package:location_based_social_app/screen/friend/search_friend_screen.dart';
 import 'package:location_based_social_app/screen/notification/notification_tab_screen.dart';
@@ -30,19 +29,18 @@ class _TabScreenState extends State<TabScreen>
 
   @override
   void initState() {
-    _subPageTabController = TabController(length: 3, vsync: this);
+    _subPageTabController = TabController(length: 2, vsync: this);
 
     pages = [
       {
         'title': 'My App',
-        'page': NearbyPostsScreen(),
+        'page': LocationBasedPostsScreen(),
         'subpage': [
           {
-            'tabName': 'Nearby',
-            'page': NearbyPostsScreen(),
+            'tabName': 'Location',
+            'page': LocationBasedPostsScreen(),
           },
           {'tabName': 'Friends', 'page': FriendPostsScreen()},
-          {'tabName': 'Map', 'page': MapViewPostsScreen()}
         ],
         'controller': _subPageTabController
       },

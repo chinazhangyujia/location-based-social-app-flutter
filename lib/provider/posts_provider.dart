@@ -13,11 +13,10 @@ import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/util/config.dart';
 
 class PostsProvider with ChangeNotifier {
-  List<Post> _nearbyPosts = [];
+  List<Post> _locationBasedPosts = [];
   List<Post> _friendPosts = [];
   List<Post> _myPosts = [];
   List<Post> _likedPosts = [];
-  List<Post> _mapViewPosts = [];
 
   String _token;
 
@@ -29,12 +28,8 @@ class PostsProvider with ChangeNotifier {
     _token = token;
   }
 
-  List<Post> get nearbyPosts {
-    return _nearbyPosts;
-  }
-
-  List<Post> get mapViewPosts {
-    return _mapViewPosts;
+  List<Post> get locationBasedPosts {
+    return _locationBasedPosts;
   }
 
   List<Post> get friendPosts {
@@ -49,18 +44,13 @@ class PostsProvider with ChangeNotifier {
     return _likedPosts;
   }
 
-  Future<List<Post>> fetchPosts(
-      {int fetchSize = 5,
-      bool refresh = false,
-      LocationPoint location,
-      bool isNearby}) async {
+  Future<List<Post>> fetchPosts({
+    int fetchSize = 5,
+    @required bool refresh,
+    @required LocationPoint location,
+  }) async {
     try {
-      List<Post> posts;
-      if (isNearby) {
-        posts = _nearbyPosts;
-      } else {
-        posts = _mapViewPosts;
-      }
+      List<Post> posts = _locationBasedPosts;
 
       String url =
           '$SERVICE_DOMAIN/allPosts?long=${location.longitude}&lat=${location.latitude}';
@@ -87,11 +77,7 @@ class PostsProvider with ChangeNotifier {
         posts = fetchedPosts;
       }
 
-      if (isNearby) {
-        _nearbyPosts = posts;
-      } else {
-        _mapViewPosts = posts;
-      }
+      _locationBasedPosts = posts;
 
       notifyListeners();
 
@@ -202,15 +188,15 @@ class PostsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> uploadNewPost(
-      String content, List<String> photoUrls, User loginUser, PostTopic topic) async {
+  Future<void> uploadNewPost(String content, List<String> photoUrls,
+      User loginUser, PostTopic topic) async {
     try {
       final Location locationTracker = Location();
       final LocationData currentLocation = await locationTracker.getLocation();
 
       final String url = '$SERVICE_DOMAIN/post';
 
-      final res = await http.post(Uri.parse(url),
+      await http.post(Uri.parse(url),
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
@@ -224,27 +210,6 @@ class PostsProvider with ChangeNotifier {
               ]
             }
           }));
-
-      if (res.statusCode != 200) {
-        throw HttpException('Failed to post. Please try again later');
-      }
-
-      final responseData = json.decode(res.body);
-
-      final Post createdPost = Post(
-          id: responseData['_id'] as String,
-          user: loginUser,
-          postedTimeStamp: DateTime.parse(responseData['createdAt'] as String),
-          photoUrls: responseData['imageUrls'].cast<String>() as List<String>,
-          content: responseData['content'] as String,
-          postLocation: LocationPoint(
-              currentLocation.longitude, currentLocation.latitude),
-          likesCount: 0,
-          userLiked: false, 
-          topic: topic,);
-
-      _nearbyPosts.insert(0, createdPost);
-      notifyListeners();
     } catch (error) {
       rethrow;
     }
@@ -266,8 +231,7 @@ class PostsProvider with ChangeNotifier {
         throw HttpException('Failed like the post. Please try again later');
       }
 
-      _changeLikeInPosts(_nearbyPosts, postId, like);
-      _changeLikeInPosts(_mapViewPosts, postId, like);
+      _changeLikeInPosts(_locationBasedPosts, postId, like);
       _changeLikeInPosts(_friendPosts, postId, like);
       _changeLikeInPosts(_myPosts, postId, like);
       _changeLikeInPosts(_likedPosts, postId, like);
@@ -293,11 +257,14 @@ class PostsProvider with ChangeNotifier {
   List<Post> _responseDataToPosts(List<dynamic> responseData) {
     final List<Post> fetchedPosts = responseData.map((e) {
       final Map<String, dynamic> userData = e['owner'] as Map<String, dynamic>;
-      final List<dynamic> postLocation = e['location']['coordinates'] as List<dynamic>;
-      final double longitude =
-          postLocation[0] is int ? postLocation[0].toDouble() as double : postLocation[0] as double;
-      final double latitude =
-          postLocation[1] is int ? postLocation[1].toDouble() as double : postLocation[1] as double;
+      final List<dynamic> postLocation =
+          e['location']['coordinates'] as List<dynamic>;
+      final double longitude = postLocation[0] is int
+          ? postLocation[0].toDouble() as double
+          : postLocation[0] as double;
+      final double latitude = postLocation[1] is int
+          ? postLocation[1].toDouble() as double
+          : postLocation[1] as double;
 
       return Post(
           id: e['_id'] as String,
