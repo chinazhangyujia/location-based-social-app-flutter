@@ -129,8 +129,8 @@ class _NewPostScreenState extends State<NewPostScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
+          ? Center(
+              child: CircularProgressIndicator(color: Theme.of(context).accentColor),
             )
           : SingleChildScrollView(
               child: Padding(

@@ -6,31 +6,31 @@ import 'package:provider/provider.dart';
 
 /// Friends' posts regardless of post location
 class FriendPostsScreen extends StatefulWidget {
-
   @override
   _FriendPostsScreenState createState() => _FriendPostsScreenState();
 }
 
 class _FriendPostsScreenState extends State<FriendPostsScreen> {
-
   final ScrollController _scrollController = ScrollController();
 
-  bool _loading = false;
+  bool _pageLoading = false;
+  bool _scrollAppendLoading = false;
 
   @override
   void initState() {
-
     _scrollController.addListener(() {
-      if (!_loading && _scrollController.position.maxScrollExtent ==
-          _scrollController.position.pixels) {
+      if (!_scrollAppendLoading &&
+          _scrollController.position.maxScrollExtent ==
+              _scrollController.position.pixels) {
         setState(() {
-          _loading = true;
+          _scrollAppendLoading = true;
         });
 
-        Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(refresh: false)
+        Provider.of<PostsProvider>(context, listen: false)
+            .fetchFriendPosts(refresh: false)
             .then((_) {
           setState(() {
-            _loading = false;
+            _scrollAppendLoading = false;
           });
         });
       }
@@ -49,7 +49,14 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
 
   Future<void> fetchPosts() async {
     try {
-      Provider.of<PostsProvider>(context, listen: false).fetchFriendPosts(refresh: true);
+      setState(() {
+        _pageLoading = true;
+      });
+      await Provider.of<PostsProvider>(context, listen: false)
+          .fetchFriendPosts(refresh: true);
+      setState(() {
+        _pageLoading = false;
+      });
     } catch (error) {}
   }
 
@@ -59,29 +66,38 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
     final List<Post> posts = postsProvider.friendPosts;
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: fetchPosts,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: posts.length + 1,
-            itemBuilder: (context, index) {
-              if (index == posts.length && _loading) {
-                return const Center(child: CircularProgressIndicator(),);
-              } else if (index < posts.length) {
-                return Column(
-                  children: [
-                    PostItem(post: posts[index], linkToMap: true,),
-                    const Divider()
-                  ],
-                );
-              }
-              return null;
-            }
-          ),
-        ),
-      )
-    );
+        body: _pageLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).accentColor),
+              )
+            : RefreshIndicator(
+                onRefresh: fetchPosts,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: posts.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == posts.length && _scrollAppendLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                                color: Theme.of(context).accentColor),
+                          );
+                        } else if (index < posts.length) {
+                          return Column(
+                            children: [
+                              PostItem(
+                                post: posts[index],
+                                linkToMap: true,
+                              ),
+                              const Divider()
+                            ],
+                          );
+                        }
+                        return null;
+                      }),
+                ),
+              ));
   }
 }

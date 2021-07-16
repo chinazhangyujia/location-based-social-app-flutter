@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 
 /// Screen to show all posts that liked by current user
 class LikedPostsScreen extends StatefulWidget {
-
   static const String router = '/LikedPostsScreen';
 
   @override
@@ -14,25 +13,26 @@ class LikedPostsScreen extends StatefulWidget {
 }
 
 class _LikedPostsScreenState extends State<LikedPostsScreen> {
-
   final ScrollController _scrollController = ScrollController();
 
-  bool _loading = false;
+  bool _pageLoading = false;
+  bool _scrollAppendLoading = false;
 
   @override
   void initState() {
-
     _scrollController.addListener(() {
-      if (!_loading && _scrollController.position.maxScrollExtent ==
-          _scrollController.position.pixels) {
+      if (!_scrollAppendLoading &&
+          _scrollController.position.maxScrollExtent ==
+              _scrollController.position.pixels) {
         setState(() {
-          _loading = true;
+          _scrollAppendLoading = true;
         });
 
-        Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(refresh: false)
+        Provider.of<PostsProvider>(context, listen: false)
+            .fetchLikedPosts(refresh: false)
             .then((_) {
           setState(() {
-            _loading = false;
+            _scrollAppendLoading = false;
           });
         });
       }
@@ -51,7 +51,14 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
 
   Future<void> fetchPosts() async {
     try {
-      Provider.of<PostsProvider>(context, listen: false).fetchLikedPosts(refresh: true);
+      setState(() {
+        _pageLoading = true;
+      });
+      await Provider.of<PostsProvider>(context, listen: false)
+          .fetchLikedPosts(refresh: true);
+      setState(() {
+        _pageLoading = false;
+      });
     } catch (error) {}
   }
 
@@ -65,29 +72,40 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
           title: const Text('Liked Posts'),
           elevation: 0.5,
         ),
-        body: RefreshIndicator(
-          onRefresh: fetchPosts,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: ListView.builder(
-                controller: _scrollController,
-                itemCount: posts.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == posts.length && _loading) {
-                    return const Center(child: CircularProgressIndicator(),);
-                  } else if (index < posts.length) {
-                    return Column(
-                      children: [
-                        PostItem(post: posts[index], linkToMap: true,),
-                        const Divider()
-                      ],
-                    );
-                  }
-                  return null;
-                }
-            ),
-          ),
-        )
-    );
+        body: _pageLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                    color: Theme.of(context).accentColor),
+              )
+            : RefreshIndicator(
+                onRefresh: fetchPosts,
+                color: Theme.of(context).accentColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: _scrollController,
+                      itemCount: posts.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == posts.length && _scrollAppendLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                                color: Theme.of(context).accentColor),
+                          );
+                        } else if (index < posts.length) {
+                          return Column(
+                            children: [
+                              PostItem(
+                                post: posts[index],
+                                linkToMap: true,
+                              ),
+                              const Divider()
+                            ],
+                          );
+                        }
+                        return null;
+                      }),
+                ),
+              ));
   }
 }

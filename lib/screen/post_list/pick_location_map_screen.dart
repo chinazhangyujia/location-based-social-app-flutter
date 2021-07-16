@@ -66,8 +66,10 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
             },
             child: Text(
               'OK',
-              style:
-                  TextStyle(color: Theme.of(context).accentColor, fontSize: 20, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Theme.of(context).accentColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500),
             ),
           )
         ],

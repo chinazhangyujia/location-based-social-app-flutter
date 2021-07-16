@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: loginUser == null ?
-            const Center(child: CircularProgressIndicator(),) :
+            Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor),) :
         Column(
           children: [
             Card(elevation: 0.4, child: UserInfoCard(loginUser),),

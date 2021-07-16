@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:location/location.dart';
 import 'package:location_based_social_app/model/location_point.dart';
 import 'package:location_based_social_app/model/post.dart';
@@ -22,11 +23,12 @@ class LocationBasedPostsScreen extends StatefulWidget {
 class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  bool _loading = false;
+  bool _pageLoading = false;
+  bool _scrollAppendLoading = false;
   bool _isInit = true;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     if (_isInit) {
       _getUserLocation().then((currentLocation) {
         selectedLocation ??= currentLocation;
@@ -34,21 +36,18 @@ class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
             Provider.of<PostsProvider>(context, listen: false);
 
         _scrollController.addListener(() {
-          if (!_loading &&
+          if (!_scrollAppendLoading &&
               _scrollController.position.maxScrollExtent ==
-                  _scrollController.position.pixels) {
+                  _scrollController.position.pixels &&
+              _scrollController.position.userScrollDirection ==
+                  ScrollDirection.reverse) {
             setState(() {
-              _loading = true;
+              _scrollAppendLoading = true;
             });
 
-            postsProvider
-                .fetchPosts(
-              refresh: false,
-              location: currentLocation,
-            )
-                .then((_) {
+            appendPosts().then((_) {
               setState(() {
-                _loading = false;
+                _scrollAppendLoading = false;
               });
             });
           }
@@ -58,10 +57,7 @@ class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
           Provider.of<NotificationsProvider>(context, listen: false)
               .getAllNotifications();
 
-          postsProvider.fetchPosts(
-            refresh: true,
-            location: selectedLocation,
-          );
+          refreshAllPosts();
         } catch (error) {}
       });
 
@@ -78,8 +74,23 @@ class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
 
   Future<void> refreshAllPosts() async {
     try {
-      Provider.of<PostsProvider>(context, listen: false).fetchPosts(
+      setState(() {
+        _pageLoading = true;
+      });
+      await Provider.of<PostsProvider>(context, listen: false).fetchPosts(
         refresh: true,
+        location: selectedLocation,
+      );
+      setState(() {
+        _pageLoading = false;
+      });
+    } catch (error) {}
+  }
+
+  Future<void> appendPosts() async {
+    try {
+      Provider.of<PostsProvider>(context, listen: false).fetchPosts(
+        refresh: false,
         location: selectedLocation,
       );
     } catch (error) {}
@@ -116,30 +127,38 @@ class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
     return Stack(
       children: [
         Scaffold(
-          body: RefreshIndicator(
-            onRefresh: refreshAllPosts,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: posts.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == posts.length && _loading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (index < posts.length) {
-                      return Column(
-                        children: [
-                          PostItem(post: posts[index]),
-                          const Divider()
-                        ],
-                      );
-                    }
-                    return null;
-                  }),
-            ),
-          ),
+          body: _pageLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                      color: Theme.of(context).accentColor),
+                )
+              : RefreshIndicator(
+                  onRefresh: refreshAllPosts,
+                  color: Theme.of(context).accentColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: posts.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == posts.length && _scrollAppendLoading) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                  color: Theme.of(context).accentColor),
+                            );
+                          } else if (index < posts.length) {
+                            return Column(
+                              children: [
+                                PostItem(post: posts[index]),
+                                const Divider()
+                              ],
+                            );
+                          }
+                          return null;
+                        }),
+                  ),
+                ),
           floatingActionButton: FloatingActionButton(
             heroTag: null,
             onPressed: () {
