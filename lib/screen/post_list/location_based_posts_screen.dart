@@ -20,12 +20,16 @@ class LocationBasedPostsScreen extends StatefulWidget {
       _LocationBasedPostsScreenState();
 }
 
-class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
+class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen>
+    with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
 
   bool _pageLoading = false;
   bool _scrollAppendLoading = false;
   bool _isInit = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void didChangeDependencies() async {
@@ -121,6 +125,7 @@ class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final List<Post> posts =
         Provider.of<PostsProvider>(context).locationBasedPosts;
 

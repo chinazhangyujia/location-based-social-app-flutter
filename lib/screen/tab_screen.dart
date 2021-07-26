@@ -131,6 +131,18 @@ class _TabScreenState extends State<TabScreen>
       ];
     }
 
+    List<Widget> subpageComponents = [
+      TabBarView(
+        controller: pages[0]['controller'] as TabController,
+        children: (pages[0]['subpage'] as List)
+            .map((e) => e['page'] as Widget)
+            .toList(),
+      ),
+      pages[1]['page'] as Widget,
+      pages[2]['page'] as Widget,
+      pages[3]['page'] as Widget,
+    ];
+
     return DefaultTabController(
       length: (pages[selectedPageIndex]['subpage'] as List).length,
       child: Scaffold(
@@ -145,7 +157,8 @@ class _TabScreenState extends State<TabScreen>
                     alignment: Alignment.centerLeft,
                     child: TabBar(
                       isScrollable: true,
-                      controller: pages[selectedPageIndex]['controller'] as TabController,
+                      controller: pages[selectedPageIndex]['controller']
+                          as TabController,
                       tabs: (pages[selectedPageIndex]['subpage'] as List)
                           .map(
                             (e) => Padding(
@@ -163,14 +176,10 @@ class _TabScreenState extends State<TabScreen>
                 )
               : null,
         ),
-        body: (pages[selectedPageIndex]['subpage'] as List).isEmpty
-            ? pages[selectedPageIndex]['page'] as Widget
-            : TabBarView(
-                controller: pages[selectedPageIndex]['controller'] as TabController,
-                children: (pages[selectedPageIndex]['subpage'] as List)
-                    .map((e) => e['page'] as Widget)
-                    .toList(),
-              ),
+        body: IndexedStack(
+          index: selectedPageIndex,
+          children: subpageComponents,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           onTap: selectPage,
           unselectedItemColor: Colors.black,

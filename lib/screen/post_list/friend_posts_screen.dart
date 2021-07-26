@@ -10,11 +10,15 @@ class FriendPostsScreen extends StatefulWidget {
   _FriendPostsScreenState createState() => _FriendPostsScreenState();
 }
 
-class _FriendPostsScreenState extends State<FriendPostsScreen> {
+class _FriendPostsScreenState extends State<FriendPostsScreen>
+    with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
 
   bool _pageLoading = false;
   bool _scrollAppendLoading = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -62,6 +66,8 @@ class _FriendPostsScreenState extends State<FriendPostsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final PostsProvider postsProvider = Provider.of<PostsProvider>(context);
     final List<Post> posts = postsProvider.friendPosts;
 
