@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location_based_social_app/util/config.dart';
 
 /// Pick image from gallery for new post
 /// Before release we should change it to taking photo only
@@ -22,8 +23,7 @@ class GalleryImagePicker extends StatelessWidget {
     }
 
     final PickedFile pickedImage = await imagePicker.getImage(
-      source: ImageSource.gallery,
-      maxWidth: 500
+      source: mode == Mode.DEV ? ImageSource.gallery : ImageSource.camera,
     );
 
     if (pickedImage == null) {
