@@ -161,8 +161,7 @@ class UserInfoCard extends StatelessWidget {
                     user.name,
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 7,),
-                  Text(DateFormat("MMM dd, yyyy").format(user.birthday))
+                  const SizedBox(height: 7,)
                 ],
               )
             ],

@@ -33,7 +33,6 @@ class AddFriendUserCard extends StatelessWidget {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 7,),
-                  Text(DateFormat("MMM dd, yyyy").format(user.birthday))
                 ],
               ),
             ],

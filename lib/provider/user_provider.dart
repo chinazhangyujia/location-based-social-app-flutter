@@ -11,7 +11,6 @@ class UserProvider with ChangeNotifier {
   String _id;
   String _nickname;
   String _uniqueName;
-  DateTime _birthday;
   String _email;
   String _introduction;
   String _avatarUrl;
@@ -43,7 +42,6 @@ class UserProvider with ChangeNotifier {
       id: _id,
       name: _nickname,
       avatarUrl: _avatarUrl,
-      birthday: _birthday,
       introduction: _introduction,
     );
   }
@@ -69,14 +67,12 @@ class UserProvider with ChangeNotifier {
       _uniqueName = responseData['uniqueName'] as String;
       _nickname = responseData['name'] as String;
       _email = responseData['email'] as String;
-      _birthday = DateTime.parse(responseData['birthday'] as String);
       _introduction = responseData['introduction'] as String;
       _avatarUrl = responseData['avatarUrl'] as String;
 
       if (_uniqueName == null ||
           _nickname == null ||
-          _email == null ||
-          _birthday == null) {
+          _email == null) {
         throw HttpException('Failed to get user info. Please try later');
       }
 
@@ -86,7 +82,6 @@ class UserProvider with ChangeNotifier {
           id: _id,
           name: _nickname,
           avatarUrl: _avatarUrl,
-          birthday: _birthday,
           introduction: _introduction);
     } catch (error) {
       rethrow;
@@ -158,7 +153,6 @@ class UserProvider with ChangeNotifier {
       final String uniqueName = responseData['uniqueName'] as String;
       final String nickname = responseData['name'] as String;
       final String email = responseData['email'] as String;
-      final DateTime birthday = DateTime.parse(responseData['birthday'] as String);
       final String introduction = responseData['introduction'] as String;
       final String friendStatus = responseData['friendStatus'] as String;
       final String avatarUrl = responseData['avatarUrl'] as String;
@@ -166,7 +160,6 @@ class UserProvider with ChangeNotifier {
       if (uniqueName == null ||
           nickname == null ||
           email == null ||
-          birthday == null ||
           friendStatus == null) {
         throw HttpException('Failed to find user. Please try later');
       }
@@ -175,7 +168,6 @@ class UserProvider with ChangeNotifier {
           id: id,
           name: nickname,
           avatarUrl: avatarUrl,
-          birthday: birthday,
           introduction: introduction,
           metaData: {'friendStatus': friendStatus});
 

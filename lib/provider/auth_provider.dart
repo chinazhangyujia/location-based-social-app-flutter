@@ -61,15 +61,14 @@ class AuthProvider with ChangeNotifier {
 
   }
 
-  Future<void> signup(String email, String password, String name, String birthday) async {
+  Future<void> signup(String email, String password, String name) async {
     final String url = '$SERVICE_DOMAIN/user/signup';
 
     try {
       final res = await http.post(Uri.parse(url), body: json.encode({
         'email': email,
         'password': password,
-        'name': name,
-        'birthday': birthday
+        'name': name
       }), headers: requestHeader);
 
       final responseData = json.decode(res.body);

@@ -45,7 +45,6 @@ class FriendsProvider with ChangeNotifier {
             id: friend['_id'] as String,
             name: friend['name'] as String,
             avatarUrl: friend['avatarUrl'] as String,
-            birthday: DateTime.parse(friend['birthday'] as String),
         );
       }).toList();
 

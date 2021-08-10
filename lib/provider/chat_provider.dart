@@ -216,7 +216,6 @@ class ChatProvider with ChangeNotifier {
         id: chatWithData['_id'] as String,
         name: chatWithData['name'] as String,
         avatarUrl: chatWithData['avatarUrl'] as String,
-        birthday: DateTime.parse(chatWithData['birthday'] as String),
         introduction: chatWithData['introduction'] as String);
 
     return ChatThreadSummary(
@@ -233,7 +232,6 @@ class ChatProvider with ChangeNotifier {
         id: sendToData['_id'] as String,
         name: sendToData['name'] as String,
         avatarUrl: sendToData['avatarUrl'] as String,
-        birthday: DateTime.parse(sendToData['birthday'] as String),
         introduction: sendToData['introduction'] as String);
 
     final Map<String, dynamic> sendFromData = responseData['sendFrom'] as Map<String, dynamic>;
@@ -241,7 +239,6 @@ class ChatProvider with ChangeNotifier {
         id: sendFromData['_id'] as String,
         name: sendFromData['name'] as String,
         avatarUrl: sendFromData['avatarUrl'] as String,
-        birthday: DateTime.parse(sendFromData['birthday'] as String),
         introduction: sendFromData['introduction'] as String);
 
     return ChatMessage(

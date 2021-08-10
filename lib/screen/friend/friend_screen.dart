@@ -45,7 +45,6 @@ class _FriendScreenState extends State<FriendScreen> {
     final User userWithMetaData = User(id: tappedUser.id,
         name: tappedUser.name,
         avatarUrl: tappedUser.avatarUrl,
-        birthday: tappedUser.birthday,
         introduction: tappedUser.introduction,
         metaData: {'friendStatus': friendStatus }
     );

@@ -33,7 +33,7 @@ class _TabScreenState extends State<TabScreen>
 
     pages = [
       {
-        'title': 'My App',
+        'title': 'Silkroad',
         'page': LocationBasedPostsScreen(),
         'subpage': [
           {
@@ -111,7 +111,7 @@ class _TabScreenState extends State<TabScreen>
           },
         )
       ];
-    } else if (pages[selectedPageIndex]['title'] == 'My App') {
+    } else if (pages[selectedPageIndex]['title'] == 'Silkroad') {
       appBarActions = [
         IconButton(
           icon: unnotifiedNotificationsCount > 0

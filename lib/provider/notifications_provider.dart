@@ -69,7 +69,6 @@ class NotificationsProvider with ChangeNotifier {
             id: sendFromUserData['_id'] as String,
             name: sendFromUserData['name'] as String,
             avatarUrl: sendFromUserData['avatarUrl'] as String,
-            birthday: DateTime.parse(sendFromUserData['birthday'] as String),
           );
 
           return PostNotification(
@@ -87,7 +86,6 @@ class NotificationsProvider with ChangeNotifier {
             id: sendFromUserData['_id'] as String,
             name: sendFromUserData['name'] as String,
             avatarUrl: sendFromUserData['avatarUrl'] as String,
-            birthday: DateTime.parse(sendFromUserData['birthday'] as String),
           );
 
           return PostNotification(

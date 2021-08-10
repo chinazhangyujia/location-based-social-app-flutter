@@ -272,7 +272,6 @@ class PostsProvider with ChangeNotifier {
               id: userData['_id'] as String,
               name: userData['name'] as String,
               avatarUrl: userData['avatarUrl'] as String,
-              birthday: DateTime.parse(userData['birthday'] as String),
               introduction: userData['introduction'] as String),
           postedTimeStamp: DateTime.parse(e['createdAt'] as String),
           photoUrls: e['imageUrls'].cast<String>() as List<String>,

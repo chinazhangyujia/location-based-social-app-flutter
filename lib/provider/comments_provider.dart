@@ -48,7 +48,6 @@ class CommentsProvider with ChangeNotifier {
             id: sendFromData['_id'] as String,
             name: sendFromData['name'] as String,
             avatarUrl: sendFromData['avatarUrl'] as String,
-            birthday: DateTime.parse(sendFromData['birthday'] as String),
             introduction: sendFromData['introduction'] as String);
 
         User sendTo;
@@ -58,7 +57,6 @@ class CommentsProvider with ChangeNotifier {
               id: sendToData['_id'] as String,
               name: sendToData['name'] as String,
               avatarUrl: sendToData['avatarUrl'] as String,
-              birthday: DateTime.parse(sendToData['birthday'] as String),
               introduction: sendToData['introduction'] as String);
         }
 

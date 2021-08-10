@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
-import 'package:location_based_social_app/widget/authentication/birthday.dart';
 import 'package:location_based_social_app/widget/authentication/email_and_password.dart';
 import 'package:location_based_social_app/widget/authentication/user_name.dart';
 import 'package:location_based_social_app/widget/authentication/welcome.dart';
@@ -26,7 +25,6 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
     'email': '',
     'password': '',
     'nickname': '',
-    'birthday': ''
   };
 
   void _setStep(int step) {
@@ -54,16 +52,12 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
 
     try {
       await authProvider.signup(_signUpData['email'], _signUpData['password'],
-          _signUpData['nickname'], _signUpData['birthday']);
+          _signUpData['nickname']);
     } on HttpException catch (error) {
       renderErrorDialog(context, error.toString());
     } catch (error) {
       renderErrorDialog(context, 'Authentication failed. Please try later.');
     }
-  }
-
-  void _setBirthdayString(String birthday) {
-    _signUpData['birthday'] = birthday;
   }
 
   void _setEmailAndPasswordSignIn(String email, String password) async {
@@ -96,8 +90,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
       'signup': [
         EmailAndPassword(
             _setPath, _setStep, _setEmailAndPasswordSignUp, (_) {}),
-        UserName(_setUserName, _setStep),
-        Birthday(_setBirthdayString, _setStep, _submitForSignUp)
+        UserName(_setUserName, _setStep, _submitForSignUp)
       ]
     };
 

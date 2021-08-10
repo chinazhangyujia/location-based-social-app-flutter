@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class UserName extends StatefulWidget {
   final void Function(String) _setUserName;
   final void Function(int) _setStep;
+  final void Function(BuildContext) _submit;
 
-  const UserName(this._setUserName, this._setStep);
+  const UserName(this._setUserName, this._setStep, this._submit);
 
   @override
   _UserNameState createState() => _UserNameState();
@@ -30,7 +31,7 @@ class _UserNameState extends State<UserName> {
     return null;
   }
 
-  void _onClickNext() {
+  void _onClickNext(BuildContext context) {
     final String inputError = _getInputError();
     if (inputError != null) {
       setState(() {
@@ -40,7 +41,7 @@ class _UserNameState extends State<UserName> {
     }
 
     widget._setUserName(_userName);
-    widget._setStep(2);
+    widget._submit(context);
   }
 
   @override
@@ -60,8 +61,8 @@ class _UserNameState extends State<UserName> {
                     padding: EdgeInsets.symmetric(vertical: 15),
                     child: Text(
                       'User Name',
-                      style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                   TextField(
@@ -100,22 +101,24 @@ class _UserNameState extends State<UserName> {
               Container(
                 alignment: Alignment.topCenter,
                 child: ElevatedButton(
-                  onPressed: _onClickNext,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    onPressed: () {
+                      _onClickNext(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30.0, vertical: 8.0),
+                      primary: Theme.of(context).accentColor,
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                    primary: Theme.of(context).accentColor,
-                  ),
-                  child: const Text(
-                    'Next',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20),
-                  )
-                ),
+                    child: const Text(
+                      'Next',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20),
+                    )),
               ),
             ],
           ),

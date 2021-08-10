@@ -76,7 +76,6 @@ class FriendRequestProvider with ChangeNotifier {
               id: sendFrom['_id'] as String,
               name: sendFrom['name'] as String,
               avatarUrl: sendFrom['avatarUrl'] as String,
-              birthday: DateTime.parse(sendFrom['birthday'] as String),
           ),
           status: e['status'] as String,
           notified: e['notified'] as bool
