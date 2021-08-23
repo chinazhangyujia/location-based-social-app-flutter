@@ -19,17 +19,30 @@ class SearchFriendScreen extends StatefulWidget {
 }
 
 class _SearchFriendScreenState extends State<SearchFriendScreen> {
-
   TextEditingController textController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
   User foundUser;
   bool _isInit = true;
   bool addRequestSent = false;
   bool deleteRequestSent = false;
+  String _uniqueNameHintText = 'Unique Name';
 
   @override
   void didChangeDependencies() {
     if (_isInit) {
       foundUser = ModalRoute.of(context).settings.arguments as User;
+
+      _focusNode.addListener(() {
+        if (_focusNode.hasFocus) {
+          setState(() {
+            _uniqueNameHintText = '';
+          });
+        } else {
+          setState(() {
+            _uniqueNameHintText = 'Unique Name';
+          });
+        }
+      });
       _isInit = false;
     }
     super.didChangeDependencies();
@@ -38,8 +51,9 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
   Future<void> onSendUniqueName(BuildContext context) async {
     try {
       final String uniqueName = textController.text;
-      final User userByUniqueName = await Provider.of<UserProvider>(context, listen: false)
-          .getUserByUniqueName(uniqueName);
+      final User userByUniqueName =
+          await Provider.of<UserProvider>(context, listen: false)
+              .getUserByUniqueName(uniqueName);
 
       setState(() {
         foundUser = userByUniqueName;
@@ -60,27 +74,28 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       setState(() {
         addRequestSent = true;
       });
-    }
-    on HttpException catch (error) {
+    } on HttpException catch (error) {
       renderErrorDialog(context, error.message);
-    }
-    catch (error) {
-      renderErrorDialog(context, 'Failed to send friend request. Please try later');
+    } catch (error) {
+      renderErrorDialog(
+          context, 'Failed to send friend request. Please try later');
     }
   }
 
   Future<void> goToChatScreen(BuildContext context) async {
-    await Provider.of<ChatProvider>(context, listen: false).connectToThread(foundUser);
+    await Provider.of<ChatProvider>(context, listen: false)
+        .connectToThread(foundUser);
     Navigator.of(context).pushNamed(ChatScreen.router, arguments: foundUser);
   }
 
   Future<void> onDeleteClick(BuildContext context, String friendUserId) async {
     try {
-      await Provider.of<FriendsProvider>(context, listen: false).cancelFriendship(friendUserId);
+      await Provider.of<FriendsProvider>(context, listen: false)
+          .cancelFriendship(friendUserId);
       setState(() {
         deleteRequestSent = true;
       });
-    } catch(error) {
+    } catch (error) {
       renderErrorDialog(context, 'Failed to delete friend. Please try later');
     }
   }
@@ -96,8 +111,9 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       icon = null;
       color = null;
       onClick = null;
-    }
-    else if (targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'NOT_FRIEND' && !addRequestSent) {
+    } else if (targetUser.metaData.containsKey('friendStatus') &&
+        targetUser.metaData['friendStatus'] == 'NOT_FRIEND' &&
+        !addRequestSent) {
       text = 'Add';
       icon = Icon(
         Icons.add_circle_outline_sharp,
@@ -105,8 +121,11 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
         size: size,
       );
       color = Theme.of(context).accentColor;
-      onClick = () {onAddClick(context, targetUser.id);};
-    } else if (targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'IS_FRIEND') {
+      onClick = () {
+        onAddClick(context, targetUser.id);
+      };
+    } else if (targetUser.metaData.containsKey('friendStatus') &&
+        targetUser.metaData['friendStatus'] == 'IS_FRIEND') {
       text = 'Delete';
       icon = Icon(
         Icons.delete,
@@ -114,10 +133,14 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
         size: size,
       );
       color = Theme.of(context).errorColor;
-      onClick = () {onDeleteClick(context, targetUser.id);};
-    } else if (targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'NOT_FRIEND' && addRequestSent ||
-        targetUser.metaData.containsKey('friendStatus') && targetUser.metaData['friendStatus'] == 'PENDING'
-    ) {
+      onClick = () {
+        onDeleteClick(context, targetUser.id);
+      };
+    } else if (targetUser.metaData.containsKey('friendStatus') &&
+            targetUser.metaData['friendStatus'] == 'NOT_FRIEND' &&
+            addRequestSent ||
+        targetUser.metaData.containsKey('friendStatus') &&
+            targetUser.metaData['friendStatus'] == 'PENDING') {
       text = 'Pending';
       icon = Icon(
         Icons.pending,
@@ -138,16 +161,14 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     }
 
     return Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 2,
-                blurRadius: 5,
-              )
-            ]
-        ),
+        decoration:
+            BoxDecoration(color: Theme.of(context).primaryColor, boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 5,
+          )
+        ]),
         height: 90,
         alignment: Alignment.center,
         child: Row(
@@ -162,14 +183,19 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.chat_bubble_outline, color: Theme.of(context).accentColor,),
-                    const SizedBox(width: 10,),
-                    Text('Message',
+                    Icon(
+                      Icons.chat_bubble_outline,
+                      color: Theme.of(context).accentColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Message',
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w500,
-                          color: Theme.of(context).accentColor
-                      ),
+                          color: Theme.of(context).accentColor),
                     ),
                   ],
                 ),
@@ -183,21 +209,22 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     icon,
-                    const SizedBox(width: 10,),
-                    Text(text,
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      text,
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w500,
-                          color: color
-                      ),
+                          color: color),
                     ),
                   ],
                 ),
               ),
             ),
           ],
-        )
-    );
+        ));
   }
 
   @override
@@ -220,37 +247,41 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
               alignment: Alignment.center,
               height: 37,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: const Color.fromRGBO(244, 244, 244, 1)
-              ),
+                  borderRadius: BorderRadius.circular(50),
+                  color: const Color.fromRGBO(244, 244, 244, 1)),
               child: TextField(
                 onSubmitted: (_) {
                   onSendUniqueName(context);
                 },
                 controller: textController,
+                focusNode: _focusNode,
                 cursorColor: Theme.of(context).accentColor,
                 textAlignVertical: TextAlignVertical.center,
                 textAlign: TextAlign.center,
                 textInputAction: TextInputAction.send,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   errorBorder: InputBorder.none,
                   disabledBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-                  hintText: 'Unique Name',
+                  contentPadding:
+                      const EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                  hintText: _uniqueNameHintText,
                 ),
               ),
             ),
           ),
         ),
       ),
-      body: foundUser == null ? null : Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: AddFriendUserCard(foundUser),
-      ),
-      bottomSheet: foundUser == null ? null : _getBottomSheet(context, foundUser),
+      body: foundUser == null
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AddFriendUserCard(foundUser),
+            ),
+      bottomSheet:
+          foundUser == null ? null : _getBottomSheet(context, foundUser),
     );
   }
 }
