@@ -83,6 +83,7 @@ class _FriendPostsScreenState extends State<FriendPostsScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ListView.builder(
                       controller: _scrollController,
+                      physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: posts.length + 1,
                       itemBuilder: (context, index) {
                         if (index == posts.length && _scrollAppendLoading) {

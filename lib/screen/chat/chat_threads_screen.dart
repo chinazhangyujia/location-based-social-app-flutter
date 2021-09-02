@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 /// The home page when click chat tab
 /// This screen is a list view, each item represents a thread. The last message is shown in each list item
 class ChatThreadsScreen extends StatefulWidget {
-
   static const String router = '/ChatThreadsScreen';
 
   @override
@@ -17,42 +16,50 @@ class ChatThreadsScreen extends StatefulWidget {
 }
 
 class _ChatThreadsScreenState extends State<ChatThreadsScreen> {
-
   @override
   void initState() {
-    Provider.of<ChatProvider>(context, listen: false).getAllThreadSummaries();
+    _refreshThreadSummaries();
     super.initState();
+  }
+
+  Future<void> _refreshThreadSummaries() async {
+    Provider.of<ChatProvider>(context, listen: false).getAllThreadSummaries();
   }
 
   Future<void> goToChatScreen(BuildContext context, User chatWith) async {
     try {
-      await Provider.of<ChatProvider>(context, listen: false).connectToThread(
-          chatWith);
+      await Provider.of<ChatProvider>(context, listen: false)
+          .connectToThread(chatWith);
       Navigator.of(context).pushNamed(ChatScreen.router, arguments: chatWith);
     } catch (e) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<ChatThreadSummary> chatThreadSummaries = Provider.of<ChatProvider>(context).chatThreadSummaries;
+    final List<ChatThreadSummary> chatThreadSummaries =
+        Provider.of<ChatProvider>(context).chatThreadSummaries;
 
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: ListView.builder(
-          itemCount: chatThreadSummaries.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  goToChatScreen(context, chatThreadSummaries[index].chatWith);
-                },
-                child: ChatThreadSummaryItem(chatThreadSummaries[index])
-              ),
-              const Divider()
-            ],
-          )
+        child: RefreshIndicator(
+          onRefresh: _refreshThreadSummaries,
+          child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: chatThreadSummaries.length,
+              itemBuilder: (context, index) => Column(
+                    children: [
+                      GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            goToChatScreen(
+                                context, chatThreadSummaries[index].chatWith);
+                          },
+                          child: ChatThreadSummaryItem(
+                              chatThreadSummaries[index])),
+                      const Divider()
+                    ],
+                  )),
         ),
       ),
     );

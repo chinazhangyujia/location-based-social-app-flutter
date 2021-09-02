@@ -65,6 +65,7 @@ class FriendRequestCard extends StatelessWidget {
                           ),
                           textStyle: const TextStyle(color: Colors.white),
                           padding: const EdgeInsets.all(0.0),
+                          primary: Theme.of(context).accentColor
                         ),
                         child: Container(
                           width: 100,
@@ -72,11 +73,10 @@ class FriendRequestCard extends StatelessWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: Theme.of(context).accentColor,
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: const Text('Accept',
-                              style: TextStyle(fontSize: 18)),
+                              style: TextStyle(fontSize: 18, color: Colors.white),),
                         ),
                       ),
                     ),
