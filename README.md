@@ -27,5 +27,5 @@ In lib/util/config.dart use dev service url
     - /exception: custom defined exception  
     - /model: classes that represent data fetched from backend server. Basically api call -> json -> instance of classes in this folder  
     - /provider: global status store for all the data that fetched from backend. Widgets will listen to the change of fields in these classes. Update of fields will trigger rerender. The access layer of service call  
-    - /screen: screens. Currently the style of screens are from material.dart which means ISO and Android will have same style  
+    - /screen: screens. Currently the style of screens are from material.dart which means iOS and Android will have same style  
     - /widget: shared widgets  
