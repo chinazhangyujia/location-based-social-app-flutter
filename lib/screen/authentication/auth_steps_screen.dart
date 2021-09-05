@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
+import 'package:location_based_social_app/screen/splash_screen.dart';
 import 'package:location_based_social_app/widget/authentication/email_and_password.dart';
 import 'package:location_based_social_app/widget/authentication/user_name.dart';
 import 'package:location_based_social_app/widget/authentication/welcome.dart';
@@ -16,6 +17,7 @@ class AuthStepsScreen extends StatefulWidget {
 class _AuthStepsScreenState extends State<AuthStepsScreen> {
   String _path;
   int _currentStep = 0;
+  bool _loading = false;
 
   final Map<String, String> _signInData = {
     'email': '',
@@ -38,7 +40,13 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
         Provider.of<AuthProvider>(context, listen: false);
 
     try {
+      setState(() {
+        _loading = true;
+      });
       await authProvider.login(_signInData['email'], _signInData['password']);
+      setState(() {
+        _loading = false;
+      });
     } on HttpException catch (error) {
       renderErrorDialog(context, error.toString());
     } catch (error) {
@@ -51,8 +59,14 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
         Provider.of<AuthProvider>(context, listen: false);
 
     try {
+      setState(() {
+        _loading = true;
+      });
       await authProvider.signup(_signUpData['email'], _signUpData['password'],
           _signUpData['nickname']);
+      setState(() {
+        _loading = false;
+      });
     } on HttpException catch (error) {
       renderErrorDialog(context, error.toString());
     } catch (error) {
@@ -94,7 +108,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
       ]
     };
 
-    return Scaffold(
+    return _loading ? SplashScreen() : Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
