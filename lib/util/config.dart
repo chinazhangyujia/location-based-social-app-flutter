@@ -1,4 +1,4 @@
-Mode mode = Mode.DEV;
+Mode mode = Mode.PRODUCTION;
 
 const String _PROD_SERVICE_DOMAIN =
     'https://location-based-social-app-0.herokuapp.com'; // deployed service on heroku
