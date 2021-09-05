@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/util/compress_image_util.dart' as compress_image_util;
 import 'package:location_based_social_app/util/config.dart';
 
 /// util to post image to aws s3
@@ -68,7 +69,10 @@ class ImageUploadUtil {
   /// store image on S3
   static Future<void> uploadToS3(String url, File image) async {
     try {
-      final Uint8List bytes = await image.readAsBytes();
+      //Keep uncompressed method if needed in future
+      // final Uint8List bytes = await image.readAsBytes();
+      final Uint8List bytes = await compress_image_util.compressImageFileToUint8List(image);
+
       final response = await http.put(Uri.parse(url), body: bytes);
 
       if (response.statusCode != 200) {
