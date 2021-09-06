@@ -14,8 +14,9 @@ class PostItem extends StatelessWidget {
   final Post post;
   final bool disableClick;
   final bool linkToMap;
+  final void Function() onClickMetaDataBarComment; // nonnull for post detail screen
 
-  const PostItem({@required this.post, this.disableClick = false, this.linkToMap = false});
+  const PostItem({@required this.post, this.disableClick = false, this.linkToMap = false, this.onClickMetaDataBarComment});
 
   Future<void> onTapHeader(BuildContext context, User tappedUser) async {
     final String friendStatus = await Provider.of<FriendsProvider>(context, listen: false).getFriendStatus(tappedUser.id);
@@ -70,7 +71,7 @@ class PostItem extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: PostMetaDataBar(likesCount: post.likesCount, userLiked: post.userLiked, post: post, linkToMap: linkToMap,),
+            child: PostMetaDataBar(likesCount: post.likesCount, userLiked: post.userLiked, post: post, linkToMap: linkToMap, onClickCommentIcon: onClickMetaDataBarComment,),
           ),
         ],
       ),

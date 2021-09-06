@@ -279,7 +279,8 @@ class PostsProvider with ChangeNotifier {
           postLocation: LocationPoint(longitude, latitude),
           likesCount: e['likesCount'] as int,
           userLiked: e['userLiked'] as bool,
-          topic: getTopicByName(e['topic'] as String));
+          topic: getTopicByName(e['topic'] as String),
+          commentCount: e['commentCount'] as int);
     }).toList();
 
     return fetchedPosts;

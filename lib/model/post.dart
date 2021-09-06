@@ -10,19 +10,23 @@ class Post {
   final DateTime postedTimeStamp;
   final List<String> photoUrls;
   final String content;
-  final LocationPoint postLocation; // every post is associated with the location where it was sent
+  final LocationPoint
+      postLocation; // every post is associated with the location where it was sent
   int likesCount;
   bool userLiked;
   final PostTopic topic;
+  int commentCount;
 
-  Post(
-      {@required this.id,
-      @required this.user,
-      @required this.postedTimeStamp,
-      @required this.photoUrls,
-      @required this.content,
-      @required this.postLocation,
-      @required this.likesCount,
-      @required this.userLiked,
-      @required this.topic,});
+  Post({
+    @required this.id,
+    @required this.user,
+    @required this.postedTimeStamp,
+    @required this.photoUrls,
+    @required this.content,
+    @required this.postLocation,
+    @required this.likesCount,
+    @required this.userLiked,
+    @required this.topic,
+    @required this.commentCount
+  });
 }
