@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/post_topics.dart';
-import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
-import 'package:location_based_social_app/util/dialog_util.dart';
-import 'package:location_based_social_app/util/image_upload_util.dart';
+import 'package:location_based_social_app/util/create_post_util.dart';
 import 'package:location_based_social_app/widget/create_post/gallery_image_picker.dart';
 import 'package:location_based_social_app/widget/create_post/multiline_text_field.dart';
 import 'package:location_based_social_app/widget/create_post/post_topic_selector.dart';
@@ -51,7 +49,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     return pickedImages.isEmpty && (text == null || text.trim().isEmpty);
   }
 
-  void sendPost(BuildContext context, String authToken) async {
+  Future<void> _sendPost(BuildContext context, String authToken) async {
     if (_isPostEmpty()) {
       Navigator.of(context).pop();
       return;
@@ -64,41 +62,14 @@ class _NewPostScreenState extends State<NewPostScreen> {
       return;
     }
 
-    try {
-      final List<String> downloadUrls = [];
+    final UserProvider userProvider =
+          Provider.of<UserProvider>(context, listen: false);
 
-      if (pickedImages.isNotEmpty) {
-        setState(() {
-          _isLoading = true;
-        });
+    final PostsProvider postsProvider =  Provider.of<PostsProvider>(context, listen: false);
 
-        for (final File file in pickedImages) {
-          final S3Url s3url =
-              await ImageUploadUtil.getS3Urls(authToken, S3Folder.POST_IMAGE);
-          await ImageUploadUtil.uploadToS3(s3url.uploadUrl, file);
-          downloadUrls.add(s3url.downloadUrl);
-        }
-      }
-
-      final String postContent =
-          (text == null || text.trim().isEmpty) ? null : text.trim();
-      final User loginUser =
-          await Provider.of<UserProvider>(context, listen: false)
-              .getCurrentUser();
-
-      await Provider.of<PostsProvider>(context, listen: false).uploadNewPost(
-          postContent, downloadUrls, loginUser, getTopicByName(topicName));
-
-      Navigator.of(context).pop();
-    } on HttpException catch (error) {
-      renderErrorDialog(context, error.message);
-    } catch (error) {
-      renderErrorDialog(context, 'Failed to post. Please try later');
-    }
-
-    setState(() {
-      _isLoading = false;
-    });
+    // asynchronously create post
+    CreatePostUtil.createPost(pickedImages, text, authToken, topicName, userProvider, postsProvider);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -118,7 +89,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              sendPost(context, authProvider.token);
+              _sendPost(context, authProvider.token);
             },
             child: Text(
               'OK',
@@ -128,11 +99,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
           )
         ],
       ),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(color: Theme.of(context).accentColor),
-            )
-          : SingleChildScrollView(
+      body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
