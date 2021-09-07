@@ -12,6 +12,6 @@ final String WEBSOCKET_DOMAIN = SERVICE_DOMAIN.replaceAll('http', 'ws');
 enum Mode { DEV, PRODUCTION }
 
 //Image compress config
-final int compressedImageMaxWidth = 1920;
-final int compressedImageMaxLength = 1080;
-final int compressedImageQualityRatio = 85;
+const int compressedImageMaxWidth = 1920;
+const int compressedImageMaxLength = 1080;
+const int compressedImageQualityRatio = 85;

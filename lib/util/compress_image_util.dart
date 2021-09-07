@@ -18,7 +18,7 @@ Future<Uint8List> compressImageFileToUint8List(File file) async {
 
 // 2. compress file and get file.
 Future<File> compressImageFileToFile(File file, String targetPath) async {
-  var result = await FlutterImageCompress.compressAndGetFile(
+  final result = await FlutterImageCompress.compressAndGetFile(
     file.absolute.path, targetPath,
     quality: config.compressedImageQualityRatio,
     minWidth: config.compressedImageMaxWidth,
@@ -30,7 +30,7 @@ Future<File> compressImageFileToFile(File file, String targetPath) async {
 
 // 3. compress asset and get Uint8List.
 Future<Uint8List> compressImageAssetToUnit8List(String assetName) async {
-  var list = await FlutterImageCompress.compressAssetImage(
+  final list = await FlutterImageCompress.compressAssetImage(
     assetName,
     quality: config.compressedImageQualityRatio,
     minWidth: config.compressedImageMaxWidth,
@@ -42,7 +42,7 @@ Future<Uint8List> compressImageAssetToUnit8List(String assetName) async {
 
 // 4. compress Uint8List and get another Uint8List.
 Future<Uint8List> compressImageUnit8ListToUnit8List(Uint8List list) async {
-  var result = await FlutterImageCompress.compressWithList(
+  final result = await FlutterImageCompress.compressWithList(
     list,
     quality: config.compressedImageQualityRatio,
     minWidth: config.compressedImageMaxWidth,
