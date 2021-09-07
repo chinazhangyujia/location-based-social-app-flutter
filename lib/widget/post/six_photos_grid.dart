@@ -18,7 +18,7 @@ class SixPhotosGrid extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed(ImageDetailScreen.router,
-                    arguments: photoUrls[0]);
+                    arguments: {'photoUrls': photoUrls, 'initialPageIndex': 0});
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(3),
@@ -53,9 +53,11 @@ class SixPhotosGrid extends StatelessWidget {
               ...photoUrls
                   .map((url) => GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed(
-                              ImageDetailScreen.router,
-                              arguments: url);
+                          Navigator.of(context)
+                              .pushNamed(ImageDetailScreen.router, arguments: {
+                            'photoUrls': photoUrls,
+                            'initialPageIndex': photoUrls.indexOf(url)
+                          });
                         },
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(3),
