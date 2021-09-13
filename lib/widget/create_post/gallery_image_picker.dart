@@ -10,10 +10,11 @@ import 'package:location_based_social_app/util/config.dart';
 class GalleryImagePicker extends StatelessWidget {
   final List<File> pickedImages;
   final Function onAddImage;
+  final Function onDeleteImage;
 
   final ImagePicker imagePicker = ImagePicker();
 
-  GalleryImagePicker(this.pickedImages, this.onAddImage);
+  GalleryImagePicker(this.pickedImages, this.onAddImage, this.onDeleteImage);
 
   Future<void> pickImage(BuildContext context) async {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -46,19 +47,39 @@ class GalleryImagePicker extends StatelessWidget {
       ),
       children: [
         ...pickedImages
-            .map((image) => Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.file(
-                      image,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
+            .asMap()
+            .map((index, image) => MapEntry(
+                index,
+                Stack(children: <Widget>[
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          image,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                        ),
+                      ),
                     ),
                   ),
-                ))
+                  Positioned(
+                      top: 5,
+                      right: 5,
+                      child: GestureDetector(
+                        onTap: () {
+                          onDeleteImage(index);
+                        },
+                        child: Icon(
+                          Icons.close_sharp,
+                          color: Colors.grey.shade400,
+                        ),
+                      ))
+                ])))
+            .values
             .toList(),
         if (pickedImages.length < 6)
           GestureDetector(
