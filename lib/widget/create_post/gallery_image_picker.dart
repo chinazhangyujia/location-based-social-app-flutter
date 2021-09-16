@@ -9,8 +9,8 @@ import 'package:location_based_social_app/util/config.dart';
 /// Currently we use gallery only for test since simulator doesn't support taking photo
 class GalleryImagePicker extends StatelessWidget {
   final List<File> pickedImages;
-  final Function onAddImage;
-  final Function onDeleteImage;
+  final void Function(File) onAddImage;
+  final void Function(int) onDeleteImage;
 
   final ImagePicker imagePicker = ImagePicker();
 
