@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_based_social_app/model/location_point.dart';
+import 'package:location_based_social_app/util/constant.dart';
 
 /// full screen google map that let user to pick a location
 class PickLocationMapScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Map'),
+        title: const Text(PickLocationMapScreenConstant.TITLE),
         elevation: 0.5,
         actions: [
           TextButton(
@@ -65,7 +66,7 @@ class _PickLocationMapScreenState extends State<PickLocationMapScreen> {
               return;
             },
             child: Text(
-              'OK',
+              PickLocationMapScreenConstant.OK,
               style: TextStyle(
                   color: Theme.of(context).accentColor,
                   fontSize: 20,

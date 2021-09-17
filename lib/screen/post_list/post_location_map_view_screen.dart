@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_based_social_app/model/location_point.dart';
+import 'package:location_based_social_app/util/constant.dart';
 
 /// Show the post location on Google map
 class PostLocationMapViewScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class _PostLocationMapViewScreenState extends State<PostLocationMapViewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post Location'),
+        title: const Text(PostLocationMapViewScreenConstant.TITLE),
         elevation: 0.5,
       ),
       body: GoogleMap(

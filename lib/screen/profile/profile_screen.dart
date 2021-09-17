@@ -4,6 +4,7 @@ import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/post_list/liked_posts_screen.dart';
 import 'package:location_based_social_app/screen/post_list/my_posts_screen.dart';
 import 'package:location_based_social_app/screen/profile/setting_screen.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/widget/profile/single_option_page_opener.dart';
 import 'package:location_based_social_app/widget/profile/user_info_card.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   SingleOptionPageOpener(
                       icon: const Icon(Icons.favorite),
-                      title: 'Favorite',
+                      title: ProfileScreenConstant.FAVORITE,
                       onTap: () {
                         Navigator.of(context).pushNamed(LikedPostsScreen.router);
                       }
@@ -48,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const Divider(indent: 30, height: 10,),
                   SingleOptionPageOpener(
                       icon: const Icon(Icons.photo),
-                      title: 'My Post',
+                      title: ProfileScreenConstant.MY_POST,
                       onTap: () {
                         Navigator.of(context).pushNamed(MyPostsScreen.router);
                       }
@@ -59,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 10,),
             Card(elevation: 0.4, child: SingleOptionPageOpener(
               icon: const Icon(Icons.settings),
-              title: 'Setting',
+              title: ProfileScreenConstant.SETTING,
               onTap: () {
                 Navigator.of(context).pushNamed(SettingScreen.router);
               }

@@ -10,6 +10,7 @@ import 'package:location_based_social_app/screen/post_list/location_based_posts_
 import 'package:location_based_social_app/screen/profile/profile_screen.dart';
 import 'package:location_based_social_app/screen/friend/search_friend_screen.dart';
 import 'package:location_based_social_app/screen/notification/notification_tab_screen.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:provider/provider.dart';
 
 /// Tab screen for this app
@@ -33,29 +34,29 @@ class _TabScreenState extends State<TabScreen>
 
     pages = [
       {
-        'title': 'Life Elsewhere',
+        'title': TabScreenConstant.LIFE_ELSEWHERE,
         'page': LocationBasedPostsScreen(),
         'subpage': [
           {
-            'tabName': 'Location',
+            'tabName': TabScreenConstant.LOCATION_BASED,
             'page': LocationBasedPostsScreen(),
           },
-          {'tabName': 'Friends', 'page': FriendPostsScreen()},
+          {'tabName': TabScreenConstant.FRIENDS, 'page': FriendPostsScreen()},
         ],
         'controller': _subPageTabController
       },
       {
-        'title': 'Friends',
+        'title': TabScreenConstant.FRIENDS,
         'page': FriendScreen(),
         'subpage': [],
       },
       {
-        'title': 'Chats',
+        'title': TabScreenConstant.CHATS,
         'page': ChatThreadsScreen(),
         'subpage': [],
       },
       {
-        'title': 'Profile',
+        'title': TabScreenConstant.PROFILE,
         'page': ProfileScreen(),
         'subpage': [],
       }
@@ -87,7 +88,7 @@ class _TabScreenState extends State<TabScreen>
             .unnotifiedNotificationsCount;
 
     List<Widget> appBarActions;
-    if (pages[selectedPageIndex]['title'] == 'Friends') {
+    if (pages[selectedPageIndex]['title'] == TabScreenConstant.FRIENDS) {
       appBarActions = [
         IconButton(
           icon: unnotifiedFriendRequestCount > 0
@@ -111,7 +112,7 @@ class _TabScreenState extends State<TabScreen>
           },
         )
       ];
-    } else if (pages[selectedPageIndex]['title'] == 'Life Elsewhere') {
+    } else if (pages[selectedPageIndex]['title'] == TabScreenConstant.LIFE_ELSEWHERE) {
       appBarActions = [
         IconButton(
           icon: unnotifiedNotificationsCount > 0
@@ -188,11 +189,11 @@ class _TabScreenState extends State<TabScreen>
           currentIndex: selectedPageIndex,
           type: BottomNavigationBarType.fixed,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-            BottomNavigationBarItem(icon: Icon(Icons.people), label: 'friends'),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: TabScreenConstant.BOTTOM_NAV_LABEL_HOME),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: TabScreenConstant.BOTTOM_NAV_LABEL_FRIENDS),
             BottomNavigationBarItem(
-                icon: Icon(Icons.chat_bubble_outline), label: 'chats'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'profile')
+                icon: Icon(Icons.chat_bubble_outline), label: TabScreenConstant.BOTTOM_NAV_LABEL_CHATS),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: TabScreenConstant.BOTTOM_NAV_LABEL_PROFILE)
           ],
         ),
       ),
