@@ -6,6 +6,7 @@ import 'package:location_based_social_app/provider/friend_request_provider.dart'
 import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/screen/chat/chat_screen.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/friend/add_friend_user_card.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
   bool _isInit = true;
   bool addRequestSent = false;
   bool deleteRequestSent = false;
-  String _uniqueNameHintText = 'Unique Name';
+  String _uniqueNameHintText = SearchFriendScreenConstant.UNIQUE_NAME_HINT;
 
   @override
   void didChangeDependencies() {
@@ -39,7 +40,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
           });
         } else {
           setState(() {
-            _uniqueNameHintText = 'Unique Name';
+            _uniqueNameHintText = SearchFriendScreenConstant.UNIQUE_NAME_HINT;
           });
         }
       });
@@ -61,7 +62,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     } on HttpException catch (error) {
       renderErrorDialog(context, error.message);
     } catch (error) {
-      renderErrorDialog(context, 'Failed to find user. Please try later');
+      renderErrorDialog(context, SearchFriendScreenConstant.FAILED_TO_FIND_USER_ERROR_MESSAGE);
     }
 
     textController.clear();
@@ -78,7 +79,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
       renderErrorDialog(context, error.message);
     } catch (error) {
       renderErrorDialog(
-          context, 'Failed to send friend request. Please try later');
+          context, SearchFriendScreenConstant.FAILED_TO_SEND_FRIEND_REQUEST_ERROR_MESSAGE);
     }
   }
 
@@ -96,7 +97,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
         deleteRequestSent = true;
       });
     } catch (error) {
-      renderErrorDialog(context, 'Failed to delete friend. Please try later');
+      renderErrorDialog(context, SearchFriendScreenConstant.FAILED_TO_DELETE_FRIEND_ERROR_MESSAGE);
     }
   }
 
@@ -141,7 +142,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
             addRequestSent ||
         targetUser.metaData.containsKey('friendStatus') &&
             targetUser.metaData['friendStatus'] == 'PENDING') {
-      text = 'Pending';
+      text = SearchFriendScreenConstant.PENDING;
       icon = Icon(
         Icons.pending,
         color: Theme.of(context).disabledColor,
@@ -191,7 +192,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
                       width: 10,
                     ),
                     Text(
-                      'Message',
+                      SearchFriendScreenConstant.MESSAGE,
                       style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w500,
@@ -238,7 +239,7 @@ class _SearchFriendScreenState extends State<SearchFriendScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: const Text('Search'),
+        title: const Text(SearchFriendScreenConstant.SEARCH),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(55),
           child: Padding(

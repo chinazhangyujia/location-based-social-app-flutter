@@ -4,6 +4,7 @@ import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friend_request_provider.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
 import 'package:location_based_social_app/screen/friend/search_friend_screen.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,7 @@ class _FriendScreenState extends State<FriendScreen> {
     try {
       await Provider.of<FriendsProvider>(context, listen: false).cancelFriendship(friendUserId);
     } catch(error) {
-      renderErrorDialog(context, 'Failed to delete friend. Please try later');
+      renderErrorDialog(context, FriendScreenConstant.DELETE_FRIEND_ERROR_MESSAGE);
     }
   }
 
@@ -77,7 +78,7 @@ class _FriendScreenState extends State<FriendScreen> {
                     actionExtentRatio: 0.25,
                     secondaryActions: <Widget>[
                       IconSlideAction(
-                        caption: 'Delete',
+                        caption: FriendScreenConstant.ICON_SLIDE_DELETE_ACTION,
                         color: Colors.red,
                         icon: Icons.delete,
                         onTap: () {

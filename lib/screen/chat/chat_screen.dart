@@ -3,6 +3,7 @@ import 'package:location_based_social_app/model/chat_message.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/chat_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/widget/chat/chat_message_item.dart';
 import 'package:provider/provider.dart';
 
@@ -162,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         maxLines: null,
                         textInputAction: TextInputAction.send,
                         decoration: const InputDecoration(
-                          hintText: "Type a message...",
+                          hintText: ChatScreenConstant.HINT,
                           hintStyle: TextStyle(
                               fontSize: 16
                           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/widget/post/post_item.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +70,7 @@ class _LikedPostsScreenState extends State<LikedPostsScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Liked Posts'),
+          title: const Text(LikedPostsScreenConstant.TITLE),
           elevation: 0.5,
         ),
         body: _pageLoading

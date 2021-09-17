@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
-import 'package:location_based_social_app/screen/splash_screen.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/widget/authentication/email_and_password.dart';
 import 'package:location_based_social_app/widget/authentication/user_name.dart';
 import 'package:location_based_social_app/widget/authentication/welcome.dart';
@@ -15,6 +17,8 @@ class AuthStepsScreen extends StatefulWidget {
 }
 
 class _AuthStepsScreenState extends State<AuthStepsScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   String _path;
   int _currentStep = 0;
   bool _loading = false;
@@ -43,14 +47,17 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
       setState(() {
         _loading = true;
       });
-      await authProvider.login(_signInData['email'], _signInData['password']);
+      await authProvider.login(_signInData['email'], _signInData['password']).timeout(const Duration(seconds: 2));
+    } on HttpException catch (error) {
+      renderErrorDialogWithScaffoldKey(_scaffoldKey, error.toString());
+    } on TimeoutException catch (error) {
+      renderErrorDialogWithScaffoldKey(_scaffoldKey, AuthStepsScreenConstant.SIGNIN_TIMEOUT_ERROR_MESSAGE);
+    } catch (error) {
+      renderErrorDialogWithScaffoldKey(_scaffoldKey, AuthStepsScreenConstant.AUTH_FAILURE_ERROR_MESSAGE);
+    } finally {
       setState(() {
         _loading = false;
       });
-    } on HttpException catch (error) {
-      renderErrorDialog(context, error.toString());
-    } catch (error) {
-      renderErrorDialog(context, 'Authentication failed. Please try later.');
     }
   }
 
@@ -63,14 +70,17 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
         _loading = true;
       });
       await authProvider.signup(_signUpData['email'], _signUpData['password'],
-          _signUpData['nickname']);
+          _signUpData['nickname']).timeout(const Duration(seconds: 2));
+    } on HttpException catch (error) {
+      renderErrorDialogWithScaffoldKey(_scaffoldKey, error.toString());
+    } on TimeoutException catch (error) {
+      renderErrorDialogWithScaffoldKey(_scaffoldKey, AuthStepsScreenConstant.SIGNUP_TIMEOUT_ERROR_MESSAGE);
+    } catch (error) {
+      renderErrorDialogWithScaffoldKey(_scaffoldKey, AuthStepsScreenConstant.AUTH_FAILURE_ERROR_MESSAGE);
+    } finally {
       setState(() {
         _loading = false;
       });
-    } on HttpException catch (error) {
-      renderErrorDialog(context, error.toString());
-    } catch (error) {
-      renderErrorDialog(context, 'Authentication failed. Please try later.');
     }
   }
 
@@ -108,7 +118,13 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
       ]
     };
 
-    return _loading ? SplashScreen() : Scaffold(
+    return _loading ? 
+    Scaffold(
+      key: _scaffoldKey,
+      body: Center(
+        child: CircularProgressIndicator(color: Theme.of(context).accentColor),
+      ),
+    ) : Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

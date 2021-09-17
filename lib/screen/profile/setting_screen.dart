@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:provider/provider.dart';
 
 /// Settings for app e.g. logout...
@@ -15,7 +16,7 @@ class SettingScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: const Text('Settings'),
+        title: const Text(SettingScreenConstant.TITLE),
       ),
       body: Column(
         children: [
@@ -30,7 +31,7 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        const Text('Unique Name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
+                        const Text(SettingScreenConstant.UNIQUE_NAME, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),),
                         const Spacer(),
                         Text(userProvider.uniqueName, style: const TextStyle(fontSize: 16, color: Colors.black38))
                       ],
@@ -42,7 +43,7 @@ class SettingScreen extends StatelessWidget {
                     height: 40,
                     child: Row(
                       children: [
-                        const Text('Email', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                        const Text(SettingScreenConstant.EMAIL, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                         const Spacer(),
                         Text(userProvider.email, style: const TextStyle(fontSize: 16, color: Colors.black38))
                       ],
@@ -64,7 +65,7 @@ class SettingScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 50,
                 child: const Center(
-                  child: Text('Log Out',
+                  child: Text(SettingScreenConstant.LOG_OUT,
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                   ),
                 ),

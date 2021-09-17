@@ -4,8 +4,8 @@ import 'package:location_based_social_app/model/comment.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
-import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/post_detail/comment_item.dart';
 import 'package:location_based_social_app/widget/post/post_item.dart';
@@ -82,7 +82,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     } on HttpException catch (error) {
       renderErrorDialog(context, error.message);
     } catch (error) {
-      renderErrorDialog(context, 'Failed to comment. Please try later');
+      renderErrorDialog(context, PostDetailScreenConstant.FAILED_TO_COMMENT_ERROR_MESSAGE);
     }
   }
 
@@ -100,8 +100,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       } on HttpException catch (error) {
         renderErrorDialog(context, error.message);
       } catch (error) {
-        renderErrorDialog(
-            context, 'Something wrong happened. Please try later');
+        renderErrorDialog(context, PostDetailScreenConstant.FAILED_TO_GET_CURRENT_USER_ERROR_MESSAGE);
       }
     }
 
@@ -134,7 +133,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: const Text('detail'),
+        title: const Text(PostDetailScreenConstant.TITLE),
       ),
       body: Container(
         height: double.infinity,
@@ -165,13 +164,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Comments (${comments.length})',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 16),
-                            ),
-                            const SizedBox(
-                              height: 10,
+                            Text(PostDetailScreenConstant.GET_COMMENTS_COUNT(comments.length),
+                              style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                             ),
                             ...comments
                                 .map((e) => Column(
@@ -237,9 +231,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     color: Theme.of(context).accentColor),
                               )
                             : null,
-                        // filled: true,
-                        hintText: _atUser != null ? null : "... Add comment",
-                        hintStyle: const TextStyle(fontSize: 16),
+                        hintText: _atUser != null ? null : PostDetailScreenConstant.ADD_COMMENT_HINT,
+                        hintStyle: const TextStyle(
+                          fontSize: 16
+                        ),
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         errorBorder: InputBorder.none,

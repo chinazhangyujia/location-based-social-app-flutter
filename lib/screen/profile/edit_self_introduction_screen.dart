@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/create_post/multiline_text_field.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,7 @@ class _EditSelfIntroductionScreenState extends State<EditSelfIntroductionScreen>
     } on HttpException catch (error) {
       renderErrorDialog(context, error.message);
     } catch (error) {
-      renderErrorDialog(context, 'Failed to update self introduction. Please try later');
+      renderErrorDialog(context, EditSelfIntroductionScreenConstant.FAILED_TO_UPDATE_SLEF_INTRO_ERROR_MESSAGE);
     }
   }
 
@@ -39,13 +40,13 @@ class _EditSelfIntroductionScreenState extends State<EditSelfIntroductionScreen>
     return Scaffold(
       appBar: AppBar(
         elevation: 0.5,
-        title: const Text('Self Introduction'),
+        title: const Text(EditSelfIntroductionScreenConstant.TITLE),
         actions: [
           TextButton(
             onPressed: () {
               onClickOk(context);
             },
-            child: Text('OK', style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
+            child: Text(EditSelfIntroductionScreenConstant.OK, style: TextStyle(color: Theme.of(context).accentColor, fontSize: 17),),
           )
         ],
       ),
@@ -53,7 +54,7 @@ class _EditSelfIntroductionScreenState extends State<EditSelfIntroductionScreen>
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: MultilineTextField(
           onEdit: onEditText,
-          hint: 'Write something about yourself...',
+          hint: EditSelfIntroductionScreenConstant.HINT,
         ),
       ),
     );

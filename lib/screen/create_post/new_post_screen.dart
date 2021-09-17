@@ -5,6 +5,7 @@ import 'package:location_based_social_app/model/post_topics.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
+import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/util/create_post_util.dart';
 import 'package:location_based_social_app/widget/create_post/gallery_image_picker.dart';
 import 'package:location_based_social_app/widget/create_post/multiline_text_field.dart';
@@ -57,7 +58,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
     if (getTopicByName(topicName) == null) {
       setState(() {
-        errorMessage = 'Please select a topic';
+        errorMessage = NewPostScreenConstant.TOPIC_MISSING_ERROR_MESSAGE;
       });
       return;
     }
@@ -85,7 +86,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
             Navigator.of(context).pop();
           },
         ),
-        title: const Text('New Post'),
+        title: const Text(NewPostScreenConstant.TITLE),
         actions: [
           TextButton(
             onPressed: () {
@@ -107,7 +108,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                   children: [
                     MultilineTextField(
                       onEdit: onChangeText,
-                      hint: 'Post something about what you see...',
+                      hint: NewPostScreenConstant.POST_TEXT_HINT,
                     ),
                     const SizedBox(
                       height: 15,
