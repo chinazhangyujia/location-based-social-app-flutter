@@ -188,6 +188,30 @@ class PostsProvider with ChangeNotifier {
     }
   }
 
+  Future<Post> fetchPostById(String postId) async {
+    if (postId == null) {
+      return null;
+    }
+
+    final String url = '$SERVICE_DOMAIN/postById/$postId';
+
+    final res = await http.get(Uri.parse(url),
+          headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
+
+    if (res.statusCode != 200) {
+      throw HttpException('Failed to fetch posts');
+    }
+
+    final responseData = json.decode(res.body) as List<dynamic>;
+    final List<Post> fetchedPosts = _responseDataToPosts(responseData);
+
+    if (fetchedPosts.isEmpty) {
+      return null;
+    }
+
+    return fetchedPosts[0];
+  }
+
   Future<void> uploadNewPost(String content, List<String> photoUrls,
       User loginUser, PostTopic topic) async {
     try {

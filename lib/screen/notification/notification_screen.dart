@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/post_notification.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/friends_provider.dart';
+import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/screen/friend/search_friend_screen.dart';
+import 'package:location_based_social_app/screen/post_detail/post_detail_screen.dart';
 import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -23,6 +27,15 @@ class NotificationScreen extends StatelessWidget {
     );
 
     Navigator.of(context).pushNamed(SearchFriendScreen.router, arguments: userWithMetaData);
+  }
+
+  Future<void> tapContent(BuildContext context, String postId) async {
+    try {
+      final Post post = await Provider.of<PostsProvider>(context, listen: false).fetchPostById(postId);
+      Navigator.of(context).pushNamed(PostDetailScreen.router, arguments: post);
+    } on HttpException catch (error) {
+      return;
+    }
   }
 
   @override
@@ -56,8 +69,14 @@ class NotificationScreen extends StatelessWidget {
                               style: const TextStyle(fontSize: 18),
                             ),
                           ),
-                          Text(notifications[index].content,
-                            style: const TextStyle(fontSize: 18),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              tapContent(context, notifications[index].postId);
+                            },
+                            child: Text(notifications[index].content,
+                              style: const TextStyle(fontSize: 18),
+                            ),
                           ),
                           const SizedBox(height: 5,),
                           Text(DateFormat("MMM dd, yyyy hh:mm").format(notifications[index].time),

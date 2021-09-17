@@ -75,6 +75,7 @@ class NotificationsProvider with ChangeNotifier {
               id: e['_id'] as String,
               sendFrom: sendFrom,
               content: commentContent,
+              postId: e['post'] as String,
               type: notificationType,
               notified: e['notified'] as bool,
               time: DateTime.parse(commentData['createdAt'] as String));
@@ -92,6 +93,7 @@ class NotificationsProvider with ChangeNotifier {
               id: e['_id'] as String,
               sendFrom: sendFrom,
               content: '${sendFrom.name} liked your post',
+              postId: e['post'] as String,
               type: notificationType,
               notified: e['notified'] as bool,
               time: DateTime.parse(e['createdAt'] as String));

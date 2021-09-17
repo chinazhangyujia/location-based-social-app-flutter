@@ -4,6 +4,7 @@ import 'package:location_based_social_app/model/comment.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/comments_provider.dart';
+import 'package:location_based_social_app/provider/posts_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
 import 'package:location_based_social_app/util/dialog_util.dart';
 import 'package:location_based_social_app/widget/post_detail/comment_item.dart';

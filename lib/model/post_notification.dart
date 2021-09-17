@@ -14,6 +14,7 @@ class PostNotification {
   final User sendFrom;
   final String content;
   final NotificationType type;
+  final String postId;
   final DateTime time;
   bool notified;
 
@@ -22,6 +23,7 @@ class PostNotification {
     @required this.sendFrom,
     @required this.content,
     @required this.type,
+    @required this.postId,
     @required this.time,
     @required this.notified
   });
