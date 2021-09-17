@@ -22,6 +22,7 @@ List<Post> DUMMY_POST = [
     likesCount: 0,
     userLiked: false,
     topic: getTopicByName('WORK'),
+    commentCount: 2
   ),
   Post(
     id: '2',
@@ -39,6 +40,7 @@ List<Post> DUMMY_POST = [
     likesCount: 0,
     userLiked: false,
     topic: getTopicByName('WORK'),
+    commentCount: 0
   ),
 ];
 
