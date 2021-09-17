@@ -14,7 +14,7 @@ class SixPhotosGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return photoUrls.length == 1
         ? Container(
-            width: MediaQuery.of(context).size.width * 0.7,
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7, maxHeight: 300),
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).pushNamed(ImageDetailScreen.router,
@@ -35,7 +35,8 @@ class SixPhotosGrid extends StatelessWidget {
                     ),
                   ),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
+                  alignment: Alignment.centerLeft,
                   width: double.infinity,
                 ),
               ),

@@ -64,8 +64,9 @@ class PostItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls),
                 if (post.content != null) PostText(post.content),
+                if (post.content != null && post.photoUrls.isNotEmpty) SizedBox(height: 10,),
+                if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls),
               ],
             ),
           ),
