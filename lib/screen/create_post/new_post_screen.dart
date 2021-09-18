@@ -34,6 +34,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
     });
   }
 
+  void onDeleteImage(int index) {
+    setState(() {
+      pickedImages.removeAt(index);
+    });
+  }
+
   void onChangeText(String value) {
     setState(() {
       text = value;
@@ -113,7 +119,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     const SizedBox(
                       height: 15,
                     ),
-                    GalleryImagePicker(pickedImages, onAddImage),
+                    GalleryImagePicker(pickedImages, onAddImage, onDeleteImage),
                     PostTopicSelector(
                       selectedTopic: topicName,
                       onSelectTopic: onSelectTopic,
