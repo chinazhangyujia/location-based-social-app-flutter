@@ -2,32 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/widget/authentication/sized_box_title.dart';
 
-class UserName extends StatefulWidget {
-  final void Function(String) _setUserName;
+class Email extends StatefulWidget {
+  final void Function(String) _setPath;
   final void Function(int) _setStep;
+  final void Function(String) _setEmail;
   final void Function(BuildContext) _submit;
 
-  const UserName(this._setUserName, this._setStep, this._submit);
+  const Email(
+      this._setPath, this._setStep, this._setEmail, this._submit);
 
   @override
-  _UserNameState createState() => _UserNameState();
+  _EmailState createState() => _EmailState();
 }
 
-class _UserNameState extends State<UserName> {
-  String _userName = '';
+class _EmailState extends State<Email> {
   String _errorMessage;
+  String _email = '';
 
   String _getInputError() {
-    if (_userName.length < 4) {
-      return AuthStepsScreenConstant.USER_NAME_LENGTH_ERROR_MESSAGE;
-    }
-
-    if (_userName.contains(' ')) {
-      return AuthStepsScreenConstant.USER_NAME_SPACE_ERROR_MESSAGE;
-    }
-
-    if (_userName.contains('_')) {
-      return AuthStepsScreenConstant.USER_NAME_UNDERLYING_ERROR_MESSAGE;
+    if (_email.isEmpty || !_email.contains('@') || !_email.endsWith('.com')) {
+      return AuthStepsScreenConstant.INVALID_EMAIL_ERRROR_MESSAGE;
     }
 
     return null;
@@ -42,7 +36,8 @@ class _UserNameState extends State<UserName> {
       return;
     }
 
-    widget._setUserName(_userName);
+    widget._setEmail(_email);
+    widget._setStep(1);
     widget._submit(context);
   }
 
@@ -60,7 +55,7 @@ class _UserNameState extends State<UserName> {
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),
                     child: Text(
-                      AuthStepsScreenConstant.USER_NAME,
+                      AuthStepsScreenConstant.EMAIL,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -77,8 +72,9 @@ class _UserNameState extends State<UserName> {
                         fillColor: Colors.white),
                     style: const TextStyle(fontSize: 20),
                     cursorColor: Colors.blue,
+                    keyboardType: TextInputType.emailAddress,
                     onChanged: (value) {
-                      _userName = value;
+                      _email = value;
                     },
                   ),
                 ],
@@ -113,7 +109,7 @@ class _UserNameState extends State<UserName> {
                       primary: Theme.of(context).accentColor,
                     ),
                     child: const Text(
-                      AuthStepsScreenConstant.SUBMIT,
+                      AuthStepsScreenConstant.NEXT,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -128,7 +124,7 @@ class _UserNameState extends State<UserName> {
             alignment: Alignment.centerLeft,
             child: BackButton(
               onPressed: () {
-                widget._setStep(1);
+                widget._setPath(null);
               },
             )),
       ],

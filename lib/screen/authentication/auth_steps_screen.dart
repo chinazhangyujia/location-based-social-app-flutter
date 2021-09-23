@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/util/constant.dart';
+import 'package:location_based_social_app/widget/authentication/email.dart';
+import 'package:location_based_social_app/widget/authentication/password.dart';
 import 'package:location_based_social_app/widget/authentication/email_and_password.dart';
 import 'package:location_based_social_app/widget/authentication/user_name.dart';
 import 'package:location_based_social_app/widget/authentication/welcome.dart';
@@ -89,8 +91,11 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
     _signInData['password'] = password;
   }
 
-  void _setEmailAndPasswordSignUp(String email, String password) {
+  void _setEmailSignUp(String email) {
     _signUpData['email'] = email;
+  }
+  
+  void _setPasswordSignUp(String password) {
     _signUpData['password'] = password;
   }
 
@@ -112,8 +117,8 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
             _setPath, (_) {}, _setEmailAndPasswordSignIn, _submitForSignIn)
       ],
       'signup': [
-        EmailAndPassword(
-            _setPath, _setStep, _setEmailAndPasswordSignUp, (_) {}),
+        Email(_setPath, _setStep, _setEmailSignUp, (_) {}),
+        Password(_setStep, _setPasswordSignUp, (_) {}),
         UserName(_setUserName, _setStep, _submitForSignUp)
       ]
     };
