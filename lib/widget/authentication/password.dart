@@ -2,31 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:location_based_social_app/util/constant.dart';
 import 'package:location_based_social_app/widget/authentication/sized_box_title.dart';
 
-class EmailAndPassword extends StatefulWidget {
-  final void Function(String) _setPath;
+class Password extends StatefulWidget {
   final void Function(int) _setStep;
-  final void Function(String, String) _setEmailAndPassword;
+  final void Function(String) _setPassword;
   final void Function(BuildContext) _submit;
 
-  const EmailAndPassword(
-      this._setPath, this._setStep, this._setEmailAndPassword, this._submit);
+  const Password(
+      this._setStep, this._setPassword, this._submit);
 
   @override
-  _EmailAndPasswordState createState() => _EmailAndPasswordState();
+  _PasswordState createState() => _PasswordState();
 }
 
-class _EmailAndPasswordState extends State<EmailAndPassword> {
+class _PasswordState extends State<Password> {
   String _errorMessage;
-  String _email = '';
   String _password = '';
+  String _confirmPassword = '';
 
   String _getInputError() {
-    if (_email.isEmpty || !_email.contains('@') || !_email.endsWith('.com')) {
-      return 'Invalid email!';
+    if (_password.length < 6) {
+      return AuthStepsScreenConstant.PASSWORD_TOO_SHORT_ERROR_MESSAGE;
     }
 
-    if (_password.length < 6) {
-      return 'Password is too short!';
+    if (_password != _confirmPassword) {
+      return AuthStepsScreenConstant.PASSWORD_NOT_MATCH_ERROR_MESSAGE;
     }
 
     return null;
@@ -41,8 +40,8 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
       return;
     }
 
-    widget._setEmailAndPassword(_email, _password);
-    widget._setStep(1);
+    widget._setPassword(_password);
+    widget._setStep(2);
     widget._submit(context);
   }
 
@@ -53,16 +52,24 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
         SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBoxTitle(AuthStepsScreenConstant.SIGN_IN_TITLE),
+              const SizedBoxTitle(AuthStepsScreenConstant.SIGN_UP_TITLE),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    padding: EdgeInsets.only(top: 15),
                     child: Text(
-                      'Email',
+                      AuthStepsScreenConstant.PASSWORD,
                       style: TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 15),
+                    child: Text(
+                      AuthStepsScreenConstant.PASSWORD_HINT,
+                      style: TextStyle(
+                          fontSize: 15),
                     ),
                   ),
                   TextField(
@@ -77,15 +84,15 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                         fillColor: Colors.white),
                     style: const TextStyle(fontSize: 20),
                     cursorColor: Colors.blue,
-                    keyboardType: TextInputType.emailAddress,
+                    obscureText: true,
                     onChanged: (value) {
-                      _email = value;
+                      _password = value;
                     },
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15),
                     child: Text(
-                      'Password',
+                      AuthStepsScreenConstant.CONFRIM_PASSWORD,
                       style: TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -104,7 +111,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                     cursorColor: Colors.blue,
                     obscureText: true,
                     onChanged: (value) {
-                      _password = value;
+                      _confirmPassword = value;
                     },
                   )
                 ],
@@ -139,7 +146,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                     primary: Theme.of(context).accentColor,
                   ),
                   child: const Text(
-                    'Next',
+                    AuthStepsScreenConstant.NEXT,
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
@@ -155,7 +162,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
             alignment: Alignment.centerLeft,
             child: BackButton(
               onPressed: () {
-                widget._setPath(null);
+                widget._setStep(0);
               },
             )),
       ],

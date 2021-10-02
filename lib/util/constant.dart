@@ -1,7 +1,22 @@
 class AuthStepsScreenConstant {
   static const AUTH_FAILURE_ERROR_MESSAGE = 'Authentication failed. Please try later.';
+  static const CONFRIM_PASSWORD = 'Confirm Password';
+  static const EMAIL = 'Email';
+  static const INVALID_EMAIL_ERRROR_MESSAGE = 'Invalid Email';
+  static const NEXT = 'Next';
+  static const PASSWORD = 'Password';
+  static const PASSWORD_HINT = '(At least 6 characters)';
+  static const PASSWORD_TOO_SHORT_ERROR_MESSAGE = 'Password is too short!';
+  static const PASSWORD_NOT_MATCH_ERROR_MESSAGE = 'Passwords not matched!';
   static const SIGNIN_TIMEOUT_ERROR_MESSAGE = 'Signin timeout. Please try later.';
   static const SIGNUP_TIMEOUT_ERROR_MESSAGE = 'Signup timeout. Please try later.';
+  static const SIGN_UP_TITLE = 'Sign Up';
+  static const SIGN_IN_TITLE = 'Sign In';
+  static const SUBMIT = 'Submit';
+  static const USER_NAME = 'User Name';
+  static const USER_NAME_LENGTH_ERROR_MESSAGE = 'User name should be at least 4 characters';
+  static const USER_NAME_SPACE_ERROR_MESSAGE = 'User name should not contain space';
+  static const USER_NAME_UNDERLYING_ERROR_MESSAGE = 'user name should not contain "_"';
 }
 
 class ChatScreenConstant {
