@@ -120,3 +120,9 @@ class DialogUtilConstant {
   static const ERROR_MESSAGE = 'An error occurred';
   static const OK = 'OK';
 }
+
+class ImageDetailScreenConstant {
+  static const DOWNLOAD_IMAGE = 'Download Image';
+  static const IMAGE_DOWNLOADED = 'Image Downloaded';
+  static const CANCEL = 'Cancel';
+}

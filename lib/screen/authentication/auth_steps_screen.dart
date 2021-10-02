@@ -41,7 +41,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
     });
   }
 
-  void _submitForSignIn(BuildContext context) async {
+  Future<void> _submitForSignIn(BuildContext context) async {
     final AuthProvider authProvider =
         Provider.of<AuthProvider>(context, listen: false);
 
@@ -49,7 +49,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
       setState(() {
         _loading = true;
       });
-      await authProvider.login(_signInData['email'], _signInData['password']).timeout(const Duration(seconds: 2));
+      await authProvider.login(_signInData['email'], _signInData['password']).timeout(const Duration(seconds: 10));
     } on HttpException catch (error) {
       renderErrorDialogWithScaffoldKey(_scaffoldKey, error.toString());
     } on TimeoutException catch (error) {
@@ -63,7 +63,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
     }
   }
 
-  void _submitForSignUp(BuildContext context) async {
+  Future<void> _submitForSignUp(BuildContext context) async {
     final AuthProvider authProvider =
         Provider.of<AuthProvider>(context, listen: false);
 
@@ -86,7 +86,7 @@ class _AuthStepsScreenState extends State<AuthStepsScreen> {
     }
   }
 
-  void _setEmailAndPasswordSignIn(String email, String password) async {
+  Future<void> _setEmailAndPasswordSignIn(String email, String password) async {
     _signInData['email'] = email;
     _signInData['password'] = password;
   }

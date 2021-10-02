@@ -35,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   @override
-  void didChangeDependencies() async {
+  Future<void> didChangeDependencies() async {
     if (_isInit) {
       _chatProvider = Provider.of<ChatProvider>(context, listen: false);
       _chatWith = ModalRoute.of(context).settings.arguments as User;
