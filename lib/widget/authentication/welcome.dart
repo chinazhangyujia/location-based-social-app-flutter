@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:location_based_social_app/util/constant.dart';
+import 'package:location_based_social_app/widget/authentication/demo_gallery.dart';
 /// First page the user see
 /// Welcome text. User can choose signin or signup
 class Welcome extends StatelessWidget {
@@ -13,25 +15,32 @@ class Welcome extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-            flex: 1,
+            flex: 2,
             child: Container(
                 alignment: Alignment.bottomLeft,
                 child: const Text(
-                  '🎉 Welcome',
+                  WelcomePageConstant.TITLE,
                   style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ))),
         const Expanded(
-          flex: 5,
+          flex: 3,
           child: Padding(
             padding: EdgeInsets.only(top: 20),
             child: Text(
-              "This is a location based social app. You can see people's posts without adding them friend. Every post is attached to the location where people sent it. Once you get into the range, you will see these posts around you.",
+              WelcomePageConstant.DESCRIPTION,
               style: TextStyle(fontSize: 20),
             ),
           ),
         ),
         Expanded(
-          flex: 1,
+          flex: 6,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30),
+            child: DemoGallery(),
+          )
+        ),
+        Expanded(
+          flex: 2,
           child: Container(
             alignment: Alignment.topCenter,
             child: Column(
