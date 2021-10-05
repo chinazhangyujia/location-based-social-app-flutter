@@ -126,7 +126,13 @@ class ImageDetailScreenConstant {
   static const IMAGE_DOWNLOADED = 'Image Downloaded';
   static const CANCEL = 'Cancel';
 }
+
 class WelcomePageConstant {
   static const TITLE = 'Life Elsewhere';
   static const DESCRIPTION = "In this App every posts will be associated with the post location. You can see people's posts nearby or any place in the world by selecting location in the map without adding them as friends.";
+}
+
+class PostHeaderConstant {
+  static const BLOCK_AND_REPORT = "Block and Report";
+  static const CANCEL = "Cancel";
 }

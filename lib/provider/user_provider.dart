@@ -58,7 +58,7 @@ class UserProvider with ChangeNotifier {
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
       if (res.statusCode != 200) {
         throw HttpException(
-            'Failed to get login user info. Please try again later');
+            'Failed to get login user info. Please try later');
       }
 
       final responseData = json.decode(res.body) as Map<String, dynamic>;
@@ -108,13 +108,13 @@ class UserProvider with ChangeNotifier {
         body: json.encode({'intro': inputIntroduction, 'avatarUrl': avatarUrl}));
 
     if (res.statusCode != 200) {
-      throw HttpException('Failed to update user info. Please try again later');
+      throw HttpException('Failed to update user info. Please try later');
     }
 
     final responseData = json.decode(res.body);
     if ((inputIntroduction != null || avatarUrl != null) &&
         (responseData['nModified'] != 1 || responseData['ok'] != 1)) {
-      throw HttpException('Failed to update user info. Please try again later');
+      throw HttpException('Failed to update user info. Please try later');
     }
 
     if (_introduction != inputIntroduction) {
@@ -136,7 +136,7 @@ class UserProvider with ChangeNotifier {
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'});
 
       if (res.statusCode != 200) {
-        throw HttpException('Failed to find user. Please try again later');
+        throw HttpException('Failed to find user. Please try later');
       }
 
       if (res.body == null || res.body.isEmpty) {
@@ -172,6 +172,22 @@ class UserProvider with ChangeNotifier {
           metaData: {'friendStatus': friendStatus});
 
       return fetchedUser;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> blockUserPost(String userId) async {
+    final String url = '$SERVICE_DOMAIN/blockUserPosts';
+
+    try {
+      final res = await http.post(Uri.parse(url),
+        headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
+        body: json.encode({'blockUser': userId}));
+
+      if (res.statusCode != 200) {
+        throw HttpException('Failed to block user. Please try later');
+      }
     } catch (error) {
       rethrow;
     }
