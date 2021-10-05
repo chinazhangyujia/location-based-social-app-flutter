@@ -173,7 +173,7 @@ class _LocationBasedPostsScreenState extends State<LocationBasedPostsScreen>
           ),
         ),
         Align(
-          alignment: const Alignment(0.9, -0.95),
+          alignment: const Alignment(0.7, -0.95),
           child: LocationTypeOptions(
             onClickOption: onClickLocationTypeOption,
           ),

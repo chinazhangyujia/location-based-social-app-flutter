@@ -51,6 +51,7 @@ class PostItem extends StatelessWidget {
               onTapHeader(context, user);
             },
             child: PostHeader(
+              userId: user.id,
               userAvatarUrl: user.avatarUrl,
               userName: user.name,
               postTimeStamp: post.postedTimeStamp,
@@ -65,7 +66,7 @@ class PostItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.content != null) PostText(post.content),
-                if (post.content != null && post.photoUrls.isNotEmpty) SizedBox(height: 10,),
+                if (post.content != null && post.photoUrls.isNotEmpty) const SizedBox(height: 10,),
                 if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls),
               ],
             ),
