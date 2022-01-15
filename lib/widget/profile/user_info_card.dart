@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:location_based_social_app/model/media_type.dart';
 import 'package:location_based_social_app/model/user.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/user_provider.dart';
@@ -67,7 +68,7 @@ class UserInfoCard extends StatelessWidget {
         final String authToken = Provider.of<AuthProvider>(context, listen: false).token;
 
         final S3Url s3url  = await ImageUploadUtil.getS3Urls(authToken, S3Folder.USER_AVATAR);
-        await ImageUploadUtil.uploadToS3(s3url.uploadUrl, croppedFile);
+        await ImageUploadUtil.uploadToS3(s3url.uploadUrl, croppedFile, MediaType.IMAGE);
         await Provider.of<UserProvider>(context, listen: false).updateUserInfo(avatarUrl: s3url.downloadUrl);
       } catch (error) {
         renderErrorDialog(context, 'Failed update avatar. Please try later');

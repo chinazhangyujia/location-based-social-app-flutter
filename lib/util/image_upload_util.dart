@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/exception/http_exception.dart';
+import 'package:location_based_social_app/model/media_type.dart';
 import 'package:location_based_social_app/util/compress_image_util.dart' as compress_image_util;
 import 'package:location_based_social_app/util/config.dart';
 
@@ -13,10 +13,15 @@ import 'package:location_based_social_app/util/config.dart';
 
 enum S3Folder {
   POST_IMAGE,
-  USER_AVATAR
+  USER_AVATAR,
+  POST_VIDEO
 }
 
-const FOLDER_MAP = {S3Folder.POST_IMAGE: 'post_image', S3Folder.USER_AVATAR: 'user_avatar'};
+const FOLDER_MAP = {
+  S3Folder.POST_IMAGE: 'post_image', 
+  S3Folder.USER_AVATAR: 'user_avatar',
+  S3Folder.POST_VIDEO: 'post_video'
+};
 
 class S3Url {
   final String _uploadUrl;
@@ -48,7 +53,7 @@ class ImageUploadUtil {
         Uri.parse(url),
         headers: {...requestHeader, 'Authorization': 'Bearer $token'},
         body: json.encode({
-          'fileType': '.jpg',
+          'fileType': s3folder == S3Folder.POST_VIDEO ? '.m4v' : '.jpg',
           'folder': FOLDER_MAP[s3folder]
         })
       );
@@ -67,11 +72,12 @@ class ImageUploadUtil {
   }
 
   /// store image on S3
-  static Future<void> uploadToS3(String url, File image) async {
+  static Future<void> uploadToS3(String url, File image, MediaType mediaType) async {
     try {
-      //Keep uncompressed method if needed in future
-      // final Uint8List bytes = await image.readAsBytes();
-      final Uint8List bytes = await compress_image_util.compressImageFileToUint8List(image);
+      
+      final bytes = mediaType == MediaType.VIDEO ?
+        await compress_image_util.compressVideoFile(image) :
+        await compress_image_util.compressImageFileToUint8List(image);
 
       final response = await http.put(Uri.parse(url), body: bytes);
 

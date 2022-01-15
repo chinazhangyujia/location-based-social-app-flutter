@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:location_based_social_app/util/config.dart' as config;
+import 'package:video_compress/video_compress.dart';
 
 // 1. compress file and get Uint8List
 Future<Uint8List> compressImageFileToUint8List(File file) async {
@@ -50,4 +51,13 @@ Future<Uint8List> compressImageUnit8ListToUnit8List(Uint8List list) async {
   );
 
   return result;
+}
+
+Future<Uint8List> compressVideoFile(File file) async {
+  final MediaInfo result = await VideoCompress.compressVideo(
+    file.absolute.path,
+    includeAudio: true
+  );
+
+  return result.file.readAsBytesSync();
 }

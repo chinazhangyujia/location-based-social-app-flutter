@@ -6,7 +6,7 @@ import 'package:location_based_social_app/screen/post_list/post_location_map_vie
 import 'package:provider/provider.dart';
 
 /// the bar on the bottom of each post. Used for like, map... icons
-class PostMetaDataBar extends StatelessWidget {
+class PostMetaDataBar extends StatefulWidget {
   final int likesCount;
   final bool userLiked;
   final Post post;
@@ -21,15 +21,32 @@ class PostMetaDataBar extends StatelessWidget {
       @required this.linkToMap,
       this.onClickCommentIcon});
 
+  @override
+  _PostMetaDataBarState createState() => _PostMetaDataBarState();
+}
+
+class _PostMetaDataBarState extends State<PostMetaDataBar> {
+
+  bool _userLiked;
+
+  @override
+  void initState() {
+    super.initState();
+    _userLiked = widget.userLiked;
+  }
+
   Widget _renderLikeIcon(BuildContext context) {
     return Row(
       children: [
         InkWell(
           onTap: () {
             Provider.of<PostsProvider>(context, listen: false)
-                .likePost(post.id, !userLiked);
+                .likePost(widget.post.id, !_userLiked);
+            setState(() {
+              _userLiked = !_userLiked;
+            });
           },
-          child: userLiked
+          child: _userLiked
               ? const Icon(
                   Icons.favorite,
                   color: Colors.red,
@@ -38,14 +55,14 @@ class PostMetaDataBar extends StatelessWidget {
                   Icons.favorite_border,
                 ),
         ),
-        if (likesCount > 0)
+        if (widget.likesCount > 0)
           Row(
             children: [
               const SizedBox(
                 width: 5,
               ),
               Text(
-                '$likesCount',
+                '${widget.likesCount}',
                 style: const TextStyle(fontSize: 18),
               ),
             ],
@@ -59,21 +76,21 @@ class PostMetaDataBar extends StatelessWidget {
       children: [
         InkWell(
             onTap: () {
-              if (onClickCommentIcon != null) {
-                onClickCommentIcon();
+              if (widget.onClickCommentIcon != null) {
+                widget.onClickCommentIcon();
               } else {
                 _onTapCommentIcon(context);
               }  
             },
             child: const Icon(Icons.chat_bubble_outline)),
-        if (post.commentCount > 0)
+        if (widget.post.commentCount > 0)
           Row(
             children: [
               const SizedBox(
                 width: 5,
               ),
               Text(
-                '${post.commentCount}',
+                '${widget.post.commentCount}',
                 style: const TextStyle(fontSize: 18),
               ),
             ],
@@ -91,7 +108,7 @@ class PostMetaDataBar extends StatelessWidget {
         InkWell(
           onTap: () {
             Navigator.of(context).pushNamed(PostLocationMapViewScreen.router,
-                arguments: post.postLocation);
+                arguments: widget.post.postLocation);
           },
           child: const Icon(Icons.location_pin),
         ),
@@ -103,7 +120,7 @@ class PostMetaDataBar extends StatelessWidget {
     return Transform.scale(
       scale: 0.8,
       child: Chip(
-        label: Text(post.topic.displayName),
+        label: Text(widget.post.topic.displayName),
         backgroundColor: Theme.of(context).accentColor,
         labelStyle: const TextStyle(color: Colors.white, fontSize: 19),
       ),
@@ -111,7 +128,7 @@ class PostMetaDataBar extends StatelessWidget {
   }
 
   void _onTapCommentIcon(BuildContext context) {
-    Navigator.of(context).pushNamed(PostDetailScreen.router, arguments: post);
+    Navigator.of(context).pushNamed(PostDetailScreen.router, arguments: widget.post);
   }
 
   @override
@@ -123,7 +140,7 @@ class PostMetaDataBar extends StatelessWidget {
           _renderLikeIcon(context),
           SizedBox(width: 30),
           _renderCommentIcon(context),
-          if (linkToMap) _renderMapIcon(context),
+          if (widget.linkToMap) _renderMapIcon(context),
           SizedBox(
             width: 30,
           ),
