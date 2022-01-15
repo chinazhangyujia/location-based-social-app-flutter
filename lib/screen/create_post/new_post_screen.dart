@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:location_based_social_app/model/media_type.dart';
 import 'package:location_based_social_app/model/post_topics.dart';
 import 'package:location_based_social_app/provider/auth_provider.dart';
 import 'package:location_based_social_app/provider/posts_provider.dart';
@@ -22,21 +23,34 @@ class NewPostScreen extends StatefulWidget {
 
 class _NewPostScreenState extends State<NewPostScreen> {
   String text = '';
-  List<File> pickedImages = [];
+  List<File> pickedMedias = [];
+  MediaType pickerMode = MediaType.IMAGE;
   String topicName;
   String errorMessage;
 
   bool _isLoading = false;
 
-  void onAddImage(File image) {
+  void onAddMedia(File media) {
     setState(() {
-      pickedImages.add(image);
+      pickedMedias.add(media);
     });
   }
 
-  void onDeleteImage(int index) {
+  void onDeleteMedia(int index) {
     setState(() {
-      pickedImages.removeAt(index);
+      pickedMedias.removeAt(index);
+    });
+  }
+
+  void clearAllMedias() {
+    setState(() {
+      pickedMedias.clear();
+    });
+  }
+
+  void onChangePickerMode(MediaType selectedPickerMode) {
+    setState(() {
+      pickerMode = selectedPickerMode;
     });
   }
 
@@ -53,7 +67,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   }
 
   bool _isPostEmpty() {
-    return pickedImages.isEmpty && (text == null || text.trim().isEmpty);
+    return pickedMedias.isEmpty && (text == null || text.trim().isEmpty);
   }
 
   Future<void> _sendPost(BuildContext context, String authToken) async {
@@ -75,7 +89,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
     final PostsProvider postsProvider =  Provider.of<PostsProvider>(context, listen: false);
 
     // asynchronously create post
-    CreatePostUtil.createPost(pickedImages, text, authToken, topicName, userProvider, postsProvider);
+    CreatePostUtil.createPost(pickedMedias, pickerMode, text, authToken, topicName, userProvider, postsProvider);
     Navigator.of(context).pop();
   }
 
@@ -119,7 +133,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
                     const SizedBox(
                       height: 15,
                     ),
-                    GalleryImagePicker(pickedImages, onAddImage, onDeleteImage),
+                    GalleryImagePicker(
+                      pickedMedias: pickedMedias, 
+                      onAddMedia: onAddMedia, 
+                      onDeleteMedia: onDeleteMedia, 
+                      clearAllMedias: clearAllMedias, 
+                      pickerMode: pickerMode, 
+                      onChangePickerMode: onChangePickerMode
+                    ),
+                    const SizedBox(height: 20,),
                     PostTopicSelector(
                       selectedTopic: topicName,
                       onSelectTopic: onSelectTopic,

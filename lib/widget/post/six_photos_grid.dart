@@ -1,46 +1,26 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:location_based_social_app/screen/post_list/image_detail_screen.dart';
+import 'package:location_based_social_app/model/media_type.dart';
+import 'package:location_based_social_app/widget/post/image_item.dart';
+import 'package:location_based_social_app/widget/post/video_item.dart';
+import 'package:video_player/video_player.dart';
 
 /// grid to show photos in post
 class SixPhotosGrid extends StatelessWidget {
   final List<String> photoUrls;
+  final MediaType mediaType;
 
   final Map<int, int> crossAxisCount = {1: 1, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3};
 
-  SixPhotosGrid(this.photoUrls);
+  SixPhotosGrid(this.photoUrls, this.mediaType);
 
   @override
   Widget build(BuildContext context) {
     return photoUrls.length == 1
         ? Container(
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7, maxHeight: 300),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(ImageDetailScreen.router,
-                    arguments: {'photoUrls': photoUrls, 'initialPageIndex': 0});
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(3),
-                child: CachedNetworkImage(
-                  imageUrl: photoUrls[0],
-                  placeholder: (context, url) => Center(
-                    child: Container(
-                      height: 20,
-                      width: 20,
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  fit: BoxFit.contain,
-                  alignment: Alignment.centerLeft,
-                  width: double.infinity,
-                ),
-              ),
-            ),
+            child: mediaType == MediaType.VIDEO ?
+              VideoItem(videoPlayerController: VideoPlayerController.network(photoUrls[0])) :
+              ImageItem(photoUrls: photoUrls, photoUrl: photoUrls[0], initialIndex: 0),
           )
         : GridView.count(
             padding: const EdgeInsets.only(bottom: 0),
@@ -52,35 +32,7 @@ class SixPhotosGrid extends StatelessWidget {
             mainAxisSpacing: 7,
             children: [
               ...photoUrls
-                  .map((url) => GestureDetector(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(ImageDetailScreen.router, arguments: {
-                            'photoUrls': photoUrls,
-                            'initialPageIndex': photoUrls.indexOf(url)
-                          });
-                        },
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(3),
-                            child: CachedNetworkImage(
-                              imageUrl: url,
-                              placeholder: (context, url) => Center(
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  child: const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor:
-                                        AlwaysStoppedAnimation(Colors.white),
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            )),
-                      ))
+                  .map((url) => ImageItem(photoUrls: photoUrls, photoUrl: url, initialIndex: photoUrls.indexOf(url)))
                   .toList()
             ],
           );

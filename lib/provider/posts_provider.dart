@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:location_based_social_app/exception/http_exception.dart';
 import 'package:location_based_social_app/model/location_point.dart';
+import 'package:location_based_social_app/model/media_type.dart';
 import 'package:location_based_social_app/model/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:location_based_social_app/model/post_topic.dart';
@@ -212,7 +213,7 @@ class PostsProvider with ChangeNotifier {
     return fetchedPosts[0];
   }
 
-  Future<void> uploadNewPost(String content, List<String> photoUrls,
+  Future<void> uploadNewPost(String content, List<String> mediaUrls, MediaType mediaType,
       User loginUser, PostTopic topic) async {
     try {
       final Location locationTracker = Location();
@@ -224,7 +225,8 @@ class PostsProvider with ChangeNotifier {
           headers: {...requestHeader, 'Authorization': 'Bearer $_token'},
           body: json.encode({
             'content': content,
-            'imageUrls': photoUrls,
+            'imageUrls': mediaUrls,
+            'mediaType': mediaType.name(),
             'topic': topic.name,
             'location': {
               'type': 'Point',
@@ -255,12 +257,12 @@ class PostsProvider with ChangeNotifier {
         throw HttpException('Failed like the post. Please try again later');
       }
 
-      _changeLikeInPosts(_locationBasedPosts, postId, like);
-      _changeLikeInPosts(_friendPosts, postId, like);
-      _changeLikeInPosts(_myPosts, postId, like);
-      _changeLikeInPosts(_likedPosts, postId, like);
+      // _changeLikeInPosts(_locationBasedPosts, postId, like);
+      // _changeLikeInPosts(_friendPosts, postId, like);
+      // _changeLikeInPosts(_myPosts, postId, like);
+      // _changeLikeInPosts(_likedPosts, postId, like);
 
-      notifyListeners();
+      // notifyListeners();
     } catch (error) {}
   }
 
@@ -299,6 +301,7 @@ class PostsProvider with ChangeNotifier {
               introduction: userData['introduction'] as String),
           postedTimeStamp: DateTime.parse(e['createdAt'] as String),
           photoUrls: e['imageUrls'].cast<String>() as List<String>,
+          mediaType: getMediaTypeByName(e['mediaType'] as String),
           content: e['content'] as String,
           postLocation: LocationPoint(longitude, latitude),
           likesCount: e['likesCount'] as int,

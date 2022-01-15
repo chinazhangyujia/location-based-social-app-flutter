@@ -67,7 +67,7 @@ class PostItem extends StatelessWidget {
               children: [
                 if (post.content != null) PostText(post.content),
                 if (post.content != null && post.photoUrls.isNotEmpty) const SizedBox(height: 10,),
-                if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls),
+                if (post.photoUrls.isNotEmpty) SixPhotosGrid(post.photoUrls, post.mediaType),
               ],
             ),
           ),
