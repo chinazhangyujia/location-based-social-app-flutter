@@ -9,7 +9,7 @@ For development, you will need flutter installed
 
 ## Install
 
-    $ git clone git@gitlab.com:gcyz/location-based-social-app-native.git
+    $ git clone git@github.com:chinazhangyujia/location-based-social-app-flutter.git
     $ cd location-based-social-app-native
     $ flutter pub get
 
